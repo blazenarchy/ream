@@ -1,0 +1,6 @@
+# Dupe mode, available modes: donkey
+mode: donkey
+# Time you need to wait for the items to duplicate after running the command (ticks).
+time: 300
+# How long you need to wait before running the command again (milliseconds).
+delay: 120000
