@@ -1,26 +1,31 @@
 name: simple-dupe
 version: @version@
 main: dev.wnuke.simpledupe.SimpleDupe
-api-version: 1.16.1
 prefix: Simple Dupe
 authors: [wnuke]
 description: A simple configurable item duplictation plugin for PaperMC servers.
 website: https://wnuke.dev
 commands:
+  money:
+    description: Command to give yourself money.
+    permission: simpledupe.money
   dupe:
     description: Command to duplicate items.
     permission: simpledupe.dupe
 permissions:
   permissions:
+    simpledupe.money:
+      description: Allows the player to give themselves money.
+      default: false
     simpledupe.dupe:
       description: Allows the player to duplicate items.
       default: false
-    simpledupe.nodelay:
-      description: Allows the player to skip the delay for the dupe command.
+    simpledupe.overstack:
+      description: Allows the player to have overstacked items.
       default: false
-    simpledupe.instant:
-      description: Allows the player to dupe items instantly.
+    simpledupe.reload:
+      description: Allows the player to reload this plugin.
       default: false
-    simpledupe.config:
-      description: Allows the player to configure this plugin.
+    simpledupe.illegal:
+      description: Allows the player to have illegal iems.
       default: false

@@ -1,164 +1,194 @@
 package dev.wnuke.simpledupe;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
-import org.bukkit.Bukkit;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Donkey;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Llama;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import javax.annotation.Nullable;
+import java.io.*;
+import java.util.*;
 
 /**
  * Blazenarchy's Dupe plugin, a configurable way of duplicating items without exploits.
  *
  * @author wnuke
  */
-public final class SimpleDupe extends JavaPlugin {
-    public static FileConfiguration CONFIG;
+public final class SimpleDupe extends JavaPlugin implements Listener {
+    private static final HashSet<Material> NO_DUPE = new HashSet<>(Arrays.asList(Material.SKELETON_SKULL, Material.CREEPER_HEAD, Material.ZOMBIE_HEAD, Material.PLAYER_HEAD, Material.DRAGON_HEAD));
+    private static final HashSet<Material> NO_STACK = new HashSet<>(Arrays.asList(Material.SHULKER_BOX, Material.TOTEM_OF_UNDYING));
+    private static final HashSet<Material> DELETE = new HashSet<>(Arrays.asList(Material.END_PORTAL_FRAME, Material.BEDROCK, Material.BARRIER, Material.STRUCTURE_BLOCK));
+    private static final Gson gson = new GsonBuilder().serializeNulls().create();
+    private static int ticksLeft = 10;
+    private static HashMap<UUID, Long> playerData;
+    private final File playerDataFile = new File(getDataFolder(), "playerData.json");
 
-    @Override
-    public void onEnable() {
-        this.saveDefaultConfig();
-        this.getCommand("dupe").setExecutor(new DupeCommand(this));
-        CONFIG = this.getConfig();
-    }
-
-    private static class DupeCommand implements CommandExecutor, Listener {
-        JavaPlugin plugin;
-        public DupeCommand(JavaPlugin plugin) {
-            this.plugin = plugin;
+    public static void checkForIllegals(Inventory inventory, boolean illegals, boolean overStacked, @Nullable World world, @Nullable Location location) {
+        if (illegals) {
+            for (Material delete : DELETE) {
+                inventory.remove(delete);
+            }
         }
-        HashMap<String, Long> players = new HashMap<>();
-        @EventHandler
-        public void onTick(ServerTickEndEvent event) {
-            for (Map.Entry<String, Long> player : players.entrySet()) {
-                if (player.getValue() + CONFIG.getLong("delay") < System.currentTimeMillis()) {
-                    players.remove(player.getKey());
+        for (ItemStack itemStack : inventory) {
+            if (!(itemStack == null)) {
+                if (NO_STACK.contains(itemStack.getType()) && overStacked) {
+                    int maxStack = itemStack.getMaxStackSize();
+                    if (itemStack.getAmount() > maxStack) itemStack.setAmount(maxStack);
+                }
+                if (world != null && location != null) {
+                    if (!NO_DUPE.contains(itemStack.getType())) {
+                        world.dropItemNaturally(location, itemStack);
+                    }
                 }
             }
         }
+    }
 
-        private void help(CommandSender sender) {
-            sender.sendMessage("Invalid argument(s), valid ones are:");
-            sender.sendMessage(" - wait <ticks>: changes the amount of time players have to wait before their items are dupicated.");
-            sender.sendMessage(" - delay <milliseconds>: changes the amount of time players have to wait before running the command again.");
-            sender.sendMessage(" - mode <mode>: changes the current dupe mode.");
-            sender.sendMessage(" - show: displays the current values of all settings.");
-            sender.sendMessage(" - reload: reloads the configuration file.");
+    @Override
+    public void onEnable() {
+        Objects.requireNonNull(this.getCommand("dupe")).setExecutor(new DupeCommand());
+        Objects.requireNonNull(this.getCommand("money")).setExecutor(new MoneyCommand(this));
+        this.getPluginLoader().createRegisteredListeners(this, this);
+    }
+
+    public void loadPlayerData() {
+        new Thread(() -> {
+            Thread.currentThread().setName(getName() + " Player Data Load Thread");
+            playerDataFile.mkdirs();
+            try {
+                if (!playerDataFile.createNewFile()) {
+                    try {
+                        playerData = gson.fromJson(new FileReader(playerDataFile), new TypeToken<HashMap<UUID, Long>>() {
+                        }.getType());
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (playerData == null) {
+                playerData = new HashMap<>();
+            }
+        }).start();
+    }
+
+    public void savePlayerData() {
+        new Thread(() -> {
+            Thread.currentThread().setName(getName() + " Player Data Save Thread");
+            playerDataFile.mkdirs();
+            try {
+                if (!playerDataFile.createNewFile()) {
+                    FileWriter fw = new FileWriter(playerDataFile);
+                    gson.toJson(playerData, fw);
+                    fw.flush();
+                    fw.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        if (!playerData.containsKey(event.getPlayer().getUniqueId())) {
+            playerData.put(event.getPlayer().getUniqueId(), 0L);
+        }
+    }
+
+    @EventHandler
+    public void onTick(ServerTickEndEvent event) {
+        if (ticksLeft == 0) {
+            for (World world : getServer().getWorlds()) {
+                new Thread(() -> {
+                    Thread.currentThread().setName(world.getName() + " Item Scanner");
+                    for (Item item : world.getEntitiesByClass(Item.class)) {
+                        ItemStack itemStack = item.getItemStack();
+                        if (DELETE.contains(itemStack.getType())) {
+                            item.remove();
+                        } else if (NO_STACK.contains(itemStack.getType())) {
+                            int maxStack = itemStack.getMaxStackSize();
+                            if (itemStack.getAmount() > maxStack) itemStack.setAmount(maxStack);
+                        }
+                    }
+                }).start();
+            }
+            for (Player player : getServer().getOnlinePlayers()) {
+                new Thread(() -> {
+                    Thread.currentThread().setName(player.getUniqueId() + " Item Scanner");
+                    checkForIllegals(player.getInventory(), !player.hasPermission("simpledupe.illegal"), !player.hasPermission("simpledupe.overstack"), null, null);
+                }).start();
+            }
+            ticksLeft = 10;
+        } else {
+            ticksLeft--;
+        }
+    }
+
+    private static class MoneyCommand implements CommandExecutor {
+        SimpleDupe plugin;
+
+        public MoneyCommand(SimpleDupe plugin) {
+            this.plugin = plugin;
         }
 
         @Override
         public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-            if (sender.hasPermission("simpledupe.config") && args.length > 0) {
-                switch (args[0]) {
-                    case "wait":
-                        if (args.length == 2) {
-                            try {
-                                CONFIG.set("wait", Long.parseLong(args[1]));
-                                sender.sendMessage("Configuration has been updated.");
-                            } catch (NumberFormatException e) {
-                                sender.sendMessage("Second argument must be a non decimal number.");
-                            }
-                        } else help(sender);
-                        break;
-                    case "delay":
-                        if (args.length == 2) {
-                            try {
-                                CONFIG.set("delay", Long.parseLong(args[1]));
-                                sender.sendMessage("Configuration has been updated.");
-                            } catch (NumberFormatException e) {
-                                sender.sendMessage("Second argument must be a non decimal number.");
-                            }
-                        } else help(sender);
-                        break;
-                    case "mode":
-                        if (args.length == 2) {
-                            String[] validModes = {"donkey"};
-                            if (Arrays.asList(validModes).contains(args[1])) {
-                                CONFIG.set("mode", args[1]);
-                                sender.sendMessage("Configuration has been updated.");
-                            } else {
-                                sender.sendMessage("\"" + args[1] + "\" is not a valid mode, valid modes are:");
-                                for (String mode : validModes) {
-                                    sender.sendMessage(" - " + mode);
-                                }
-                            }
-                        } else help(sender);
-                        break;
-                    case "show":
-                        sender.sendMessage("Current configuration values are:");
-                        sender.sendMessage("mode: " + CONFIG.getString("mode"));
-                        sender.sendMessage("wait: " + CONFIG.getString("wait"));
-                        sender.sendMessage("delay: " + CONFIG.getString("delay"));
-                        break;
-                    case "reload":
-                        try {
-                            CONFIG.load(plugin.getDataFolder().getAbsolutePath() + "/config.yml");
-                            sender.sendMessage("Configuration has been reloaded.");
-                        } catch (IOException | InvalidConfigurationException e) {
-                            sender.sendMessage("Configuration failed to reload.");
-                            e.printStackTrace();
-                        }
-                        break;
-                    case "default":
-                        help(sender);
-                        break;
-                }
-                try {
-                    CONFIG.save(plugin.getDataFolder().getAbsolutePath() + "/config.yml");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            if (!(sender instanceof ConsoleCommandSender)) {
+                UUID playerID = ((Player) sender).getUniqueId();
+                playerData.replace(playerID, playerData.get(playerID) + 1);
+                plugin.savePlayerData();
             }
-            else if (!(sender instanceof ConsoleCommandSender)) {
-                if (players.containsKey(sender.getName()) && !sender.hasPermission("simpledupe.nodelay")) {
-                    sender.sendMessage("You must wait " + (players.get(sender.getName()) * 1000) + " seconds before running this command again.");
-                } else {
-                    if (Objects.equals(CONFIG.get("mode"), "donkey")) {
-                        Player player = (Player) sender;
-                        ItemStack[] itemStacks;
-                        if (player.getVehicle() instanceof Donkey) {
-                            itemStacks = ((Donkey) player.getVehicle()).getInventory().getStorageContents();
-                        } else if (player.getVehicle() instanceof Llama) {
-                            itemStacks = ((Llama) player.getVehicle()).getInventory().getStorageContents();
-                        } else {
-                            player.sendMessage("You must be riding a donkey or a llama to use this command.");
-                            return true;
-                        }
-                        long delay = 0L;
-                        if (!player.hasPermission("simpledupe.instant")) {
-                            delay = CONFIG.getLong("wait");
-                        }
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                            if (!player.isInsideVehicle()) {
-                                player.sendMessage("You must stay on your Donkey/Llama until the dupe completes.");
-                                return;
-                            }
-                            for (ItemStack itemStack : itemStacks) {
-                                if (!(itemStack == null)) {
-                                    player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
-                                }
-                            }
-                            player.sendMessage("Your items have been duplicated.");
-                        }, delay);
-                    }
+            return true;
+        }
+    }
+
+    private static class DupeCommand implements CommandExecutor {
+        @Override
+        public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+            if (!(sender instanceof ConsoleCommandSender)) {
+                if (!sender.hasPermission("simpledupe.dupe")) {
+                    return false;
                 }
+                Player player = (Player) sender;
+                InventoryHolder inventory;
+                if (player.getVehicle() instanceof Donkey) {
+                    inventory = (InventoryHolder) ((Donkey) player.getVehicle()).getInventory();
+                } else if (player.getVehicle() instanceof Llama) {
+                    inventory = (InventoryHolder) ((Llama) player.getVehicle()).getInventory();
+                } else {
+                    player.sendMessage("You must be riding a donkey or a llama to use this command.");
+                    return true;
+                }
+                new Thread(() -> {
+                    Thread.currentThread().setName(player.getUniqueId() + " Dupe");
+                    checkForIllegals(inventory.getInventory(), !player.hasPermission("simpledupe.illegal"), !player.hasPermission("simpledupe.overstack"), player.getWorld(), player.getLocation());
+                    player.sendMessage("Your items have been duplicated.");
+                }).start();
             } else {
-              sender.sendMessage("Requires arguments to run as console.");
+                sender.sendMessage("Cannot dupe as console.");
             }
             return true;
         }
     }
 }
+
