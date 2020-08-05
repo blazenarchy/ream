@@ -19,7 +19,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,8 +36,8 @@ public final class SimpleDupe extends JavaPlugin implements Listener {
     private static final HashSet<Material> NO_STACK = new HashSet<>(Arrays.asList(Material.SHULKER_BOX, Material.TOTEM_OF_UNDYING));
     private static final HashSet<Material> DELETE = new HashSet<>(Arrays.asList(Material.END_PORTAL_FRAME, Material.BEDROCK, Material.BARRIER, Material.STRUCTURE_BLOCK));
     private static final Gson gson = new GsonBuilder().serializeNulls().create();
-    private static int ticksLeft = 10;
-    private static HashMap<UUID, Long> playerData;
+    private int ticksLeft = 10;
+    private HashMap<UUID, Long> playerData;
     private final File playerDataFile = new File(getDataFolder(), "playerData.json");
 
     public static void checkForIllegals(Inventory inventory, boolean illegals, boolean overStacked, @Nullable World world, @Nullable Location location) {
@@ -67,45 +66,42 @@ public final class SimpleDupe extends JavaPlugin implements Listener {
         Objects.requireNonNull(this.getCommand("dupe")).setExecutor(new DupeCommand());
         Objects.requireNonNull(this.getCommand("money")).setExecutor(new MoneyCommand(this));
         this.getPluginLoader().createRegisteredListeners(this, this);
+        loadPlayerData();
     }
 
     public void loadPlayerData() {
-        new Thread(() -> {
-            Thread.currentThread().setName(getName() + " Player Data Load Thread");
-            playerDataFile.mkdirs();
-            try {
-                if (!playerDataFile.createNewFile()) {
-                    try {
-                        playerData = gson.fromJson(new FileReader(playerDataFile), new TypeToken<HashMap<UUID, Long>>() {
-                        }.getType());
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
+        Thread.currentThread().setName(getName() + " Player Data Load Thread");
+        playerDataFile.getParentFile().mkdirs();
+        try {
+            if (!playerDataFile.createNewFile()) {
+                try {
+                    playerData = gson.fromJson(new FileReader(playerDataFile), new TypeToken<HashMap<UUID, Long>>() {
+                    }.getType());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-            if (playerData == null) {
-                playerData = new HashMap<>();
-            }
-        }).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (playerData == null) {
+            playerData = new HashMap<>();
+        }
     }
 
     public void savePlayerData() {
-        new Thread(() -> {
-            Thread.currentThread().setName(getName() + " Player Data Save Thread");
-            playerDataFile.mkdirs();
-            try {
-                if (!playerDataFile.createNewFile()) {
-                    FileWriter fw = new FileWriter(playerDataFile);
-                    gson.toJson(playerData, fw);
-                    fw.flush();
-                    fw.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        Thread.currentThread().setName(getName() + " Player Data Save Thread");
+        playerDataFile.getParentFile().mkdirs();
+        try {
+            if (!playerDataFile.createNewFile()) {
+                FileWriter fw = new FileWriter(playerDataFile);
+                gson.toJson(playerData, fw);
+                fw.flush();
+                fw.close();
             }
-        }).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @EventHandler
@@ -119,24 +115,20 @@ public final class SimpleDupe extends JavaPlugin implements Listener {
     public void onTick(ServerTickEndEvent event) {
         if (ticksLeft == 0) {
             for (World world : getServer().getWorlds()) {
-                new Thread(() -> {
-                    Thread.currentThread().setName(world.getName() + " Item Scanner");
-                    for (Item item : world.getEntitiesByClass(Item.class)) {
-                        ItemStack itemStack = item.getItemStack();
-                        if (DELETE.contains(itemStack.getType())) {
-                            item.remove();
-                        } else if (NO_STACK.contains(itemStack.getType())) {
-                            int maxStack = itemStack.getMaxStackSize();
-                            if (itemStack.getAmount() > maxStack) itemStack.setAmount(maxStack);
-                        }
+                Thread.currentThread().setName(world.getName() + " Item Scanner");
+                for (Item item : world.getEntitiesByClass(Item.class)) {
+                    ItemStack itemStack = item.getItemStack();
+                    if (DELETE.contains(itemStack.getType())) {
+                        item.remove();
+                    } else if (NO_STACK.contains(itemStack.getType())) {
+                        int maxStack = itemStack.getMaxStackSize();
+                        if (itemStack.getAmount() > maxStack) itemStack.setAmount(maxStack);
                     }
-                }).start();
+                }
             }
             for (Player player : getServer().getOnlinePlayers()) {
-                new Thread(() -> {
-                    Thread.currentThread().setName(player.getUniqueId() + " Item Scanner");
-                    checkForIllegals(player.getInventory(), !player.hasPermission("simpledupe.illegal"), !player.hasPermission("simpledupe.overstack"), null, null);
-                }).start();
+                Thread.currentThread().setName(player.getUniqueId() + " Item Scanner");
+                checkForIllegals(player.getInventory(), !player.hasPermission("simpledupe.illegal"), !player.hasPermission("simpledupe.overstack"), null, null);
             }
             ticksLeft = 10;
         } else {
@@ -155,7 +147,14 @@ public final class SimpleDupe extends JavaPlugin implements Listener {
         public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
             if (!(sender instanceof ConsoleCommandSender)) {
                 UUID playerID = ((Player) sender).getUniqueId();
-                playerData.replace(playerID, playerData.get(playerID) + 1);
+                Long playerAmount = plugin.playerData.get(playerID);
+                if (!plugin.playerData.containsKey(playerID)) {
+                    plugin.playerData.put(playerID, 0L);
+                    playerAmount = 0L;
+                } else if (plugin.playerData.get(playerID) == null) {
+                    plugin.playerData.replace(playerID, 0L);
+                }
+                plugin.playerData.replace(playerID, playerAmount + 1);
                 plugin.savePlayerData();
             }
             return true;
@@ -170,20 +169,18 @@ public final class SimpleDupe extends JavaPlugin implements Listener {
                     return false;
                 }
                 Player player = (Player) sender;
-                InventoryHolder inventory;
+                Inventory inventory;
                 if (player.getVehicle() instanceof Donkey) {
-                    inventory = (InventoryHolder) ((Donkey) player.getVehicle()).getInventory();
+                    inventory = ((Donkey) player.getVehicle()).getInventory();
                 } else if (player.getVehicle() instanceof Llama) {
-                    inventory = (InventoryHolder) ((Llama) player.getVehicle()).getInventory();
+                    inventory = ((Llama) player.getVehicle()).getInventory();
                 } else {
                     player.sendMessage("You must be riding a donkey or a llama to use this command.");
                     return true;
                 }
-                new Thread(() -> {
-                    Thread.currentThread().setName(player.getUniqueId() + " Dupe");
-                    checkForIllegals(inventory.getInventory(), !player.hasPermission("simpledupe.illegal"), !player.hasPermission("simpledupe.overstack"), player.getWorld(), player.getLocation());
-                    player.sendMessage("Your items have been duplicated.");
-                }).start();
+                Thread.currentThread().setName(player.getUniqueId() + " Dupe");
+                checkForIllegals(inventory, !player.hasPermission("simpledupe.illegal"), !player.hasPermission("simpledupe.overstack"), player.getWorld(), player.getLocation());
+                player.sendMessage("Your items have been duplicated.");
             } else {
                 sender.sendMessage("Cannot dupe as console.");
             }
