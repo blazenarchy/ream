@@ -1,31 +1,55 @@
-name: simple-dupe
+name: nuke-stack
 version: @version@
-main: dev.wnuke.simpledupe.SimpleDupe
-prefix: Simple Dupe
+main: dev.wnuke.nukestack.NukeStack
+prefix: Nuke Stack
 authors: [wnuke]
-description: A simple configurable item duplictation plugin for PaperMC servers.
+description: A simple plugin for Minecraft Anarchy servers.
 website: https://wnuke.dev
 commands:
+  tpc:
+    description: Command request to cancel a teleport request
+    permission: nukestack.tpc
+  tpa:
+    description: Command request to teleport to someone
+    permission: nukestack.tpa
+  tpy:
+    description: Command to accept a teleport request
+    permission: nukestack.tpy
+  tpn:
+    description: Command to refuse a teleport request
+    permission: nukestack.tpn
   money:
     description: Command to give yourself money.
-    permission: simpledupe.money
+    permission: nukestack.money
   dupe:
     description: Command to duplicate items.
-    permission: simpledupe.dupe
+    permission: nukestack.dupe
 permissions:
   permissions:
-    simpledupe.money:
+    nukestack.tpc:
+      description: Allows the player to cancel a teleport request.
+      default: false
+    nukestack.tpa:
+      description: Allows the player to request to teleport to someone.
+      default: false
+    nukestack.tpy:
+      description: Allows the player to accept a teleport request.
+      default: false
+    nukestack.tpn:
+      description: Allows the player to deny a teleport request.
+      default: false
+    nukestack.money:
       description: Allows the player to give themselves money.
       default: false
-    simpledupe.dupe:
+    nukestack.dupe:
       description: Allows the player to duplicate items.
       default: false
-    simpledupe.overstack:
+    nukestack.overstack:
       description: Allows the player to have overstacked items.
       default: false
-    simpledupe.reload:
+    nukestack.reload:
       description: Allows the player to reload this plugin.
       default: false
-    simpledupe.illegal:
+    nukestack.illegal:
       description: Allows the player to have illegal iems.
       default: false
