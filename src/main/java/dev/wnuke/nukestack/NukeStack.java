@@ -86,6 +86,9 @@ public final class NukeStack extends JavaPlugin implements Listener {
     }
 
     public void loadAndSetConfig() {
+        playerData = new HashMap<>();
+        teleportRequests = new HashMap<>();
+        playerPosTracking = new HashMap<>();
         reloadConfig();
         saveDefaultConfig();
         antiSpeed = getConfig().getBoolean("antiSpeed");
@@ -157,9 +160,6 @@ public final class NukeStack extends JavaPlugin implements Listener {
             Objects.requireNonNull(this.getCommand("nick")).setExecutor(new NickCommand(this));
         }
         getServer().getPluginManager().registerEvents(this, this);
-        playerData = new HashMap<>();
-        teleportRequests = new HashMap<>();
-        playerPosTracking = new HashMap<>();
         loadAllPlayerData();
         getLogger().info("Loaded NukeStack by wnuke.");
     }
