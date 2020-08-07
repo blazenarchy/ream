@@ -12,6 +12,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -33,6 +34,7 @@ import java.util.UUID;
  * @author wnuke
  */
 public final class NukeStack extends JavaPlugin implements Listener {
+    public static final HashSet<String> BLOCKED_NICK = new HashSet<>();
     public static final HashSet<Material> DELETE = new HashSet<>();
     public static final HashSet<Material> NO_DUPE = new HashSet<>();
     public static final HashSet<Material> NO_STACK = new HashSet<>();
@@ -106,6 +108,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
         suicideCost = getConfig().getLong("suicideCost");
         tpaCost = getConfig().getLong("tpaCost");
         unstackItems = getConfig().getBoolean("unstackOverstacked");
+        BLOCKED_NICK.addAll(getConfig().getStringList("bannedNicks"));
         for (String item : getConfig().getStringList("illegals")) {
             Material material = Material.getMaterial(item);
             if (material != null) {
@@ -226,6 +229,11 @@ public final class NukeStack extends JavaPlugin implements Listener {
     }
 
     @EventHandler
+    public void onDeath(PlayerDeathEvent event) {
+        playerPosTracking.remove(event.getEntity().getUniqueId());
+    }
+
+    @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         UUID playerID = event.getPlayer().getUniqueId();
         if (!playerData.containsKey(playerID)) {
@@ -266,20 +274,22 @@ public final class NukeStack extends JavaPlugin implements Listener {
             if (deleteItems || unstackItems || antiSpeed) {
                 for (Player player : getServer().getOnlinePlayers()) {
                     if (antiSpeed) {
-                        if (!player.hasPermission("nukestack.cheat")) {
-                            UUID playerID = player.getUniqueId();
-                            Location playerPos = player.getLocation();
-                            if (playerPosTracking.containsKey(playerID)) {
-                                Location lastPlayerPos = playerPosTracking.get(playerID);
-                                if (playerPos.getWorld().getUID().equals(lastPlayerPos.getWorld().getUID())) {
-                                    double distance = playerPos.distanceSquared(lastPlayerPos);
-                                    if (distance > maxSpeed) {
-                                        player.teleport(lastPlayerPos);
+                        if (!player.isDead()) {
+                            if (!player.hasPermission("nukestack.cheat")) {
+                                UUID playerID = player.getUniqueId();
+                                Location playerPos = player.getLocation();
+                                if (playerPosTracking.containsKey(playerID)) {
+                                    Location lastPlayerPos = playerPosTracking.get(playerID);
+                                    if (playerPos.getWorld().getUID().equals(lastPlayerPos.getWorld().getUID())) {
+                                        double distance = playerPos.distanceSquared(lastPlayerPos);
+                                        if (distance > maxSpeed) {
+                                            player.teleport(lastPlayerPos);
+                                        }
                                     }
+                                    playerPosTracking.replace(playerID, player.getLocation());
+                                } else {
+                                    playerPosTracking.put(playerID, playerPos);
                                 }
-                                playerPosTracking.replace(playerID, player.getLocation());
-                            } else {
-                                playerPosTracking.put(playerID, playerPos);
                             }
                         }
                     }
