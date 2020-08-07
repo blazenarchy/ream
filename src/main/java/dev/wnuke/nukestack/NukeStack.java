@@ -37,6 +37,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
     private final String playerDataFolder = getDataFolder() + "/player-data/";
     public HashMap<UUID, PlayerData> playerData;
     public HashMap<UUID, UUID> teleportRequests;
+    private HashMap<UUID, Location> playerPosTracking;
     private int ticksLeft = 10;
 
     public static void checkForIllegals(Inventory inventory, boolean removeIllegals, boolean removeOverStacked, boolean dupe, @Nullable World world, @Nullable Location location) {
@@ -76,6 +77,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
         playerData = new HashMap<>();
         teleportRequests = new HashMap<>();
+        playerPosTracking = new HashMap<>();
         getLogger().info("Loaded NukeStack by wnuke.");
     }
 
@@ -156,6 +158,20 @@ public final class NukeStack extends JavaPlugin implements Listener {
                 }
             }
             for (Player player : getServer().getOnlinePlayers()) {
+                UUID playerID = player.getUniqueId();
+                Location playerPos = player.getLocation();
+                if (playerPosTracking.containsKey(playerID)) {
+                    Location lastPlayerPos = playerPosTracking.get(playerID);
+                    if (playerPos.getWorld().getUID().equals(lastPlayerPos.getWorld().getUID())) {
+                        double distance = playerPos.distanceSquared(lastPlayerPos);
+                        if (distance > 180) {
+                            player.teleport(lastPlayerPos);
+                        }
+                    }
+                    playerPosTracking.replace(playerID, playerPos);
+                } else {
+                    playerPosTracking.put(playerID, playerPos);
+                }
                 checkForIllegals(player.getInventory(), !player.hasPermission("nukestack.illegal"), !player.hasPermission("nukestack.overstack"), false, null, null);
             }
         } else {
