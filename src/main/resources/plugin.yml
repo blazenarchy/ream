@@ -15,7 +15,7 @@ commands:
     description: Set your personal time.
     permission: nukestack.playertime
     aliases: [ptime, stime, selftime]
-    usage: ptime <time> - time is a whole number
+    usage: ptime <time>
   playerweather:
     description: Set your personal weather.
     permission: nukestack.playerwheather
@@ -28,9 +28,13 @@ commands:
   nsreload:
     description: Reload the plugin's configuration.
     permission: nukestack.reload
+  realname:
+    description: Get the name of a player with a nickname.
+    usage: realname <nickname>
+    permission: nukestack.realname
   nick:
     description: Change your nick name.
-    usage: nick [nickname] - if no name is specified your nick is reset
+    usage: nick [nickname]
     permission: nukestack.nick
   tpcancel:
     description: Cancel a teleport request
@@ -77,9 +81,9 @@ permissions:
   nukestack.suicide:
     description: Allows the player to kill itself.
     default: true
-  nukestack.reload:
-    description: Allows the player to reload the plugin configuration.
-    default: op
+  nukestack.realname:
+    description: Allows the player check the realname of a nick named player.
+    default: true
   nukestack.nick:
     description: Allows the player change their nick name.
     default: true
@@ -112,4 +116,7 @@ permissions:
     default: op
   nukestack.illegal:
     description: Allows the player to have illegal iems.
+    default: op
+  nukestack.reload:
+    description: Allows the player to reload the plugin configuration.
     default: op

@@ -19,20 +19,25 @@ public class NickCommand implements CommandExecutor {
         this.plugin = plugin;
     }
 
+    public static String unFormatNick(String nick) {
+        return nick.replaceFirst(NukeStack.nickPrefix, "").replaceAll("§([0-9]|[a-f]|r)", "").toLowerCase();
+    }
+
     private boolean nickUsed(String nickToCheck) {
+        String noFormatNick = unFormatNick(nickToCheck);
         for (String bannedNick : NukeStack.BLOCKED_NICK) {
-            if (nickToCheck.contains(bannedNick)) {
+            if (noFormatNick.contains(bannedNick)) {
                 return true;
             }
         }
         for (PlayerData playerData : plugin.loadAllPlayerData()) {
-            if (playerData.getNickName().equals(nickToCheck)) {
+            if (unFormatNick(playerData.getNickName()).equals(noFormatNick)) {
                 return true;
             }
         }
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             List<String> names = Arrays.asList(player.getCustomName(), player.getDisplayName(), player.getName(), player.getPlayerListName());
-            if (names.contains(nickToCheck.replaceAll("§([0-9]|[a-f])", "").toLowerCase())) {
+            if (names.contains(noFormatNick)) {
                 return true;
             }
         }
@@ -40,7 +45,7 @@ public class NickCommand implements CommandExecutor {
     }
 
     private String formatNick(String unformated) {
-        return NukeStack.nickPrefix + unformated.replaceAll("&(?=[0-9]|[a-f])", "§") + "§r";
+        return NukeStack.nickPrefix + unformated.replaceAll("&(?=[0-9]|[a-f]|r)", "§") + "§r";
     }
 
     @Override

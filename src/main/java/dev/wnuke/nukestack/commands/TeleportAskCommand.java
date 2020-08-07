@@ -32,6 +32,7 @@ public class TeleportAskCommand implements CommandExecutor {
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
                     if (player.getPlayerListName().equals(args[0])) {
                         plugin.teleportRequests.put(playerID, player.getUniqueId());
+                        sender.sendMessage("Teleport request sent, to cancel type /tpc");
                         player.sendMessage(sender.getName() + " has requested to teleport to you.");
                         return true;
                     }

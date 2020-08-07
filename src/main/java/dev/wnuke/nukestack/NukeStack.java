@@ -161,6 +161,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
         }
         if (getConfig().getBoolean("nick")) {
             Objects.requireNonNull(this.getCommand("nick")).setExecutor(new NickCommand(this));
+            Objects.requireNonNull(this.getCommand("realname")).setExecutor(new RealNameCommand(this));
         }
         getServer().getPluginManager().registerEvents(this, this);
         loadAllPlayerData();
