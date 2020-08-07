@@ -28,6 +28,7 @@ commands:
   balance:
     description: Command to check how many tokens you have.
     permission: nukestack.balance
+    aliases: [bal]
   dupe:
     description: Command to duplicate items.
     permission: nukestack.dupe

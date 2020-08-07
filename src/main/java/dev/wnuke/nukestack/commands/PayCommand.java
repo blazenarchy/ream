@@ -50,6 +50,7 @@ public class PayCommand implements CommandExecutor {
                             }
                         }
                     }
+                    sender.sendMessage("No player with name \"" + args[0] + "\".");
                 } catch (NumberFormatException e) {
                     sender.sendMessage("Invalid number \"" + args[1] + "\".");
                 }

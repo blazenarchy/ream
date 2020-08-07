@@ -64,8 +64,8 @@ public final class NukeStack extends JavaPlugin implements Listener {
         Objects.requireNonNull(this.getCommand("pay")).setExecutor(new PayCommand(this));
         Objects.requireNonNull(this.getCommand("tpask")).setExecutor(new TeleportAskCommand(this));
         Objects.requireNonNull(this.getCommand("tpcancel")).setExecutor(new TeleportCancelCommand(this));
-        Objects.requireNonNull(this.getCommand("tpaccept")).setExecutor(new TeleportNoCommand(this));
-        Objects.requireNonNull(this.getCommand("tpdeny")).setExecutor(new TeleportYesCommand(this));
+        Objects.requireNonNull(this.getCommand("tpdeny")).setExecutor(new TeleportNoCommand(this));
+        Objects.requireNonNull(this.getCommand("tpaccept")).setExecutor(new TeleportYesCommand(this));
         this.getPluginLoader().createRegisteredListeners(this, this);
         playerData = new HashMap<>();
         teleportRequests = new HashMap<>();
