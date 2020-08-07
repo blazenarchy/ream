@@ -6,49 +6,56 @@ authors: [wnuke]
 description: A simple plugin for Minecraft Anarchy servers.
 website: https://wnuke.dev
 commands:
-  tpc:
+  tpcancel:
     description: Command request to cancel a teleport request
-    permission: nukestack.tpc
-  tpa:
+    permission: nukestack.tpcancel
+    aliases: [tpc]
+  tpask:
     description: Command request to teleport to someone
-    permission: nukestack.tpa
-  tpy:
+    permission: nukestack.tpask
+    aliases: [tpa, tpr, tprequest]
+  tpaccept:
     description: Command to accept a teleport request
-    permission: nukestack.tpy
-  tpn:
+    permission: nukestack.tpaccept
+    aliases: [tpy, tpyes]
+  tpdeny:
     description: Command to refuse a teleport request
-    permission: nukestack.tpn
-  money:
-    description: Command to give yourself money.
-    permission: nukestack.money
+    permission: nukestack.tpdeny
+    aliases: [tpn, tpno]
+  pay:
+    description: Command to send someone tokens.
+    permission: nukestack.pay
+  balance:
+    description: Command to check how many tokens you have.
+    permission: nukestack.balance
   dupe:
     description: Command to duplicate items.
     permission: nukestack.dupe
 permissions:
   permissions:
-    nukestack.tpc:
+    nukestack.tpcancel:
       description: Allows the player to cancel a teleport request.
-      default: false
-    nukestack.tpa:
+      default: true
+    nukestack.tpask:
       description: Allows the player to request to teleport to someone.
-      default: false
-    nukestack.tpy:
+      default: true
+    nukestack.tpaccept:
       description: Allows the player to accept a teleport request.
-      default: false
-    nukestack.tpn:
+      default: true
+    nukestack.tpdeny:
       description: Allows the player to deny a teleport request.
-      default: false
-    nukestack.money:
-      description: Allows the player to give themselves money.
-      default: false
+      default: true
+    nukestack.pay:
+      description: Allows the player to send money to other players.
+      default: true
+    nukestack.balance:
+      description: Allows the player to check how many tokens they have.
+      default: true
     nukestack.dupe:
       description: Allows the player to duplicate items.
-      default: false
+      default: true
     nukestack.overstack:
       description: Allows the player to have overstacked items.
-      default: false
-    nukestack.reload:
-      description: Allows the player to reload this plugin.
       default: false
     nukestack.illegal:
       description: Allows the player to have illegal iems.
