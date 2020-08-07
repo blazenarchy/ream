@@ -1,4 +1,4 @@
-name: nuke-stack
+name: nukestack
 version: @version@
 main: dev.wnuke.nukestack.NukeStack
 prefix: Nuke Stack
@@ -8,51 +8,61 @@ description: A simple plugin for Minecraft Anarchy servers.
 website: https://wnuke.dev
 commands:
   hat:
-    description: Command to put an item in your helmet slot.
+    description: Put an item in your helmet slot.
     permission: nukestack.hat
+    usage: Hold an item and run the command.
   playertime:
-    description: Command to set your personal time.
+    description: Set your personal time.
     permission: nukestack.playertime
     aliases: [ptime, stime, selftime]
+    usage: ptime <time> - time is a whole number
   playerweather:
-    description: Command to set your personal weather.
+    description: Set your personal weather.
     permission: nukestack.playerwheather
+    usage: pweather <weather>
     aliases: [pweather, sweather, selfweather]
   suicide:
-    description: Command to kill yourself ingame.
+    description: Kill yourself.
     permission: nukestack.suicide
     aliases: [kms]
   nsreload:
-    description: Command to reload the plugin's configuration.
+    description: Reload the plugin's configuration.
     permission: nukestack.reload
   nick:
-    description: Command to change your nick name.
+    description: Change your nick name.
+    usage: nick [nickname] - if no name is specified your nick is reset
     permission: nukestack.nick
   tpcancel:
-    description: Command request to cancel a teleport request
+    description: Cancel a teleport request
     permission: nukestack.tpcancel
+    usage: tpcancel <playername>
     aliases: [tpc]
   tpask:
-    description: Command request to teleport to someone
+    description: Request to teleport to someone
     permission: nukestack.tpask
+    usage: tpask <playername>
     aliases: [tpa, tpr, tprequest]
   tpaccept:
-    description: Command to accept a teleport request
+    description: Accept a teleport request
     permission: nukestack.tpaccept
+    usage: tpaccept <playername>
     aliases: [tpy, tpyes]
   tpdeny:
-    description: Command to refuse a teleport request
+    description: Refuse a teleport request
     permission: nukestack.tpdeny
-    aliases: [tpn, tpno]
+    usage: tpdeny <playername>
+    aliases: [tpn, tpno, tprefuse]
   pay:
-    description: Command to send someone tokens.
+    description: Send someone tokens.
+    usage: pay <playername> <amount>
     permission: nukestack.pay
   balance:
-    description: Command to check how many tokens you have.
+    description: Check how many tokens you have.
     permission: nukestack.balance
     aliases: [bal]
   dupe:
-    description: Command to duplicate items.
+    description: Duplicate items.
+    usage: Run the command while riding a donkey or a llama.
     permission: nukestack.dupe
 permissions:
   nukestack.hat:
