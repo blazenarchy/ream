@@ -11,15 +11,8 @@ public class PlayerData {
     private long lifeTimeTPs = 0;
     @SerializedName("td")
     private long lifeTimeDupes = 0;
-
-    @Override
-    public String toString() {
-        return "PlayerData{" +
-                "tokens=" + tokens +
-                ", lifeTimeTPs=" + lifeTimeTPs +
-                ", lifeTimeDupes=" + lifeTimeDupes +
-                '}';
-    }
+    @SerializedName("nn")
+    private String nickName = "";
 
     @Override
     public boolean equals(Object o) {
@@ -28,12 +21,31 @@ public class PlayerData {
         PlayerData that = (PlayerData) o;
         return getTokens() == that.getTokens() &&
                 getLifeTimeTPs() == that.getLifeTimeTPs() &&
-                getLifeTimeDupes() == that.getLifeTimeDupes();
+                getLifeTimeDupes() == that.getLifeTimeDupes() &&
+                getNickName().equals(that.getNickName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTokens(), getLifeTimeTPs(), getLifeTimeDupes());
+        return Objects.hash(getTokens(), getLifeTimeTPs(), getLifeTimeDupes(), getNickName());
+    }
+
+    @Override
+    public String toString() {
+        return "PlayerData{" +
+                "tokens=" + tokens +
+                ", lifeTimeTPs=" + lifeTimeTPs +
+                ", lifeTimeDupes=" + lifeTimeDupes +
+                ", nickName='" + nickName + '\'' +
+                '}';
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public long getTokens() {

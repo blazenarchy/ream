@@ -25,7 +25,7 @@ import java.io.FileWriter;
 import java.util.*;
 
 /**
- * Blazenarchy's Dupe plugin, a configurable way of duplicating items without exploits.
+ * A plugin for Blazenarchy to prevent illegal items, add a simple dupe, add some basic commands and stop players from going to fast.
  *
  * @author wnuke
  */
@@ -86,6 +86,18 @@ public final class NukeStack extends JavaPlugin implements Listener {
         getLogger().info("Disabled NukeStack by wnuke.");
     }
 
+    public HashSet<PlayerData> loadAllPlayerData() {
+        HashSet<PlayerData> playerDataHashMap = new HashSet<>();
+        File playerDataDir = new File(playerDataFolder);
+        if (playerDataDir.isDirectory() && playerDataDir.listFiles() != null) {
+            for (File file : Objects.requireNonNull(playerDataDir.listFiles())) {
+                UUID playerID = UUID.fromString(file.getName().replace(".json", ""));
+                playerDataHashMap.add(loadPlayerData(playerID));
+            }
+        }
+        return playerDataHashMap;
+    }
+
     public PlayerData loadPlayerData(UUID player) {
         PlayerData loadedData;
         if (playerData.containsKey(player)) {
@@ -137,9 +149,13 @@ public final class NukeStack extends JavaPlugin implements Listener {
             PlayerData newPlayerData = new PlayerData();
             playerData.put(event.getPlayer().getUniqueId(), newPlayerData);
             savePlayerData(playerID, newPlayerData);
-            return;
+        } else {
+            PlayerData joinedPlayerData = loadPlayerData(playerID);
+            String nick = joinedPlayerData.getNickName();
+            if (!nick.isEmpty()) {
+                event.getPlayer().setDisplayName(nick);
+            }
         }
-        loadPlayerData(playerID);
     }
 
     @EventHandler
