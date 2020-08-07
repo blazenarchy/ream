@@ -31,7 +31,8 @@ public class PayCommand implements CommandExecutor {
                                 receiving.addTokens(amount);
                                 plugin.savePlayerData(playerID, receiving);
                                 player.sendMessage("You have received " + amount + " token(s) from Console.");
-                                sender.sendMessage(player.getName() + "received " + amount + " token(s).");
+                                sender.sendMessage(player.getName() + " received " + amount + " token(s).");
+                                return true;
                             } else {
                                 UUID senderID = ((Player) sender).getUniqueId();
                                 UUID receiverID = player.getUniqueId();
@@ -44,6 +45,7 @@ public class PayCommand implements CommandExecutor {
                                     plugin.savePlayerData(receiverID, receiving);
                                     player.sendMessage("You have received " + amount + " token(s) from " + sender.getName() + ".");
                                     sender.sendMessage("You have sent " + amount + " token(s) to " + player.getName() + ".");
+                                    return true;
                                 }
                                 sender.sendMessage("You do not have " + amount + " token(s).");
                                 return true;

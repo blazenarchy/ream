@@ -40,7 +40,7 @@ public class DupeCommand implements CommandExecutor {
                 return true;
             }
             playerData.setTokens(playerData.getTokens() - 2);
-            NukeStack.checkForIllegals(inventory, !player.hasPermission("simpledupe.illegal"), !player.hasPermission("simpledupe.overstack"), player.getWorld(), player.getLocation());
+            NukeStack.checkForIllegals(inventory, !player.hasPermission("simpledupe.illegal"), !player.hasPermission("simpledupe.overstack"), true, player.getWorld(), player.getLocation());
             playerData.increaseLifeTimeDupes();
             plugin.savePlayerData(player.getUniqueId(), playerData);
             player.sendMessage("Your items have been duplicated.");

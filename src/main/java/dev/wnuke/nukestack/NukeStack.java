@@ -18,7 +18,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.*;
 
 /**
@@ -27,7 +30,7 @@ import java.util.*;
  * @author wnuke
  */
 public final class NukeStack extends JavaPlugin implements Listener {
-    private static final HashSet<Material> NO_DUPE = new HashSet<>(Arrays.asList(Material.SKELETON_SKULL, Material.CREEPER_HEAD, Material.ZOMBIE_HEAD, Material.PLAYER_HEAD, Material.DRAGON_HEAD));
+    private static final HashSet<Material> NO_DUPE = new HashSet<>(Arrays.asList(Material.SKELETON_SKULL, Material.CREEPER_HEAD, Material.ZOMBIE_HEAD, Material.PLAYER_HEAD, Material.DRAGON_HEAD, Material.DRAGON_EGG));
     private static final HashSet<Material> NO_STACK = new HashSet<>(Arrays.asList(Material.SHULKER_BOX, Material.TOTEM_OF_UNDYING));
     private static final HashSet<Material> DELETE = new HashSet<>(Arrays.asList(Material.END_PORTAL_FRAME, Material.BEDROCK, Material.BARRIER, Material.STRUCTURE_BLOCK));
     private static final Gson gson = new GsonBuilder().serializeNulls().create();
@@ -36,21 +39,25 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public HashMap<UUID, UUID> teleportRequests;
     private int ticksLeft = 10;
 
-    public static void checkForIllegals(Inventory inventory, boolean illegals, boolean overStacked, @Nullable World world, @Nullable Location location) {
-        if (illegals) {
-            for (Material delete : DELETE) {
-                inventory.remove(delete);
-            }
-        }
+    public static void checkForIllegals(Inventory inventory, boolean removeIllegals, boolean removeOverStacked, boolean dupe, @Nullable World world, @Nullable Location location) {
         for (ItemStack itemStack : inventory) {
-            if (!(itemStack == null)) {
-                if (NO_STACK.contains(itemStack.getType()) && overStacked) {
-                    int maxStack = itemStack.getMaxStackSize();
-                    if (itemStack.getAmount() > maxStack) itemStack.setAmount(maxStack);
+            if (itemStack != null) {
+                if (removeIllegals) {
+                    if (DELETE.contains(itemStack.getType())) {
+                        inventory.remove(itemStack);
+                    }
                 }
-                if (world != null && location != null) {
-                    if (!NO_DUPE.contains(itemStack.getType())) {
-                        world.dropItemNaturally(location, itemStack);
+                if (removeOverStacked) {
+                    if (NO_STACK.contains(itemStack.getType())) {
+                        int maxStack = itemStack.getMaxStackSize();
+                        if (itemStack.getAmount() > maxStack) itemStack.setAmount(maxStack);
+                    }
+                }
+                if (dupe) {
+                    if (world != null && location != null) {
+                        if (!NO_DUPE.contains(itemStack.getType())) {
+                            world.dropItemNaturally(location, itemStack);
+                        }
                     }
                 }
             }
@@ -66,7 +73,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
         Objects.requireNonNull(this.getCommand("tpcancel")).setExecutor(new TeleportCancelCommand(this));
         Objects.requireNonNull(this.getCommand("tpdeny")).setExecutor(new TeleportNoCommand(this));
         Objects.requireNonNull(this.getCommand("tpaccept")).setExecutor(new TeleportYesCommand(this));
-        this.getPluginLoader().createRegisteredListeners(this, this);
+        getServer().getPluginManager().registerEvents(this, this);
         playerData = new HashMap<>();
         teleportRequests = new HashMap<>();
         getLogger().info("Loaded NukeStack by wnuke.");
@@ -105,23 +112,20 @@ public final class NukeStack extends JavaPlugin implements Listener {
     }
 
     public void savePlayerData(UUID player, PlayerData newPlayerData) {
-        new Thread(() -> {
-            playerData.remove(player);
-            playerData.putIfAbsent(player, newPlayerData);
-            File playerDataFile = new File(playerDataFolder + player.toString() + ".json");
-            playerDataFile.getParentFile().mkdirs();
-            try {
-                if (!playerDataFile.createNewFile()) {
-                    FileWriter fw = new FileWriter(playerDataFile);
-                    gson.toJson(newPlayerData, fw);
-                    fw.flush();
-                    fw.close();
-                }
-            } catch (IOException e) {
-                getLogger().warning("Failed to save player data for " + player.toString() + ", error:");
-                e.printStackTrace();
-            }
-        });
+        playerData.remove(player);
+        playerData.putIfAbsent(player, newPlayerData);
+        File playerDataFile = new File(playerDataFolder + player.toString() + ".json");
+        playerDataFile.getParentFile().mkdirs();
+        try {
+            playerDataFile.createNewFile();
+            FileWriter fw = new FileWriter(playerDataFile);
+            fw.write(gson.toJson(newPlayerData));
+            fw.flush();
+            fw.close();
+        } catch (Exception e) {
+            System.out.println("Failed to save player data for " + player.toString() + ", error:");
+            e.printStackTrace();
+        }
     }
 
     @EventHandler
@@ -152,7 +156,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
                 }
             }
             for (Player player : getServer().getOnlinePlayers()) {
-                checkForIllegals(player.getInventory(), !player.hasPermission("nukestack.illegal"), !player.hasPermission("nukestack.overstack"), null, null);
+                checkForIllegals(player.getInventory(), !player.hasPermission("nukestack.illegal"), !player.hasPermission("nukestack.overstack"), false, null, null);
             }
         } else {
             ticksLeft--;
