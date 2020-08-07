@@ -58,7 +58,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
     private final String playerDataFolder = getDataFolder() + "/player-data/";
     public HashMap<UUID, PlayerData> playerData;
     public HashMap<UUID, UUID> teleportRequests;
-    private HashMap<UUID, Location> playerPosTracking;
+    public HashMap<UUID, Location> playerPosTracking;
     private long ticksLeft = checkInterval;
 
     public void checkForIllegals(Inventory inventory, boolean removeIllegals, boolean unstackOverStacked, boolean dupe, @Nullable World world, @Nullable Location location) {

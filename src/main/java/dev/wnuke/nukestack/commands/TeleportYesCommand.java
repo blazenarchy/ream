@@ -8,6 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class TeleportYesCommand implements CommandExecutor {
     NukeStack plugin;
 
@@ -22,7 +24,8 @@ public class TeleportYesCommand implements CommandExecutor {
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
                     if (player.getPlayerListName().equals(args[0])) {
                         if (plugin.teleportRequests.get(player.getUniqueId()) == ((Player) sender).getUniqueId()) {
-                            PlayerData playerData = plugin.loadPlayerData(player.getUniqueId());
+                            UUID playerID = player.getUniqueId();
+                            PlayerData playerData = plugin.loadPlayerData(playerID);
                             long tokens = playerData.getTokens();
                             if (tokens < NukeStack.tpaCost) {
                                 player.sendMessage("Teleport cancelled, you no longer have enough tokens.");
@@ -34,7 +37,9 @@ public class TeleportYesCommand implements CommandExecutor {
                             for (Player other : plugin.getServer().getOnlinePlayers()) {
                                 other.hidePlayer(plugin, player);
                             }
+                            plugin.playerPosTracking.remove(playerID);
                             player.teleport((Player) sender);
+                            plugin.playerPosTracking.remove(playerID);
                             for (Player other : plugin.getServer().getOnlinePlayers()) {
                                 other.showPlayer(plugin, player);
                             }
