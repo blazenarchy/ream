@@ -22,7 +22,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * A plugin for Blazenarchy to prevent illegal items, add a simple dupe, add some basic commands and stop players from going to fast.
@@ -34,39 +37,64 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public static final HashSet<Material> NO_STACK = new HashSet<>();
     public static final HashSet<Material> DELETE = new HashSet<>();
     private static final Gson gson = new GsonBuilder().serializeNulls().create();
+    public static boolean deleteItems = true;
+    public static boolean unstackItems = true;
+    public static boolean deleteDroppedItems = true;
+    public static boolean antiSpeed = true;
+    public static boolean currency;
+    public static String nickPrefix = ".";
+    public static long nickCost = 0;
+    public static long dupeCost = 2;
+    public static long tpaCost = 2;
+    public static long checkInterval = 10;
+    public static long maxSpeed = 160;
+    public static long startingMoney = 0;
     private final String playerDataFolder = getDataFolder() + "/player-data/";
     public HashMap<UUID, PlayerData> playerData;
     public HashMap<UUID, UUID> teleportRequests;
     private HashMap<UUID, Location> playerPosTracking;
-    private int ticksLeft = 10;
+    private long ticksLeft = checkInterval;
 
-    public void checkForIllegals(Inventory inventory, boolean removeIllegals, boolean removeOverStacked, boolean dupe, @Nullable World world, @Nullable Location location) {
-        for (ItemStack itemStack : inventory) {
-            if (itemStack != null) {
-                if (removeIllegals) {
-                    if (DELETE.contains(itemStack.getType())) {
-                        inventory.remove(itemStack);
+    public void checkForIllegals(Inventory inventory, boolean removeIllegals, boolean unstackOverStacked, boolean dupe, @Nullable World world, @Nullable Location location) {
+        if (dupe || (removeIllegals && deleteItems) || (unstackOverStacked && unstackItems))
+            for (ItemStack itemStack : inventory) {
+                if (itemStack != null) {
+                    if (removeIllegals && deleteItems) {
+                        if (DELETE.contains(itemStack.getType())) {
+                            inventory.remove(itemStack);
+                        }
                     }
-                }
-                if (removeOverStacked) {
-                    if (NO_STACK.contains(itemStack.getType())) {
-                        int maxStack = itemStack.getMaxStackSize();
-                        if (itemStack.getAmount() > maxStack) itemStack.setAmount(maxStack);
+                    if (unstackOverStacked && unstackItems) {
+                        if (NO_STACK.contains(itemStack.getType())) {
+                            int maxStack = itemStack.getMaxStackSize();
+                            if (itemStack.getAmount() > maxStack) itemStack.setAmount(maxStack);
+                        }
                     }
-                }
-                if (dupe) {
-                    if (world != null && location != null) {
-                        if (!NO_DUPE.contains(itemStack.getType())) {
-                            world.dropItemNaturally(location, itemStack);
+                    if (dupe) {
+                        if (world != null && location != null) {
+                            if (!NO_DUPE.contains(itemStack.getType())) {
+                                world.dropItemNaturally(location, itemStack);
+                            }
                         }
                     }
                 }
             }
-        }
     }
 
     public void loadConfig() {
+        reloadConfig();
         saveDefaultConfig();
+        deleteItems = getConfig().getBoolean("deleteIllegals");
+        unstackItems = getConfig().getBoolean("unstackOverstacked");
+        deleteDroppedItems = getConfig().getBoolean("deleteDroppedIllegals");
+        antiSpeed = getConfig().getBoolean("antiSpeed");
+        nickPrefix = getConfig().getString("nickPrefix");
+        nickCost = getConfig().getLong("nickCost");
+        dupeCost = getConfig().getLong("dupeCost");
+        tpaCost = getConfig().getLong("tpaCost");
+        checkInterval = getConfig().getLong("checkInterval");
+        startingMoney = getConfig().getLong("startingMoney");
+        maxSpeed = getConfig().getLong("maxSpeed");
         for (String item : getConfig().getStringList("noDupe")) {
             Material material = Material.getMaterial(item);
             if (material != null) {
@@ -89,14 +117,24 @@ public final class NukeStack extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        Objects.requireNonNull(this.getCommand("dupe")).setExecutor(new DupeCommand(this));
-        Objects.requireNonNull(this.getCommand("balance")).setExecutor(new BalanceCommand(this));
-        Objects.requireNonNull(this.getCommand("pay")).setExecutor(new PayCommand(this));
-        Objects.requireNonNull(this.getCommand("tpask")).setExecutor(new TeleportAskCommand(this));
-        Objects.requireNonNull(this.getCommand("tpcancel")).setExecutor(new TeleportCancelCommand(this));
-        Objects.requireNonNull(this.getCommand("tpdeny")).setExecutor(new TeleportNoCommand(this));
-        Objects.requireNonNull(this.getCommand("tpaccept")).setExecutor(new TeleportYesCommand(this));
-        Objects.requireNonNull(this.getCommand("nick")).setExecutor(new NickCommand(this));
+        loadConfig();
+        if (getConfig().getBoolean("dupe")) {
+            Objects.requireNonNull(this.getCommand("dupe")).setExecutor(new DupeCommand(this));
+        }
+        if (getConfig().getBoolean("currency")) {
+            currency = false;
+            Objects.requireNonNull(this.getCommand("balance")).setExecutor(new BalanceCommand(this));
+            Objects.requireNonNull(this.getCommand("pay")).setExecutor(new PayCommand(this));
+        }
+        if (getConfig().getBoolean("tpa")) {
+            Objects.requireNonNull(this.getCommand("tpask")).setExecutor(new TeleportAskCommand(this));
+            Objects.requireNonNull(this.getCommand("tpcancel")).setExecutor(new TeleportCancelCommand(this));
+            Objects.requireNonNull(this.getCommand("tpdeny")).setExecutor(new TeleportNoCommand(this));
+            Objects.requireNonNull(this.getCommand("tpaccept")).setExecutor(new TeleportYesCommand(this));
+        }
+        if (getConfig().getBoolean("nick")) {
+            Objects.requireNonNull(this.getCommand("nick")).setExecutor(new NickCommand(this));
+        }
         getServer().getPluginManager().registerEvents(this, this);
         playerData = new HashMap<>();
         teleportRequests = new HashMap<>();
@@ -185,36 +223,47 @@ public final class NukeStack extends JavaPlugin implements Listener {
     @EventHandler
     public void onTick(ServerTickEndEvent event) {
         if (ticksLeft == 0) {
-            ticksLeft = 10;
-            for (World world : getServer().getWorlds()) {
-                for (Item item : world.getEntitiesByClass(Item.class)) {
-                    ItemStack itemStack = item.getItemStack();
-                    if (DELETE.contains(itemStack.getType())) {
-                        item.remove();
-                    } else if (NO_STACK.contains(itemStack.getType())) {
-                        int maxStack = itemStack.getMaxStackSize();
-                        if (itemStack.getAmount() > maxStack) itemStack.setAmount(maxStack);
+            ticksLeft = checkInterval;
+            if (deleteDroppedItems || unstackItems) {
+                for (World world : getServer().getWorlds()) {
+                    for (Item item : world.getEntitiesByClass(Item.class)) {
+                        ItemStack itemStack = item.getItemStack();
+                        if (deleteDroppedItems) {
+                            if (DELETE.contains(itemStack.getType())) {
+                                item.remove();
+                            }
+                        }
+                        if (unstackItems) {
+                            if (NO_STACK.contains(itemStack.getType())) {
+                                int maxStack = itemStack.getMaxStackSize();
+                                if (itemStack.getAmount() > maxStack) itemStack.setAmount(maxStack);
+                            }
+                        }
                     }
                 }
             }
-            for (Player player : getServer().getOnlinePlayers()) {
-                if (!player.hasPermission("nukestack.cheat")) {
-                    UUID playerID = player.getUniqueId();
-                    Location playerPos = player.getLocation();
-                    if (playerPosTracking.containsKey(playerID)) {
-                        Location lastPlayerPos = playerPosTracking.get(playerID);
-                        if (playerPos.getWorld().getUID().equals(lastPlayerPos.getWorld().getUID())) {
-                            double distance = playerPos.distanceSquared(lastPlayerPos);
-                            if (distance > 160) {
-                                player.teleport(lastPlayerPos);
+            if (deleteItems || unstackItems || antiSpeed) {
+                for (Player player : getServer().getOnlinePlayers()) {
+                    if (antiSpeed) {
+                        if (!player.hasPermission("nukestack.cheat")) {
+                            UUID playerID = player.getUniqueId();
+                            Location playerPos = player.getLocation();
+                            if (playerPosTracking.containsKey(playerID)) {
+                                Location lastPlayerPos = playerPosTracking.get(playerID);
+                                if (playerPos.getWorld().getUID().equals(lastPlayerPos.getWorld().getUID())) {
+                                    double distance = playerPos.distanceSquared(lastPlayerPos);
+                                    if (distance > maxSpeed) {
+                                        player.teleport(lastPlayerPos);
+                                    }
+                                }
+                                playerPosTracking.replace(playerID, player.getLocation());
+                            } else {
+                                playerPosTracking.put(playerID, playerPos);
                             }
                         }
-                        playerPosTracking.replace(playerID, player.getLocation());
-                    } else {
-                        playerPosTracking.put(playerID, playerPos);
                     }
+                    checkForIllegals(player.getInventory(), !player.hasPermission("nukestack.illegal"), !player.hasPermission("nukestack.overstack"), false, null, null);
                 }
-                checkForIllegals(player.getInventory(), !player.hasPermission("nukestack.illegal"), !player.hasPermission("nukestack.overstack"), false, null, null);
             }
         } else {
             ticksLeft--;

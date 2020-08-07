@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class PlayerData {
     @SerializedName("ts")
-    private long tokens = 0;
+    private long tokens = NukeStack.startingMoney;
     @SerializedName("tt")
     private long lifeTimeTPs = 0;
     @SerializedName("td")
@@ -49,19 +49,23 @@ public class PlayerData {
     }
 
     public long getTokens() {
-        return tokens;
+        if (NukeStack.currency) {
+            return tokens;
+        } else {
+            return 9223372036854775807L; // if currency is disabled just act as though the player has the maximum to avoi problems with other commands
+        }
     }
 
     public void addTokens(long amount) {
-        tokens += amount;
+        if (NukeStack.currency) {
+            tokens += amount;
+        }
     }
 
     public void removeTokens(long amount) {
-        tokens -= amount;
-    }
-
-    public void setTokens(long tokens) {
-        this.tokens = tokens;
+        if (NukeStack.currency) {
+            tokens -= amount;
+        }
     }
 
     public long getLifeTimeTPs() {

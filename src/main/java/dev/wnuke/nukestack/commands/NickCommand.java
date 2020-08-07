@@ -27,20 +27,25 @@ public class NickCommand implements CommandExecutor {
     }
 
     private String formatNick(String unformated) {
-        return "." + unformated.replaceAll("&(?=[0-9]|[a-f])", "§") + "§r";
+        return NukeStack.nickPrefix + unformated.replaceAll("&(?=[0-9]|[a-f])", "§") + "§r";
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
             Player player = (Player) sender;
+            UUID playerID = player.getUniqueId();
+            PlayerData playerData = plugin.loadPlayerData(playerID);
+            if (playerData.getTokens() < NukeStack.tpaCost) {
+                player.sendMessage("You do not have enough tokens, you need at least " + NukeStack.tpaCost + ".");
+                return true;
+            }
             if (args.length >= 1) {
                 String nick = formatNick(args[0]);
                 if (!nickUsed(nick)) {
                     player.setDisplayName(nick);
-                    UUID playerID = player.getUniqueId();
-                    PlayerData playerData = plugin.loadPlayerData(playerID);
                     playerData.setNickName(nick);
+                    playerData.removeTokens(NukeStack.tpaCost);
                     plugin.savePlayerData(playerID, playerData);
                 }
             } else {

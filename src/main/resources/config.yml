@@ -12,18 +12,22 @@ dupeCost: 2
 nickCost: 0
 # Maximum speed players can travel (bps^2)/2
 maxSpeed: 160
-# Enable the nicks
+# Enable the nicks (requires full server restart)
 nick: true
-# Enable the tpa
+# Enable the tpa (requires full server restart)
 tpa: true
-# Enable the dupe
+# Enable the dupe (requires full server restart)
 dupe: true
+# Enable currency commands (requires full server restart)
+currency: true
 # Enable the anti speed
 antiSpeed: true
-# Delete illegals
-antiIllegals: true
+# Delete illegals, does not affect scanDropped
+deleteIllegals: true
 # Unstack overstacked items
-antiOverstack: true
+unstackOverstacked: true
+# Enable scanning for illegal items dropped in world
+deleteDroppedIllegals: true
 # Items players are not allowed to overstack
 noStack:
   - SHULKER_BOX

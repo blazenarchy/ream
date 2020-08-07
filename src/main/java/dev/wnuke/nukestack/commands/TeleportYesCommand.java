@@ -24,9 +24,9 @@ public class TeleportYesCommand implements CommandExecutor {
                         if (plugin.teleportRequests.get(player.getUniqueId()) == ((Player) sender).getUniqueId()) {
                             PlayerData playerData = plugin.loadPlayerData(player.getUniqueId());
                             long tokens = playerData.getTokens();
-                            if (tokens < 2) {
-                                player.sendMessage("Teleport cancelled, not enough tokens.");
-                                sender.sendMessage(player.getPlayerListName() + " does not have enough tokens, teleport cancelled.");
+                            if (tokens < NukeStack.tpaCost) {
+                                player.sendMessage("Teleport cancelled, you no longer have enough tokens.");
+                                sender.sendMessage(player.getPlayerListName() + " no longer has enough tokens, teleport cancelled.");
                                 return true;
                             }
                             player.sendMessage("Teleport request accepted, teleporting...");
@@ -39,7 +39,7 @@ public class TeleportYesCommand implements CommandExecutor {
                                 other.showPlayer(plugin, player);
                             }
                             playerData.increaseLifeTimeTPs();
-                            playerData.setTokens(tokens - 2);
+                            playerData.removeTokens(NukeStack.tpaCost);
                             return true;
                         }
                     }

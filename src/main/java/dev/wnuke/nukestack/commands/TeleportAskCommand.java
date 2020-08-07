@@ -20,8 +20,8 @@ public class TeleportAskCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
             UUID playerID = ((Player) sender).getUniqueId();
-            if (plugin.loadPlayerData(playerID).getTokens() < 2) {
-                sender.sendMessage("You need at least 2 tokens to teleport to someone.");
+            if (plugin.loadPlayerData(playerID).getTokens() < NukeStack.tpaCost) {
+                sender.sendMessage("You need at least " + NukeStack.dupeCost + " token(s) to teleport to someone.");
                 return true;
             }
             if (plugin.teleportRequests.containsKey(playerID)) {

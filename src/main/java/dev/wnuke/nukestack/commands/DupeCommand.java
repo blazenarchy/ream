@@ -23,8 +23,8 @@ public class DupeCommand implements CommandExecutor {
         if (!(sender instanceof ConsoleCommandSender)) {
             Player player = (Player) sender;
             PlayerData playerData = plugin.loadPlayerData(player.getUniqueId());
-            if (playerData.getTokens() < 2) {
-                player.sendMessage("You do not have enough tokens, you need at least 2.");
+            if (playerData.getTokens() < NukeStack.dupeCost) {
+                player.sendMessage("You do not have enough tokens, you need at least " + NukeStack.dupeCost + ".");
                 return true;
             }
             Inventory inventory;
@@ -36,7 +36,7 @@ public class DupeCommand implements CommandExecutor {
                 player.sendMessage("You must be riding a donkey or a llama to use this command.");
                 return true;
             }
-            playerData.setTokens(playerData.getTokens() - 2);
+            playerData.removeTokens(NukeStack.dupeCost);
             plugin.checkForIllegals(inventory, !player.hasPermission("simpledupe.illegal"), !player.hasPermission("simpledupe.overstack"), true, player.getWorld(), player.getLocation());
             playerData.increaseLifeTimeDupes();
             plugin.savePlayerData(player.getUniqueId(), playerData);
