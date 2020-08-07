@@ -21,7 +21,7 @@ public class PayCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length >= 2) {
             try {
-                int amount = Integer.parseInt(args[1]);
+                long amount = Long.parseLong(args[1]);
                 if (amount < 0) {
                     sender.sendMessage("You cant send negative money.");
                     return true;
@@ -38,15 +38,15 @@ public class PayCommand implements CommandExecutor {
                             return true;
                         } else {
                             UUID senderID = ((Player) sender).getUniqueId();
-                            UUID receiverID = player.getUniqueId();
                             PlayerData sending = plugin.loadPlayerData(senderID);
                             long sendingBal = sending.getTokens();
                             if (sendingBal >= amount) {
-                                PlayerData receiving = plugin.loadPlayerData(senderID);
                                 sending.removeTokens(amount);
                                 plugin.savePlayerData(senderID, sending);
                                 sender.sendMessage("You have sent " + amount + " token(s) to " + player.getName() + ".");
                                 if (sending.getTokens() == sendingBal - amount) {
+                                    UUID receiverID = player.getUniqueId();
+                                    PlayerData receiving = plugin.loadPlayerData(senderID);
                                     receiving.addTokens(amount);
                                     plugin.savePlayerData(receiverID, receiving);
                                     player.sendMessage("You have received " + amount + " token(s) from " + sender.getName() + ".");

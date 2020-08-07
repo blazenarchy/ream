@@ -58,12 +58,18 @@ public class PlayerData {
 
     public void addTokens(long amount) {
         if (NukeStack.currency) {
+            if (amount < 0) {
+                amount *= -1;
+            }
             tokens += amount;
         }
     }
 
     public void removeTokens(long amount) {
         if (NukeStack.currency) {
+            if (amount < 0) {
+                amount *= -1;
+            }
             tokens -= amount;
         }
     }
