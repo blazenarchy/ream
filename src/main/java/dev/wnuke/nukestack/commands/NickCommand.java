@@ -8,6 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class NickCommand implements CommandExecutor {
@@ -18,8 +20,19 @@ public class NickCommand implements CommandExecutor {
     }
 
     private boolean nickUsed(String nickToCheck) {
+        for (String bannedNick : NukeStack.BLOCKED_NICK) {
+            if (nickToCheck.contains(bannedNick)) {
+                return true;
+            }
+        }
         for (PlayerData playerData : plugin.loadAllPlayerData()) {
             if (playerData.getNickName().equals(nickToCheck)) {
+                return true;
+            }
+        }
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            List<String> names = Arrays.asList(player.getCustomName(), player.getDisplayName(), player.getName(), player.getPlayerListName());
+            if (names.contains(nickToCheck.replaceAll("§([0-9]|[a-f])", "").toLowerCase())) {
                 return true;
             }
         }
@@ -45,8 +58,11 @@ public class NickCommand implements CommandExecutor {
                 if (!nickUsed(nick)) {
                     player.setDisplayName(nick);
                     playerData.setNickName(nick);
+                    player.sendMessage("Your new nickname is \"" + nick + "\".");
                     playerData.removeTokens(NukeStack.tpaCost);
                     plugin.savePlayerData(playerID, playerData);
+                } else {
+                    player.sendMessage("That name is already in use or is not allowed.");
                 }
             } else {
                 player.setDisplayName(player.getName());

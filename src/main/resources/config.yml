@@ -63,3 +63,11 @@ noDupe:
   - PLAYER_HEAD
   - DRAGON_HEAD
   - DRAGON_EGG
+# Nick names players cannot use, case insensitive
+bannedNicks:
+  - console
+  - admin
+  - moderator
+  - owner
+  - rcon
+  - wnuke
