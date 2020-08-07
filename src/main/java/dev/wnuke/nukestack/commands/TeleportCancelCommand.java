@@ -17,12 +17,8 @@ public class TeleportCancelCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
-            if (sender.hasPermission("nukestack.tpc")) {
-                plugin.teleportRequests.remove(((Player) sender).getUniqueId());
-                sender.sendMessage("Teleport request cancelled.");
-            } else {
-                return false;
-            }
+            plugin.teleportRequests.remove(((Player) sender).getUniqueId());
+            sender.sendMessage("Teleport request cancelled.");
         }
         return true;
     }

@@ -21,9 +21,6 @@ public class DupeCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
-            if (!sender.hasPermission("nukestack.dupe")) {
-                return false;
-            }
             Player player = (Player) sender;
             PlayerData playerData = plugin.loadPlayerData(player.getUniqueId());
             if (playerData.getTokens() < 2) {
@@ -40,7 +37,7 @@ public class DupeCommand implements CommandExecutor {
                 return true;
             }
             playerData.setTokens(playerData.getTokens() - 2);
-            NukeStack.checkForIllegals(inventory, !player.hasPermission("simpledupe.illegal"), !player.hasPermission("simpledupe.overstack"), true, player.getWorld(), player.getLocation());
+            plugin.checkForIllegals(inventory, !player.hasPermission("simpledupe.illegal"), !player.hasPermission("simpledupe.overstack"), true, player.getWorld(), player.getLocation());
             playerData.increaseLifeTimeDupes();
             plugin.savePlayerData(player.getUniqueId(), playerData);
             player.sendMessage("Your items have been duplicated.");

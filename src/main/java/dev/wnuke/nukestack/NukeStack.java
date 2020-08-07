@@ -30,9 +30,9 @@ import java.util.*;
  * @author wnuke
  */
 public final class NukeStack extends JavaPlugin implements Listener {
-    private static final HashSet<Material> NO_DUPE = new HashSet<>(Arrays.asList(Material.SKELETON_SKULL, Material.CREEPER_HEAD, Material.ZOMBIE_HEAD, Material.PLAYER_HEAD, Material.DRAGON_HEAD, Material.DRAGON_EGG));
-    private static final HashSet<Material> NO_STACK = new HashSet<>(Arrays.asList(Material.SHULKER_BOX, Material.TOTEM_OF_UNDYING));
-    private static final HashSet<Material> DELETE = new HashSet<>(Arrays.asList(Material.END_PORTAL_FRAME, Material.BEDROCK, Material.BARRIER, Material.STRUCTURE_BLOCK));
+    public static final HashSet<Material> NO_DUPE = new HashSet<>();
+    public static final HashSet<Material> NO_STACK = new HashSet<>();
+    public static final HashSet<Material> DELETE = new HashSet<>();
     private static final Gson gson = new GsonBuilder().serializeNulls().create();
     private final String playerDataFolder = getDataFolder() + "/player-data/";
     public HashMap<UUID, PlayerData> playerData;
@@ -40,7 +40,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
     private HashMap<UUID, Location> playerPosTracking;
     private int ticksLeft = 10;
 
-    public static void checkForIllegals(Inventory inventory, boolean removeIllegals, boolean removeOverStacked, boolean dupe, @Nullable World world, @Nullable Location location) {
+    public void checkForIllegals(Inventory inventory, boolean removeIllegals, boolean removeOverStacked, boolean dupe, @Nullable World world, @Nullable Location location) {
         for (ItemStack itemStack : inventory) {
             if (itemStack != null) {
                 if (removeIllegals) {
@@ -65,6 +65,28 @@ public final class NukeStack extends JavaPlugin implements Listener {
         }
     }
 
+    public void loadConfig() {
+        saveDefaultConfig();
+        for (String item : getConfig().getStringList("noDupe")) {
+            Material material = Material.getMaterial(item);
+            if (material != null) {
+                NO_DUPE.add(material);
+            }
+        }
+        for (String item : getConfig().getStringList("noStack")) {
+            Material material = Material.getMaterial(item);
+            if (material != null) {
+                NO_STACK.add(material);
+            }
+        }
+        for (String item : getConfig().getStringList("illegals")) {
+            Material material = Material.getMaterial(item);
+            if (material != null) {
+                DELETE.add(material);
+            }
+        }
+    }
+
     @Override
     public void onEnable() {
         Objects.requireNonNull(this.getCommand("dupe")).setExecutor(new DupeCommand(this));
@@ -74,10 +96,12 @@ public final class NukeStack extends JavaPlugin implements Listener {
         Objects.requireNonNull(this.getCommand("tpcancel")).setExecutor(new TeleportCancelCommand(this));
         Objects.requireNonNull(this.getCommand("tpdeny")).setExecutor(new TeleportNoCommand(this));
         Objects.requireNonNull(this.getCommand("tpaccept")).setExecutor(new TeleportYesCommand(this));
+        Objects.requireNonNull(this.getCommand("nick")).setExecutor(new NickCommand(this));
         getServer().getPluginManager().registerEvents(this, this);
         playerData = new HashMap<>();
         teleportRequests = new HashMap<>();
         playerPosTracking = new HashMap<>();
+        loadAllPlayerData();
         getLogger().info("Loaded NukeStack by wnuke.");
     }
 

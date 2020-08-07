@@ -7,6 +7,9 @@ authors: [wnuke]
 description: A simple plugin for Minecraft Anarchy servers.
 website: https://wnuke.dev
 commands:
+  nick:
+    description: Command to change your nick name.
+    permission: nukestack.nick
   tpcancel:
     description: Command request to cancel a teleport request
     permission: nukestack.tpcancel
@@ -35,6 +38,9 @@ commands:
     permission: nukestack.dupe
 permissions:
   permissions:
+    nukestack.nick:
+      description: Allows the player change their nick name.
+      default: true
     nukestack.tpcancel:
       description: Allows the player to cancel a teleport request.
       default: true

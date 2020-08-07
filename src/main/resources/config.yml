@@ -1,6 +1,45 @@
-# Dupe mode, available modes: donkey
-mode: donkey
-# Time you need to wait for the items to duplicate after running the command (ticks).
-wait: 300
-# How long you need to wait before running the command again (milliseconds).
-delay: 120000
+# Prefix players with nick names should have
+nickPrefix: "."
+# How much money each player should start with
+startingMoney: 0
+# Interval between player inventory scans for illegal items (in ticks)
+scanTicks: 10
+# How much it costs for players to tpa
+tpaCost: 2
+# How much it costs for players to dupe
+dupeCost: 2
+# How much it costs for players to change their nick name
+nickCost: 0
+# Maximum speed players can travel (bps^2)/2
+maxSpeed: 160
+# Enable the nicks
+nick: true
+# Enable the tpa
+tpa: true
+# Enable the dupe
+dupe: true
+# Enable the anti speed
+antiSpeed: true
+# Delete illegals
+antiIllegals: true
+# Unstack overstacked items
+antiOverstack: true
+# Items players are not allowed to overstack
+noStack:
+  - SHULKER_BOX
+  - TOTEM_OF_UNDYING
+# Items players are not allowed to have
+illegals:
+  - END_PORTAL_FRAME
+  - BEDROCK
+  - BARRIER
+  - STRUCTURE_BLOCK
+  - COMMAND_BLOCK
+# Items players cannot dupe
+noDupe:
+  - SKELETON_SKULL
+  - CREEPER_HEAD
+  - ZOMBIE_HEAD
+  - PLAYER_HEAD
+  - DRAGON_HEAD
+  - DRAGON_EGG

@@ -17,23 +17,19 @@ public class TeleportNoCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
-            if (sender.hasPermission("nukestack.tpn")) {
-                if (args.length > 0) {
-                    for (Player player : plugin.getServer().getOnlinePlayers()) {
-                        if (player.getPlayerListName().equals(args[0])) {
-                            if (plugin.teleportRequests.get(player.getUniqueId()) == ((Player) sender).getUniqueId()) {
-                                player.sendMessage("Teleport denied.");
-                                sender.sendMessage("Teleport denied.");
-                                return true;
-                            }
+            if (args.length > 0) {
+                for (Player player : plugin.getServer().getOnlinePlayers()) {
+                    if (player.getPlayerListName().equals(args[0])) {
+                        if (plugin.teleportRequests.get(player.getUniqueId()) == ((Player) sender).getUniqueId()) {
+                            player.sendMessage("Teleport denied.");
+                            sender.sendMessage("Teleport denied.");
+                            return true;
                         }
                     }
-                    sender.sendMessage("No player with name " + args[0] + " has requested to teleport to you.");
-                } else {
-                    sender.sendMessage("You need to specify who you want to deny.");
                 }
+                sender.sendMessage("No player with name " + args[0] + " has requested to teleport to you.");
             } else {
-                return false;
+                sender.sendMessage("You need to specify who you want to deny.");
             }
         }
         return true;
