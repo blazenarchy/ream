@@ -20,7 +20,7 @@ public class NickCommand implements CommandExecutor {
     }
 
     public static String unFormatNick(String nick) {
-        return nick.replaceFirst(NukeStack.nickPrefix, "").replaceAll("§([0-9]|[a-f]|r)", "").toLowerCase();
+        return nick.replaceAll("§([0-9]|[a-f]|r)", "").toLowerCase();
     }
 
     private boolean nickUsed(String nickToCheck) {

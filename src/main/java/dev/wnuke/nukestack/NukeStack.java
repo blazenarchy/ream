@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -227,6 +228,11 @@ public final class NukeStack extends JavaPlugin implements Listener {
             System.out.println("Failed to save player data for " + player.toString() + ", error:");
             e.printStackTrace();
         }
+    }
+
+    @EventHandler
+    public void onTeleport(PlayerTeleportEvent event) {
+        playerPosTracking.remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
