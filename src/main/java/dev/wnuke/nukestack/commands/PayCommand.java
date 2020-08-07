@@ -40,14 +40,17 @@ public class PayCommand implements CommandExecutor {
                             UUID senderID = ((Player) sender).getUniqueId();
                             UUID receiverID = player.getUniqueId();
                             PlayerData sending = plugin.loadPlayerData(senderID);
-                            if (sending.getTokens() >= amount) {
+                            long sendingBal = sending.getTokens();
+                            if (sendingBal >= amount) {
                                 PlayerData receiving = plugin.loadPlayerData(senderID);
-                                receiving.addTokens(amount);
                                 sending.removeTokens(amount);
                                 plugin.savePlayerData(senderID, sending);
-                                plugin.savePlayerData(receiverID, receiving);
-                                player.sendMessage("You have received " + amount + " token(s) from " + sender.getName() + ".");
                                 sender.sendMessage("You have sent " + amount + " token(s) to " + player.getName() + ".");
+                                if (sending.getTokens() == sendingBal - amount) {
+                                    receiving.addTokens(amount);
+                                    plugin.savePlayerData(receiverID, receiving);
+                                    player.sendMessage("You have received " + amount + " token(s) from " + sender.getName() + ".");
+                                }
                                 return true;
                             }
                             sender.sendMessage("You do not have " + amount + " token(s).");
