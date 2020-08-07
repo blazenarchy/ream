@@ -185,7 +185,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
                                 player.teleport(lastPlayerPos);
                             }
                         }
-                        playerPosTracking.replace(playerID, playerPos);
+                        playerPosTracking.replace(playerID, player.getLocation());
                     } else {
                         playerPosTracking.put(playerID, playerPos);
                     }
