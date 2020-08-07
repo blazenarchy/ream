@@ -7,6 +7,17 @@ authors: [wnuke]
 description: A simple plugin for Minecraft Anarchy servers.
 website: https://wnuke.dev
 commands:
+  hat:
+    description: Command to put an item in your helmet slot.
+    permission: nukestack.hat
+  playertime:
+    description: Command to set your personal time.
+    permission: nukestack.playertime
+    aliases: [ptime, stime, selftime]
+  playerweather:
+    description: Command to set your personal weather.
+    permission: nukestack.playerwheather
+    aliases: [pwheather, swheather, selfwheather]
   suicide:
     description: Command to kill yourself ingame.
     permission: nukestack.suicide
@@ -44,6 +55,15 @@ commands:
     description: Command to duplicate items.
     permission: nukestack.dupe
 permissions:
+  nukestack.hat:
+    description: Allows the player to put an item in it's helmet armour slot.
+    default: true
+  nukestack.playertime:
+    description: Allows the player to choose what the time is for itself.
+    default: true
+  nukestack.playerweather:
+    description: Allows the player to choose what the weather is for itself.
+    default: true
   nukestack.suicide:
     description: Allows the player to kill itself.
     default: true

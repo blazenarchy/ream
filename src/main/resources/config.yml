@@ -10,11 +10,23 @@ suicideCost: 0
 tpaCost: 2
 # How much it costs for players to dupe
 dupeCost: 2
+# How much it costs for players to change their personal time
+playerTimeCost: 0
+# How much it costs for players to change their personal wheather
+playerWeatherCost: 0
+# How much it costs for players to set their hat item
+hatCost: 0
 # How much it costs for players to change their nick name
 nickCost: 0
 # Maximum speed players can travel (bps^2)/2
-maxSpeed: 160
-# Enable the nicks (requires server reload)
+maxSpeed: 140
+# Enable personal time (requires server reload)
+playertime: true
+# Enable personal wheather (requires server reload)
+playerweather: true
+# Enable hats (requires server reload)
+hat: true
+# Enable nicknames (requires server reload)
 nick: true
 # Enable the tpa (requires server reload)
 tpa: true
@@ -22,6 +34,8 @@ tpa: true
 dupe: true
 # Enable currency commands (requires server reload)
 currency: true
+# Enable the suicide command (requires server reload)
+suicide: true
 # Enable the anti speed
 antiSpeed: true
 # Delete illegals, does not affect scanDropped

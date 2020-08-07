@@ -33,23 +33,26 @@ import java.util.UUID;
  * @author wnuke
  */
 public final class NukeStack extends JavaPlugin implements Listener {
+    public static final HashSet<Material> DELETE = new HashSet<>();
     public static final HashSet<Material> NO_DUPE = new HashSet<>();
     public static final HashSet<Material> NO_STACK = new HashSet<>();
-    public static final HashSet<Material> DELETE = new HashSet<>();
     private static final Gson gson = new GsonBuilder().serializeNulls().create();
-    public static boolean deleteItems = true;
-    public static boolean unstackItems = true;
-    public static boolean deleteDroppedItems = true;
     public static boolean antiSpeed = true;
+    public static long checkInterval = 10;
     public static boolean currency = false;
-    public static String nickPrefix = ".";
-    public static long nickCost = 0;
+    public static boolean deleteDroppedItems = true;
+    public static boolean deleteItems = true;
     public static long dupeCost = 2;
+    public static long hatCost = 2;
+    public static long maxSpeed = 140;
+    public static long nickCost = 0;
+    public static String nickPrefix = ".";
+    public static long playerTimeCost = 0;
+    public static long playerWeatherCost = 2;
+    public static long startingMoney = 0;
     public static long suicideCost = 2;
     public static long tpaCost = 2;
-    public static long checkInterval = 10;
-    public static long maxSpeed = 160;
-    public static long startingMoney = 0;
+    public static boolean unstackItems = true;
     private final String playerDataFolder = getDataFolder() + "/player-data/";
     public HashMap<UUID, PlayerData> playerData;
     public HashMap<UUID, UUID> teleportRequests;
@@ -85,18 +88,27 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public void loadAndSetConfig() {
         reloadConfig();
         saveDefaultConfig();
-        deleteItems = getConfig().getBoolean("deleteIllegals");
-        unstackItems = getConfig().getBoolean("unstackOverstacked");
-        deleteDroppedItems = getConfig().getBoolean("deleteDroppedIllegals");
         antiSpeed = getConfig().getBoolean("antiSpeed");
-        nickPrefix = getConfig().getString("nickPrefix");
-        nickCost = getConfig().getLong("nickCost");
+        checkInterval = getConfig().getLong("checkInterval");
+        deleteDroppedItems = getConfig().getBoolean("deleteDroppedIllegals");
+        deleteItems = getConfig().getBoolean("deleteIllegals");
         dupeCost = getConfig().getLong("dupeCost");
+        hatCost = getConfig().getLong("hatCost");
+        maxSpeed = getConfig().getLong("maxSpeed");
+        nickCost = getConfig().getLong("nickCost");
+        nickPrefix = getConfig().getString("nickPrefix");
+        playerTimeCost = getConfig().getLong("playerTimeCost");
+        playerWeatherCost = getConfig().getLong("playerWeatherCost");
+        startingMoney = getConfig().getLong("startingMoney");
         suicideCost = getConfig().getLong("suicideCost");
         tpaCost = getConfig().getLong("tpaCost");
-        checkInterval = getConfig().getLong("checkInterval");
-        startingMoney = getConfig().getLong("startingMoney");
-        maxSpeed = getConfig().getLong("maxSpeed");
+        unstackItems = getConfig().getBoolean("unstackOverstacked");
+        for (String item : getConfig().getStringList("illegals")) {
+            Material material = Material.getMaterial(item);
+            if (material != null) {
+                DELETE.add(material);
+            }
+        }
         for (String item : getConfig().getStringList("noDupe")) {
             Material material = Material.getMaterial(item);
             if (material != null) {
@@ -109,12 +121,6 @@ public final class NukeStack extends JavaPlugin implements Listener {
                 NO_STACK.add(material);
             }
         }
-        for (String item : getConfig().getStringList("illegals")) {
-            Material material = Material.getMaterial(item);
-            if (material != null) {
-                DELETE.add(material);
-            }
-        }
     }
 
     @Override
@@ -123,6 +129,15 @@ public final class NukeStack extends JavaPlugin implements Listener {
         Objects.requireNonNull(this.getCommand("nsreload")).setExecutor(new ReloadCommand(this));
         if (getConfig().getBoolean("suicide")) {
             Objects.requireNonNull(this.getCommand("suicide")).setExecutor(new SuicideCommand(this));
+        }
+        if (getConfig().getBoolean("playertime")) {
+            Objects.requireNonNull(this.getCommand("playertime")).setExecutor(new PlayerTimeCommand(this));
+        }
+        if (getConfig().getBoolean("playerweather")) {
+            Objects.requireNonNull(this.getCommand("playerweather")).setExecutor(new PlayerWeatherCommand(this));
+        }
+        if (getConfig().getBoolean("hat")) {
+            Objects.requireNonNull(this.getCommand("hat")).setExecutor(new HatCommand(this));
         }
         if (getConfig().getBoolean("dupe")) {
             Objects.requireNonNull(this.getCommand("dupe")).setExecutor(new DupeCommand(this));
