@@ -47,7 +47,7 @@ public class TeleportYesCommand implements CommandExecutor {
                     }
                     sender.sendMessage("No player with name " + args[0] + " has requested to teleport to you.");
                 } else {
-                    sender.sendMessage("You need to specify who you want to deny.");
+                    sender.sendMessage("You need to specify who you want to accept.");
                 }
             } else {
                 return false;
