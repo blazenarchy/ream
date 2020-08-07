@@ -22,6 +22,10 @@ public class PayCommand implements CommandExecutor {
         if (args.length >= 2) {
             try {
                 int amount = Integer.parseInt(args[1]);
+                if (amount < 0) {
+                    sender.sendMessage("You cant send negative money.");
+                    return true;
+                }
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
                     if (player.getName().toLowerCase().equals(args[0].toLowerCase())) {
                         if (sender instanceof ConsoleCommandSender) {
