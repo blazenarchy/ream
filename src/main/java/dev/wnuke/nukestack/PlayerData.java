@@ -52,7 +52,7 @@ public class PlayerData {
         if (NukeStack.currency) {
             return tokens;
         } else {
-            return 9223372036854775807L; // if currency is disabled just act as though the player has the maximum to avoi problems with other commands
+            return 9223372036854775807L;
         }
     }
 

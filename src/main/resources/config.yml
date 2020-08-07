@@ -4,6 +4,8 @@ nickPrefix: "."
 startingMoney: 0
 # Interval between player inventory scans for illegal items (in ticks)
 scanTicks: 10
+# How much it costs for players to commit suicide
+suicideCost: 0
 # How much it costs for players to tpa
 tpaCost: 2
 # How much it costs for players to dupe
@@ -12,13 +14,13 @@ dupeCost: 2
 nickCost: 0
 # Maximum speed players can travel (bps^2)/2
 maxSpeed: 160
-# Enable the nicks (requires full server restart)
+# Enable the nicks (requires server reload)
 nick: true
-# Enable the tpa (requires full server restart)
+# Enable the tpa (requires server reload)
 tpa: true
-# Enable the dupe (requires full server restart)
+# Enable the dupe (requires server reload)
 dupe: true
-# Enable currency commands (requires full server restart)
+# Enable currency commands (requires server reload)
 currency: true
 # Enable the anti speed
 antiSpeed: true

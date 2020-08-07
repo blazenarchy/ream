@@ -41,10 +41,11 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public static boolean unstackItems = true;
     public static boolean deleteDroppedItems = true;
     public static boolean antiSpeed = true;
-    public static boolean currency;
+    public static boolean currency = false;
     public static String nickPrefix = ".";
     public static long nickCost = 0;
     public static long dupeCost = 2;
+    public static long suicideCost = 2;
     public static long tpaCost = 2;
     public static long checkInterval = 10;
     public static long maxSpeed = 160;
@@ -81,7 +82,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
             }
     }
 
-    public void loadConfig() {
+    public void loadAndSetConfig() {
         reloadConfig();
         saveDefaultConfig();
         deleteItems = getConfig().getBoolean("deleteIllegals");
@@ -91,6 +92,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
         nickPrefix = getConfig().getString("nickPrefix");
         nickCost = getConfig().getLong("nickCost");
         dupeCost = getConfig().getLong("dupeCost");
+        suicideCost = getConfig().getLong("suicideCost");
         tpaCost = getConfig().getLong("tpaCost");
         checkInterval = getConfig().getLong("checkInterval");
         startingMoney = getConfig().getLong("startingMoney");
@@ -117,12 +119,16 @@ public final class NukeStack extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        loadConfig();
+        loadAndSetConfig();
+        Objects.requireNonNull(this.getCommand("nsreload")).setExecutor(new ReloadCommand(this));
+        if (getConfig().getBoolean("suicide")) {
+            Objects.requireNonNull(this.getCommand("suicide")).setExecutor(new SuicideCommand(this));
+        }
         if (getConfig().getBoolean("dupe")) {
             Objects.requireNonNull(this.getCommand("dupe")).setExecutor(new DupeCommand(this));
         }
         if (getConfig().getBoolean("currency")) {
-            currency = false;
+            currency = true;
             Objects.requireNonNull(this.getCommand("balance")).setExecutor(new BalanceCommand(this));
             Objects.requireNonNull(this.getCommand("pay")).setExecutor(new PayCommand(this));
         }

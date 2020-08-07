@@ -7,6 +7,13 @@ authors: [wnuke]
 description: A simple plugin for Minecraft Anarchy servers.
 website: https://wnuke.dev
 commands:
+  suicide:
+    description: Command to kill yourself ingame.
+    permission: nukestack.suicide
+    aliases: [kms]
+  nsreload:
+    description: Command to reload the plugin's configuration.
+    permission: nukestack.reload
   nick:
     description: Command to change your nick name.
     permission: nukestack.nick
@@ -37,37 +44,42 @@ commands:
     description: Command to duplicate items.
     permission: nukestack.dupe
 permissions:
-  permissions:
-    nukestack.nick:
-      description: Allows the player change their nick name.
-      default: true
-    nukestack.tpcancel:
-      description: Allows the player to cancel a teleport request.
-      default: true
-    nukestack.tpask:
-      description: Allows the player to request to teleport to someone.
-      default: true
-    nukestack.tpaccept:
-      description: Allows the player to accept a teleport request.
-      default: true
-    nukestack.tpdeny:
-      description: Allows the player to deny a teleport request.
-      default: true
-    nukestack.pay:
-      description: Allows the player to send money to other players.
-      default: true
-    nukestack.balance:
-      description: Allows the player to check how many tokens they have.
-      default: true
-    nukestack.dupe:
-      description: Allows the player to duplicate items.
-      default: true
-    nukestack.cheat:
-      description: Allows the player to cheat.
-      default: false
-    nukestack.overstack:
-      description: Allows the player to have overstacked items.
-      default: false
-    nukestack.illegal:
-      description: Allows the player to have illegal iems.
-      default: false
+  nukestack.suicide:
+    description: Allows the player to kill itself.
+    default: true
+  nukestack.reload:
+    description: Allows the player to reload the plugin configuration.
+    default: op
+  nukestack.nick:
+    description: Allows the player change their nick name.
+    default: true
+  nukestack.tpcancel:
+    description: Allows the player to cancel a teleport request.
+    default: true
+  nukestack.tpask:
+    description: Allows the player to request to teleport to someone.
+    default: true
+  nukestack.tpaccept:
+    description: Allows the player to accept a teleport request.
+    default: true
+  nukestack.tpdeny:
+    description: Allows the player to deny a teleport request.
+    default: true
+  nukestack.pay:
+    description: Allows the player to send money to other players.
+    default: true
+  nukestack.balance:
+    description: Allows the player to check how many tokens they have.
+    default: true
+  nukestack.dupe:
+    description: Allows the player to duplicate items.
+    default: true
+  nukestack.cheat:
+    description: Allows the player to cheat.
+    default: op
+  nukestack.overstack:
+    description: Allows the player to have overstacked items.
+    default: op
+  nukestack.illegal:
+    description: Allows the player to have illegal iems.
+    default: op

@@ -25,13 +25,14 @@ public class TeleportAskCommand implements CommandExecutor {
                 return true;
             }
             if (plugin.teleportRequests.containsKey(playerID)) {
-                sender.sendMessage("Please wait for your current teleport request to expire or cancel it by running /tpc.");
+                sender.sendMessage("Please wait for your current teleport request to get accepted or cancel it by running /tpc.");
                 return true;
             }
             if (args.length > 0) {
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
                     if (player.getPlayerListName().equals(args[0])) {
                         plugin.teleportRequests.put(playerID, player.getUniqueId());
+                        player.sendMessage(sender.getName() + " has requested to teleport to you.");
                         return true;
                     }
                 }
