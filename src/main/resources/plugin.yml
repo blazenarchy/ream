@@ -56,6 +56,9 @@ permissions:
     nukestack.dupe:
       description: Allows the player to duplicate items.
       default: true
+    nukestack.cheat:
+      description: Allows the player to cheat.
+      default: false
     nukestack.overstack:
       description: Allows the player to have overstacked items.
       default: false
