@@ -17,7 +17,7 @@ commands:
   playerweather:
     description: Command to set your personal weather.
     permission: nukestack.playerwheather
-    aliases: [pwheather, swheather, selfwheather]
+    aliases: [pweather, sweather, selfweather]
   suicide:
     description: Command to kill yourself ingame.
     permission: nukestack.suicide
