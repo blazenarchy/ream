@@ -96,6 +96,9 @@ public class NickCommand implements CommandExecutor {
                 }
             } else {
                 player.setDisplayName(player.getName());
+                playerData.setNickName("");
+                plugin.savePlayerData(playerID, playerData);
+                sender.sendMessage("Your nick name has been removed.");
             }
         } else {
             sender.sendMessage("Consoles cannot nick themselves.");
