@@ -2,6 +2,7 @@ package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerData;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,8 +38,20 @@ public class NickCommand implements CommandExecutor {
         }
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             List<String> names = Arrays.asList(player.getCustomName(), player.getDisplayName(), player.getName(), player.getPlayerListName());
-            if (names.contains(noFormatNick)) {
-                return true;
+            for (String name : names) {
+                String noFormatName = unFormatNick(name);
+                if (noFormatName.contains(noFormatNick) || noFormatNick.contains(noFormatName)) {
+                    return true;
+                }
+            }
+        }
+        for (OfflinePlayer player : plugin.getServer().getOfflinePlayers()) {
+            String playerName = player.getName();
+            if (playerName != null) {
+                String noFormatName = unFormatNick(playerName);
+                if (noFormatName.contains(noFormatNick) || noFormatNick.contains(noFormatName)) {
+                    return true;
+                }
             }
         }
         return false;
