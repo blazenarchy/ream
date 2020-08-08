@@ -24,7 +24,7 @@ public class NickCommand implements CommandExecutor {
         if (nick != null && !nick.equals("")) {
             return nick.replaceAll("§([0-9]|[a-f]|r)", "").toLowerCase();
         } else {
-            return "";
+            return null;
         }
     }
 
@@ -44,8 +44,10 @@ public class NickCommand implements CommandExecutor {
             List<String> names = Arrays.asList(player.getCustomName(), player.getDisplayName(), player.getName(), player.getPlayerListName());
             for (String name : names) {
                 String noFormatName = unFormatNick(name);
-                if (noFormatName.contains(noFormatNick) || noFormatNick.contains(noFormatName)) {
-                    return true;
+                if (noFormatName != null) {
+                    if (noFormatName.contains(noFormatNick) || noFormatNick.contains(noFormatName)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -53,8 +55,10 @@ public class NickCommand implements CommandExecutor {
             String playerName = player.getName();
             if (playerName != null) {
                 String noFormatName = unFormatNick(playerName);
-                if (noFormatName.contains(noFormatNick) || noFormatNick.contains(noFormatName)) {
-                    return true;
+                if (noFormatName != null) {
+                    if (noFormatName.contains(noFormatNick) || noFormatNick.contains(noFormatName)) {
+                        return true;
+                    }
                 }
             }
         }
