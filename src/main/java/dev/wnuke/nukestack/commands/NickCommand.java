@@ -37,8 +37,11 @@ public class NickCommand implements CommandExecutor {
             }
         }
         for (PlayerData playerData : plugin.loadAllPlayerData()) {
-            if (unFormatNick(playerData.getNickName()).equals(noFormatNick)) {
-                return true;
+            String noFormatName = unFormatNick(playerData.getNickName());
+            if (noFormatName != null) {
+                if (noFormatName.equals(noFormatNick)) {
+                    return true;
+                }
             }
         }
         for (Player player : plugin.getServer().getOnlinePlayers()) {
