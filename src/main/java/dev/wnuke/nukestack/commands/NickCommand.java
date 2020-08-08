@@ -21,7 +21,11 @@ public class NickCommand implements CommandExecutor {
     }
 
     public static String unFormatNick(String nick) {
-        return nick.replaceAll("§([0-9]|[a-f]|r)", "").toLowerCase();
+        if (nick != null && !nick.equals("")) {
+            return nick.replaceAll("§([0-9]|[a-f]|r)", "").toLowerCase();
+        } else {
+            return "";
+        }
     }
 
     private boolean nickUsed(String nickToCheck) {
