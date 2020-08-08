@@ -19,10 +19,10 @@ public class PlayerData {
         if (this == o) return true;
         if (!(o instanceof PlayerData)) return false;
         PlayerData that = (PlayerData) o;
-        return getTokens() == that.getTokens() &&
-                getLifeTimeTPs() == that.getLifeTimeTPs() &&
-                getLifeTimeDupes() == that.getLifeTimeDupes() &&
-                getNickName().equals(that.getNickName());
+        return this.getTokens() == that.getTokens() &&
+                this.getLifeTimeTPs() == that.getLifeTimeTPs() &&
+                this.getLifeTimeDupes() == that.getLifeTimeDupes() &&
+                this.getNickName().equals(that.getNickName());
     }
 
     @Override
@@ -33,15 +33,15 @@ public class PlayerData {
     @Override
     public String toString() {
         return "PlayerData{" +
-                "tokens=" + tokens +
-                ", lifeTimeTPs=" + lifeTimeTPs +
-                ", lifeTimeDupes=" + lifeTimeDupes +
-                ", nickName='" + nickName + '\'' +
+                "tokens=" + this.tokens +
+                ", lifeTimeTPs=" + this.lifeTimeTPs +
+                ", lifeTimeDupes=" + this.lifeTimeDupes +
+                ", nickName='" + this.nickName + '\'' +
                 '}';
     }
 
     public String getNickName() {
-        return nickName;
+        return this.nickName;
     }
 
     public void setNickName(String nickName) {
@@ -50,7 +50,7 @@ public class PlayerData {
 
     public long getTokens() {
         if (NukeStack.currency) {
-            return tokens;
+            return this.tokens;
         } else {
             return 9223372036854775807L;
         }
@@ -61,7 +61,7 @@ public class PlayerData {
             if (amount < 0) {
                 amount *= -1;
             }
-            tokens += amount;
+            this.tokens += amount;
         }
     }
 
@@ -70,12 +70,12 @@ public class PlayerData {
             if (amount < 0) {
                 amount *= -1;
             }
-            tokens -= amount;
+            this.tokens -= amount;
         }
     }
 
     public long getLifeTimeTPs() {
-        return lifeTimeTPs;
+        return this.lifeTimeTPs;
     }
 
     public void increaseLifeTimeTPs() {
@@ -83,7 +83,7 @@ public class PlayerData {
     }
 
     public long getLifeTimeDupes() {
-        return lifeTimeDupes;
+        return this.lifeTimeDupes;
     }
 
     public void increaseLifeTimeDupes() {

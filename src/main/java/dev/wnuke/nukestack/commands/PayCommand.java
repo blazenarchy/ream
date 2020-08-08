@@ -35,7 +35,6 @@ public class PayCommand implements CommandExecutor {
                             plugin.savePlayerData(playerID, receiving);
                             player.sendMessage("You have received " + amount + " token(s) from Console.");
                             sender.sendMessage(player.getName() + " received " + amount + " token(s).");
-                            return true;
                         } else {
                             UUID senderID = ((Player) sender).getUniqueId();
                             PlayerData sending = plugin.loadPlayerData(senderID);
@@ -46,7 +45,7 @@ public class PayCommand implements CommandExecutor {
                                 sender.sendMessage("You have sent " + amount + " token(s) to " + player.getName() + ".");
                                 if (sending.getTokens() == sendingBal - amount) {
                                     UUID receiverID = player.getUniqueId();
-                                    PlayerData receiving = plugin.loadPlayerData(senderID);
+                                    PlayerData receiving = plugin.loadPlayerData(receiverID);
                                     receiving.addTokens(amount);
                                     plugin.savePlayerData(receiverID, receiving);
                                     player.sendMessage("You have received " + amount + " token(s) from " + sender.getName() + ".");
@@ -54,8 +53,8 @@ public class PayCommand implements CommandExecutor {
                                 return true;
                             }
                             sender.sendMessage("You do not have " + amount + " token(s).");
-                            return true;
                         }
+                        return true;
                     }
                 }
                 sender.sendMessage("No player with name \"" + args[0] + "\".");
