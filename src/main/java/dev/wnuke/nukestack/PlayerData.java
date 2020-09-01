@@ -52,7 +52,7 @@ public class PlayerData {
         if (NukeStack.currency) {
             return this.tokens;
         } else {
-            return 9223372036854775807L;
+            return Long.MAX_VALUE;
         }
     }
 

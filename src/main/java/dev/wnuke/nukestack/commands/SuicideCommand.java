@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.UUID;
 
@@ -28,7 +29,10 @@ public class SuicideCommand implements CommandExecutor {
                 player.sendMessage("You do not have enough tokens, you need at least " + NukeStack.suicideCost + ".");
                 return true;
             }
-            player.damage(9223372036854775807L);
+            EntityDamageEvent damageEvent = new EntityDamageEvent(player, EntityDamageEvent.DamageCause.SUICIDE, Float.MAX_VALUE);
+            plugin.getServer().getPluginManager().callEvent(damageEvent);
+            damageEvent.getEntity().setLastDamageCause(damageEvent);
+            player.setHealth(0);
             playerData.removeTokens(NukeStack.suicideCost);
             plugin.savePlayerData(playerID, playerData);
         } else {
