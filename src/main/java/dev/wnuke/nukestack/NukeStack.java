@@ -48,7 +48,6 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public static long tpaCost = 2;
     public static boolean unstackItems = true;
     public static boolean deleteOversizedItems = true;
-    public static String playerDataFolder = "/player-data/";
     public static HashMap<UUID, UUID> teleportRequests;
     public static HashMap<UUID, Location> playerPosTracking;
     private long ticksLeft = checkInterval;
@@ -100,7 +99,6 @@ public final class NukeStack extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        playerDataFolder = getDataFolder() + "/player-data/";
         UTILITIES = new GeneralUtilities(this);
         loadAndSetConfig();
         Objects.requireNonNull(this.getCommand("nsreload")).setExecutor(new ReloadCommand(this));

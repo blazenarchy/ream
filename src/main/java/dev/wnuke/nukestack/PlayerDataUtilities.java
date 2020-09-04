@@ -16,12 +16,13 @@ import java.util.UUID;
 
 public class PlayerDataUtilities {
     private static final Gson gson = new GsonBuilder().serializeNulls().create();
+    public static final String playerDataFolder = "plugins/nukestack/player-data/";
     public static HashMap<UUID, PlayerData> playerData;
 
     public static PlayerData loadExistingPlayerData(UUID player) {
         PlayerData loadedData = playerData.getOrDefault(player, null);
         if (loadedData != null) {
-            return playerData.get(player);
+            return loadedData;
         } else {
             return loadPlayerDataNoCreate(player);
         }
@@ -32,24 +33,25 @@ public class PlayerDataUtilities {
         if (loadedData == null) {
             loadedData = loadPlayerDataNoCache(player);
         }
+        loadedData.setUuidIfNull(player.getUniqueId());
         playerData.remove(player.getUniqueId());
         playerData.put(player.getUniqueId(), loadedData);
         return loadedData;
     }
 
     public static PlayerData loadPlayerDataNoCreate(UUID player) {
-        File playerDataFile = new File(NukeStack.playerDataFolder + player.toString() + ".json");
+        File playerDataFile = new File(playerDataFolder + player.toString() + ".json");
         playerDataFile.getParentFile().mkdirs();
         try {
-            return gson.fromJson(new FileReader(playerDataFile), new TypeToken<PlayerData>() {
-            }.getType());
+            return ((PlayerData) gson.fromJson(new FileReader(playerDataFile), new TypeToken<PlayerData>() {
+            }.getType())).setUuidIfNull(player);
         } catch (FileNotFoundException e) {
             return null;
         }
     }
 
     public static PlayerData loadPlayerDataNoCache(Player player) {
-        File playerDataFile = new File(NukeStack.playerDataFolder + player.getUniqueId().toString() + ".json");
+        File playerDataFile = new File(playerDataFolder + player.getUniqueId().toString() + ".json");
         playerDataFile.getParentFile().mkdirs();
         try {
             return gson.fromJson(new FileReader(playerDataFile), new TypeToken<PlayerData>() {
@@ -62,7 +64,7 @@ public class PlayerDataUtilities {
     public static void savePlayerData(PlayerData newPlayerData) {
         playerData.remove(newPlayerData.getUuid());
         playerData.putIfAbsent(newPlayerData.getUuid(), newPlayerData);
-        File playerDataFile = new File(NukeStack.playerDataFolder + newPlayerData.getUuid().toString() + ".json");
+        File playerDataFile = new File(playerDataFolder + newPlayerData.getUuid().toString() + ".json");
         playerDataFile.getParentFile().mkdirs();
         try {
             playerDataFile.createNewFile();
@@ -78,7 +80,7 @@ public class PlayerDataUtilities {
 
     public static HashSet<PlayerData> loadAllPlayerData() {
         HashSet<PlayerData> playerDataHashMap = new HashSet<>();
-        File playerDataDir = new File(NukeStack.playerDataFolder);
+        File playerDataDir = new File(playerDataFolder);
         if (playerDataDir.isDirectory() && playerDataDir.listFiles() != null) {
             for (File file : Objects.requireNonNull(playerDataDir.listFiles())) {
                 try {

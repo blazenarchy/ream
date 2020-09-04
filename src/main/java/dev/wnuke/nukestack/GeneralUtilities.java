@@ -1,6 +1,5 @@
 package dev.wnuke.nukestack;
 
-import org.apache.commons.lang.SerializationUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -19,41 +18,14 @@ public class GeneralUtilities {
         this.plugin = plugin;
     }
 
-    public void performLogout(Player player) {
-        PlayerDataUtilities.loadPlayerData(player).setLogoutLocation(LastLocation.fromLocation(player.getLocation())).save();
-    }
-
-    public void performLogin(Player player) {
-        if (NukeStack.deleteOversizedItems) {
-            cleanInventory(player.getInventory());
-        }
-        checkForIllegals(player.getInventory(), NukeStack.deleteItems, NukeStack.unstackItems, false, null, null);
-        this.hidePlayer(player);
-        player.teleport(PlayerDataUtilities.loadPlayerData(player).getLogoutLocation(plugin.getServer()));
-        this.unhidePlayer(player);
-    }
-
-    public static void cleanInventory(final Inventory inventory) {
+    public static void cleanInventory(Inventory inventory) {
         ItemStack[] inventoryContents = inventory.getContents();
-        if (SerializationUtils.serialize(inventoryContents).length > maxPacketSize) {
-            int maxItemSize = maxPacketSize / inventory.getSize();
-            for (ItemStack item : inventoryContents) {
-                if (item.serializeAsBytes().length > maxItemSize) {
-                    inventory.remove(item);
-                }
+        int maxItemSize = maxPacketSize / inventoryContents.length;
+        for (ItemStack item : inventoryContents) {
+            if (item == null) continue;
+            if (item.serializeAsBytes().length > maxItemSize) {
+                inventory.remove(item);
             }
-        }
-    }
-
-    public void hidePlayer(Player player) {
-        for (Player other : plugin.getServer().getOnlinePlayers()) {
-            other.hidePlayer(plugin, player);
-        }
-    }
-
-    public void unhidePlayer(Player player) {
-        for (Player other : plugin.getServer().getOnlinePlayers()) {
-            other.showPlayer(plugin, player);
         }
     }
 
@@ -85,6 +57,35 @@ public class GeneralUtilities {
                     }
                 }
             }
+        }
+    }
+
+    public void performLogout(Player player) {
+        PlayerDataUtilities.loadPlayerData(player).setLogoutLocation(LastLocation.fromLocation(player.getLocation())).save();
+    }
+
+    public void performLogin(Player player) {
+        if (NukeStack.deleteOversizedItems) {
+            cleanInventory(player.getInventory());
+        }
+        checkForIllegals(player.getInventory(), NukeStack.deleteItems, NukeStack.unstackItems, false, null, null);
+        this.hidePlayer(player);
+        Location logSpot = PlayerDataUtilities.loadPlayerData(player).getLogoutLocation(plugin.getServer());
+        if (logSpot != null) {
+            player.teleport(logSpot);
+        }
+        this.unhidePlayer(player);
+    }
+
+    public void hidePlayer(Player player) {
+        for (Player other : plugin.getServer().getOnlinePlayers()) {
+            other.hidePlayer(plugin, player);
+        }
+    }
+
+    public void unhidePlayer(Player player) {
+        for (Player other : plugin.getServer().getOnlinePlayers()) {
+            other.showPlayer(plugin, player);
         }
     }
 }

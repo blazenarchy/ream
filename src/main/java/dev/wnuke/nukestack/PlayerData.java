@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class PlayerData {
     @SerializedName("u")
-    private final UUID uuid;
+    private UUID uuid;
     @SerializedName("ts")
     private long tokens = NukeStack.startingMoney;
     @SerializedName("tt")
@@ -23,7 +23,7 @@ public class PlayerData {
     @SerializedName("ks")
     private long killStreak = 0;
     @SerializedName("ig")
-    private final ArrayList<UUID> ignored = new ArrayList<>();
+    private ArrayList<UUID> ignored = new ArrayList<>();
     @SerializedName("ll")
     private LastLocation lastLocation;
 
@@ -53,6 +53,11 @@ public class PlayerData {
     @Override
     public int hashCode() {
         return Objects.hash(uuid, getTokens(), getLifeTimeTPs(), getLifeTimeDupes(), getNickName(), killStreak, ignored, lastLocation);
+    }
+
+    public PlayerData setUuidIfNull(UUID uuid) {
+        this.uuid = uuid;
+        return this;
     }
 
     @Override
@@ -105,6 +110,7 @@ public class PlayerData {
     }
 
     public PlayerData toggleIgnore(UUID player) {
+        if (ignored == null) ignored = new ArrayList<>();
         if (ignored.contains(player)) ignored.remove(player);
         else ignored.add(player);
         return this;
@@ -126,6 +132,7 @@ public class PlayerData {
     }
 
     public Location getLogoutLocation(Server server) {
+        if (lastLocation == null) return null;
         return lastLocation.asLocation(server);
     }
 
