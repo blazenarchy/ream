@@ -32,6 +32,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public static boolean antiSpeed = true;
     public static long checkInterval = 10;
     public static boolean newPlayerMessage = true;
+    public static boolean ignore = true;
     public static boolean currency = false;
     public static boolean deleteDroppedItems = true;
     public static boolean deleteItems = true;
@@ -58,6 +59,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
         playerPosTracking = new HashMap<>();
         reloadConfig();
         saveDefaultConfig();
+        ignore = getConfig().getBoolean("ignore");
         antiSpeed = getConfig().getBoolean("antiSpeed");
         checkInterval = getConfig().getLong("checkInterval");
         deleteDroppedItems = getConfig().getBoolean("deleteDroppedIllegals");
@@ -102,6 +104,9 @@ public final class NukeStack extends JavaPlugin implements Listener {
         UTILITIES = new GeneralUtilities(this);
         loadAndSetConfig();
         Objects.requireNonNull(this.getCommand("nsreload")).setExecutor(new ReloadCommand(this));
+        if (ignore) {
+            Objects.requireNonNull(this.getCommand("ignore")).setExecutor(new IgnoreCommand(this));
+        }
         if (getConfig().getBoolean("suicide")) {
             Objects.requireNonNull(this.getCommand("suicide")).setExecutor(new SuicideCommand(this));
         }

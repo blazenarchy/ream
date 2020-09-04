@@ -7,6 +7,10 @@ authors: [wnuke]
 description: A simple plugin for Minecraft Anarchy servers.
 website: https://wnuke.dev
 commands:
+  ignore:
+    description: Ignore or unignore a player.
+    permission: nukestack.ignore
+    usage: ignore <player>
   hat:
     description: Put an item in your helmet slot.
     permission: nukestack.hat
@@ -69,6 +73,9 @@ commands:
     usage: Run the command while riding a donkey or a llama.
     permission: nukestack.dupe
 permissions:
+  nukestack.ignore:
+    description: Allows the player to ignore or unignore another player.
+    default: true
   nukestack.hat:
     description: Allows the player to put an item in it's helmet armour slot.
     default: true

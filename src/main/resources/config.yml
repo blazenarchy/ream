@@ -28,6 +28,8 @@ playertime: true
 playerweather: true
 # Enable hats (requires server reload)
 hat: true
+# Enable ignore command (requires server reload)
+ignore: true
 # Enable nicknames (requires server reload)
 nick: true
 # Enable the tpa (requires server reload)
