@@ -1,6 +1,7 @@
-package dev.wnuke.nukestack;
+package dev.wnuke.nukestack.player;
 
 import com.google.gson.annotations.SerializedName;
+import dev.wnuke.nukestack.NukeStack;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -27,6 +28,8 @@ public class PlayerData {
     private ArrayList<UUID> ignored = new ArrayList<>();
     @SerializedName("ll")
     private LastLocation lastLocation;
+    @SerializedName("g")
+    private String group = "default";
 
     public PlayerData(OfflinePlayer player) {
         this.uuid = player.getUniqueId();

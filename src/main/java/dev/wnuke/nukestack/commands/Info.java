@@ -1,8 +1,8 @@
 package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
-import dev.wnuke.nukestack.PlayerData;
-import dev.wnuke.nukestack.PlayerDataUtilities;
+import dev.wnuke.nukestack.player.PlayerData;
+import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
@@ -16,10 +16,10 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.UUID;
 
-public class InfoCommand implements CommandExecutor {
+public class Info implements CommandExecutor {
     NukeStack plugin;
 
-    public InfoCommand(NukeStack plugin) {
+    public Info(NukeStack plugin) {
         this.plugin = plugin;
     }
 

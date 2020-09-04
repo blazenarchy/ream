@@ -1,8 +1,8 @@
 package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
-import dev.wnuke.nukestack.PlayerData;
-import dev.wnuke.nukestack.PlayerDataUtilities;
+import dev.wnuke.nukestack.player.PlayerData;
+import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,10 +12,10 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class TeleportYesCommand implements CommandExecutor {
+public class TeleportYes implements CommandExecutor {
     NukeStack plugin;
 
-    public TeleportYesCommand(NukeStack plugin) {
+    public TeleportYes(NukeStack plugin) {
         this.plugin = plugin;
     }
 

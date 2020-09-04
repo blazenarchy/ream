@@ -1,17 +1,17 @@
 package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
-import dev.wnuke.nukestack.PlayerDataUtilities;
+import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-public class BalanceCommand implements CommandExecutor {
+public class Balance implements CommandExecutor {
     NukeStack plugin;
 
-    public BalanceCommand(NukeStack plugin) {
+    public Balance(NukeStack plugin) {
         this.plugin = plugin;
     }
 

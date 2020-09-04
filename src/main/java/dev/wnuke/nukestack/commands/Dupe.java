@@ -2,8 +2,8 @@ package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.GeneralUtilities;
 import dev.wnuke.nukestack.NukeStack;
-import dev.wnuke.nukestack.PlayerData;
-import dev.wnuke.nukestack.PlayerDataUtilities;
+import dev.wnuke.nukestack.player.PlayerData;
+import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,10 +14,10 @@ import org.bukkit.entity.Llama;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-public class DupeCommand implements CommandExecutor {
+public class Dupe implements CommandExecutor {
     NukeStack plugin;
 
-    public DupeCommand(NukeStack plugin) {
+    public Dupe(NukeStack plugin) {
         this.plugin = plugin;
     }
 

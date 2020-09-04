@@ -2,6 +2,8 @@ package dev.wnuke.nukestack;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import dev.wnuke.nukestack.commands.*;
+import dev.wnuke.nukestack.player.PlayerData;
+import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.*;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -103,46 +105,46 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public void onEnable() {
         UTILITIES = new GeneralUtilities(this);
         loadAndSetConfig();
-        Objects.requireNonNull(this.getCommand("nsreload")).setExecutor(new ReloadCommand(this));
+        Objects.requireNonNull(this.getCommand("nsreload")).setExecutor(new Reload(this));
         if (ignore) {
-            Objects.requireNonNull(this.getCommand("ignore")).setExecutor(new IgnoreCommand(this));
+            Objects.requireNonNull(this.getCommand("ignore")).setExecutor(new Ignore(this));
         }
         if (getConfig().getBoolean("messaging")) {
-            Objects.requireNonNull(this.getCommand("message")).setExecutor(new MessageCommand(this));
-            Objects.requireNonNull(this.getCommand("reply")).setExecutor(new ReplyCommand(this));
+            Objects.requireNonNull(this.getCommand("message")).setExecutor(new Message(this));
+            Objects.requireNonNull(this.getCommand("reply")).setExecutor(new Reply(this));
         }
         if (getConfig().getBoolean("info")) {
-            Objects.requireNonNull(this.getCommand("info")).setExecutor(new InfoCommand(this));
+            Objects.requireNonNull(this.getCommand("info")).setExecutor(new Info(this));
         }
         if (getConfig().getBoolean("suicide")) {
-            Objects.requireNonNull(this.getCommand("suicide")).setExecutor(new SuicideCommand(this));
+            Objects.requireNonNull(this.getCommand("suicide")).setExecutor(new Suicide(this));
         }
         if (getConfig().getBoolean("playertime")) {
-            Objects.requireNonNull(this.getCommand("playertime")).setExecutor(new PlayerTimeCommand(this));
+            Objects.requireNonNull(this.getCommand("playertime")).setExecutor(new PlayerTime(this));
         }
         if (getConfig().getBoolean("playerweather")) {
-            Objects.requireNonNull(this.getCommand("playerweather")).setExecutor(new PlayerWeatherCommand(this));
+            Objects.requireNonNull(this.getCommand("playerweather")).setExecutor(new PlayerWeather(this));
         }
         if (getConfig().getBoolean("hat")) {
-            Objects.requireNonNull(this.getCommand("hat")).setExecutor(new HatCommand(this));
+            Objects.requireNonNull(this.getCommand("hat")).setExecutor(new Hat(this));
         }
         if (getConfig().getBoolean("dupe")) {
-            Objects.requireNonNull(this.getCommand("dupe")).setExecutor(new DupeCommand(this));
+            Objects.requireNonNull(this.getCommand("dupe")).setExecutor(new Dupe(this));
         }
         if (getConfig().getBoolean("currency")) {
             currency = true;
-            Objects.requireNonNull(this.getCommand("balance")).setExecutor(new BalanceCommand(this));
-            Objects.requireNonNull(this.getCommand("pay")).setExecutor(new PayCommand(this));
+            Objects.requireNonNull(this.getCommand("balance")).setExecutor(new Balance(this));
+            Objects.requireNonNull(this.getCommand("pay")).setExecutor(new Pay(this));
         }
         if (getConfig().getBoolean("tpa")) {
-            Objects.requireNonNull(this.getCommand("tpask")).setExecutor(new TeleportAskCommand(this));
-            Objects.requireNonNull(this.getCommand("tpcancel")).setExecutor(new TeleportCancelCommand(this));
-            Objects.requireNonNull(this.getCommand("tpdeny")).setExecutor(new TeleportNoCommand(this));
-            Objects.requireNonNull(this.getCommand("tpaccept")).setExecutor(new TeleportYesCommand(this));
+            Objects.requireNonNull(this.getCommand("tpask")).setExecutor(new TeleportAsk(this));
+            Objects.requireNonNull(this.getCommand("tpcancel")).setExecutor(new TeleportCancel(this));
+            Objects.requireNonNull(this.getCommand("tpdeny")).setExecutor(new TeleportNo(this));
+            Objects.requireNonNull(this.getCommand("tpaccept")).setExecutor(new TeleportYes(this));
         }
         if (getConfig().getBoolean("nick")) {
-            Objects.requireNonNull(this.getCommand("nick")).setExecutor(new NickCommand(this));
-            Objects.requireNonNull(this.getCommand("realname")).setExecutor(new RealNameCommand(this));
+            Objects.requireNonNull(this.getCommand("nick")).setExecutor(new Nick(this));
+            Objects.requireNonNull(this.getCommand("realname")).setExecutor(new RealName(this));
         }
         getServer().getPluginManager().registerEvents(this, this);
         PlayerDataUtilities.loadAllPlayerData();

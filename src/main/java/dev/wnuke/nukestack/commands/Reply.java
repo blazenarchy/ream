@@ -10,10 +10,10 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class ReplyCommand implements CommandExecutor {
+public class Reply implements CommandExecutor {
     NukeStack plugin;
 
-    public ReplyCommand(NukeStack plugin) {
+    public Reply(NukeStack plugin) {
         this.plugin = plugin;
     }
 

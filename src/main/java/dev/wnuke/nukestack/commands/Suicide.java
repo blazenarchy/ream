@@ -2,9 +2,8 @@ package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.GeneralUtilities;
 import dev.wnuke.nukestack.NukeStack;
-import dev.wnuke.nukestack.PlayerData;
-import dev.wnuke.nukestack.PlayerDataUtilities;
-import org.bukkit.ChatColor;
+import dev.wnuke.nukestack.player.PlayerData;
+import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,12 +11,10 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.util.UUID;
-
-public class SuicideCommand implements CommandExecutor {
+public class Suicide implements CommandExecutor {
     NukeStack plugin;
 
-    public SuicideCommand(NukeStack plugin) {
+    public Suicide(NukeStack plugin) {
         this.plugin = plugin;
     }
 

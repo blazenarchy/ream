@@ -1,4 +1,4 @@
-package dev.wnuke.nukestack;
+package dev.wnuke.nukestack.player;
 
 
 import com.google.gson.annotations.SerializedName;

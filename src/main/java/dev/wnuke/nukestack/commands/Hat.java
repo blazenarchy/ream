@@ -2,8 +2,8 @@ package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.GeneralUtilities;
 import dev.wnuke.nukestack.NukeStack;
-import dev.wnuke.nukestack.PlayerData;
-import dev.wnuke.nukestack.PlayerDataUtilities;
+import dev.wnuke.nukestack.player.PlayerData;
+import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,12 +12,10 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.UUID;
-
-public class HatCommand implements CommandExecutor {
+public class Hat implements CommandExecutor {
     NukeStack plugin;
 
-    public HatCommand(NukeStack plugin) {
+    public Hat(NukeStack plugin) {
         this.plugin = plugin;
     }
 

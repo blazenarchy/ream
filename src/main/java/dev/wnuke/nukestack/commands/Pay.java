@@ -1,8 +1,8 @@
 package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
-import dev.wnuke.nukestack.PlayerData;
-import dev.wnuke.nukestack.PlayerDataUtilities;
+import dev.wnuke.nukestack.player.PlayerData;
+import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,12 +10,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
-
-public class PayCommand implements CommandExecutor {
+public class Pay implements CommandExecutor {
     NukeStack plugin;
 
-    public PayCommand(NukeStack plugin) {
+    public Pay(NukeStack plugin) {
         this.plugin = plugin;
     }
 

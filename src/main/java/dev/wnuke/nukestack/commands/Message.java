@@ -10,10 +10,10 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-public class MessageCommand implements CommandExecutor {
+public class Message implements CommandExecutor {
     NukeStack plugin;
 
-    public MessageCommand(NukeStack plugin) {
+    public Message(NukeStack plugin) {
         this.plugin = plugin;
     }
 

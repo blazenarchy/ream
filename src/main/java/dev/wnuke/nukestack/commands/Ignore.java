@@ -1,7 +1,7 @@
 package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
-import dev.wnuke.nukestack.PlayerDataUtilities;
+import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,10 +10,10 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class IgnoreCommand implements CommandExecutor {
+public class Ignore implements CommandExecutor {
     NukeStack plugin;
 
-    public IgnoreCommand(NukeStack plugin) {
+    public Ignore(NukeStack plugin) {
         this.plugin = plugin;
     }
 

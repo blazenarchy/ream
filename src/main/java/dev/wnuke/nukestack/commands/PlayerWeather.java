@@ -2,8 +2,8 @@ package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.GeneralUtilities;
 import dev.wnuke.nukestack.NukeStack;
-import dev.wnuke.nukestack.PlayerData;
-import dev.wnuke.nukestack.PlayerDataUtilities;
+import dev.wnuke.nukestack.player.PlayerData;
+import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.WeatherType;
 import org.bukkit.command.Command;
@@ -12,12 +12,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
-
-public class PlayerWeatherCommand implements CommandExecutor {
+public class PlayerWeather implements CommandExecutor {
     NukeStack plugin;
 
-    public PlayerWeatherCommand(NukeStack plugin) {
+    public PlayerWeather(NukeStack plugin) {
         this.plugin = plugin;
     }
 

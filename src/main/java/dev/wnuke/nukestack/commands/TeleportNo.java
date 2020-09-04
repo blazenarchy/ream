@@ -8,10 +8,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-public class TeleportNoCommand implements CommandExecutor {
+public class TeleportNo implements CommandExecutor {
     NukeStack plugin;
 
-    public TeleportNoCommand(NukeStack plugin) {
+    public TeleportNo(NukeStack plugin) {
         this.plugin = plugin;
     }
 
