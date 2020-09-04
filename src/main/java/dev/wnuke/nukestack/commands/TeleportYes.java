@@ -1,5 +1,6 @@
 package dev.wnuke.nukestack.commands;
 
+import dev.wnuke.nukestack.GeneralUtilities;
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.player.PlayerData;
 import dev.wnuke.nukestack.player.PlayerDataUtilities;
@@ -13,17 +14,11 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class TeleportYes implements CommandExecutor {
-    NukeStack plugin;
-
-    public TeleportYes(NukeStack plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
             if (args.length > 0) {
-                for (Player player : plugin.getServer().getOnlinePlayers()) {
+                for (Player player : NukeStack.PLUGIN.getServer().getOnlinePlayers()) {
                     if (player.getPlayerListName().equals(args[0])) {
                         if (NukeStack.teleportRequests.get(player.getUniqueId()) == ((Player) sender).getUniqueId()) {
                             UUID playerID = player.getUniqueId();
@@ -37,13 +32,13 @@ public class TeleportYes implements CommandExecutor {
                             }
                             player.sendMessage(ChatColor.GREEN + "Teleport request accepted, teleporting...");
                             sender.sendMessage(ChatColor.GREEN + "Teleporting...");
-                            NukeStack.UTILITIES.hidePlayer(player);
+                            GeneralUtilities.hidePlayer(player);
                             NukeStack.playerPosTracking.remove(playerID);
                             Player sendingPlayer = ((Player) sender).getPlayer();
                             if (sendingPlayer == null) return false;
                             player.teleport(sendingPlayer);
                             NukeStack.playerPosTracking.remove(playerID);
-                            NukeStack.UTILITIES.unhidePlayer(player);
+                            GeneralUtilities.unhidePlayer(player);
                             playerData.increaseLifeTimeTPs().removeTokens(NukeStack.tpaCost).save();
                             return true;
                         }

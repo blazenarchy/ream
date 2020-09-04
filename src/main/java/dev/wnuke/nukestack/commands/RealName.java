@@ -12,16 +12,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RealName implements CommandExecutor {
-    NukeStack plugin;
-
-    public RealName(NukeStack plugin) {
-        this.plugin = plugin;
-    }
-
     private HashMap<String, String> getRealNames() {
         HashMap<String, String> nickNames = new HashMap<>();
         String playerNick;
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
+        for (Player player : NukeStack.PLUGIN.getServer().getOnlinePlayers()) {
             playerNick = PlayerDataUtilities.loadPlayerData(player).getNickName();
             if (!playerNick.isEmpty()) {
                 nickNames.put(playerNick, player.getName());

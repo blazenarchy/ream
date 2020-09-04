@@ -12,12 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 public class Suicide implements CommandExecutor {
-    NukeStack plugin;
-
-    public Suicide(NukeStack plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
@@ -29,7 +23,7 @@ public class Suicide implements CommandExecutor {
                 return true;
             }
             EntityDamageEvent damageEvent = new EntityDamageEvent(player, EntityDamageEvent.DamageCause.SUICIDE, Float.MAX_VALUE);
-            plugin.getServer().getPluginManager().callEvent(damageEvent);
+            NukeStack.PLUGIN.getServer().getPluginManager().callEvent(damageEvent);
             damageEvent.getEntity().setLastDamageCause(damageEvent);
             player.setHealth(0);
             playerData.removeTokens(NukeStack.suicideCost).save();

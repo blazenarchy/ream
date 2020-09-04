@@ -9,17 +9,11 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class TeleportNo implements CommandExecutor {
-    NukeStack plugin;
-
-    public TeleportNo(NukeStack plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
             if (args.length > 0) {
-                for (Player player : plugin.getServer().getOnlinePlayers()) {
+                for (Player player : NukeStack.PLUGIN.getServer().getOnlinePlayers()) {
                     if (player.getPlayerListName().equals(args[0])) {
                         if (NukeStack.teleportRequests.get(player.getUniqueId()) == ((Player) sender).getUniqueId()) {
                             player.sendMessage(ChatColor.RED + "Teleport denied.");

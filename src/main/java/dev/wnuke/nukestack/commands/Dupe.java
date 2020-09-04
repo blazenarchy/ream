@@ -15,12 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 public class Dupe implements CommandExecutor {
-    NukeStack plugin;
-
-    public Dupe(NukeStack plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {

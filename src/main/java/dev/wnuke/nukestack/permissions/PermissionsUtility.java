@@ -2,18 +2,13 @@ package dev.wnuke.nukestack.permissions;
 
 import com.google.gson.reflect.TypeToken;
 import dev.wnuke.nukestack.NukeStack;
-import dev.wnuke.nukestack.player.PlayerData;
-import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class PermissionsUtility {

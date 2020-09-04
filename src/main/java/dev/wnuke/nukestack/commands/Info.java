@@ -17,18 +17,12 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 public class Info implements CommandExecutor {
-    NukeStack plugin;
-
-    public Info(NukeStack plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 0) {
-            UUID playerID = plugin.getServer().getPlayerUniqueId(args[0]);
+            UUID playerID = NukeStack.PLUGIN.getServer().getPlayerUniqueId(args[0]);
             if (playerID != null) {
-                OfflinePlayer player = plugin.getServer().getOfflinePlayer(playerID);
+                OfflinePlayer player = NukeStack.PLUGIN.getServer().getOfflinePlayer(playerID);
                 int kills = player.getStatistic(Statistic.PLAYER_KILLS);
                 int deaths = player.getStatistic(Statistic.DEATHS);
                 float killDeathRatio = 0;

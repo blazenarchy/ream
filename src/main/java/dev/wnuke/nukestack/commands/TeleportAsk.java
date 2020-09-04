@@ -13,12 +13,6 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class TeleportAsk implements CommandExecutor {
-    NukeStack plugin;
-
-    public TeleportAsk(NukeStack plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
@@ -34,7 +28,7 @@ public class TeleportAsk implements CommandExecutor {
                 return true;
             }
             if (args.length > 0) {
-                for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+                for (Player onlinePlayer : NukeStack.PLUGIN.getServer().getOnlinePlayers()) {
                     if (onlinePlayer.getPlayerListName().equals(args[0])) {
                         NukeStack.teleportRequests.put(playerID, onlinePlayer.getUniqueId());
                         sender.sendMessage(ChatColor.DARK_GREEN + "Teleport request sent, to cancel type /tpc");

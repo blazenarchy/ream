@@ -4,7 +4,6 @@ import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.wnuke.nukestack.commands.*;
-import dev.wnuke.nukestack.permissions.PermissionsUtility;
 import dev.wnuke.nukestack.player.PlayerData;
 import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.ChatColor;
@@ -35,14 +34,12 @@ import java.util.UUID;
  * @author wnuke
  */
 public final class NukeStack extends JavaPlugin implements Listener {
-    public static JavaPlugin PLUGIN;
+    public static NukeStack PLUGIN;
     public static final HashSet<String> BLOCKED_NICK = new HashSet<>();
     public static final HashSet<Material> DELETE = new HashSet<>();
     public static final HashSet<Material> NO_DUPE = new HashSet<>();
     public static final HashSet<Material> NO_STACK = new HashSet<>();
     public static final Gson gson = new GsonBuilder().serializeNulls().create();
-    public static PermissionsUtility PERMISSIONS;
-    public static GeneralUtilities UTILITIES;
     public static boolean antiSpeed = true;
     public static long checkInterval = 10;
     public static boolean newPlayerMessage = true;
@@ -116,49 +113,47 @@ public final class NukeStack extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         PLUGIN = this;
-        UTILITIES = new GeneralUtilities(this);
-        PERMISSIONS = new PermissionsUtility(this);
         loadAndSetConfig();
-        Objects.requireNonNull(this.getCommand("nsreload")).setExecutor(new Reload(this));
+        Objects.requireNonNull(this.getCommand("nsreload")).setExecutor(new Reload());
         if (ignore) {
-            Objects.requireNonNull(this.getCommand("ignore")).setExecutor(new Ignore(this));
+            Objects.requireNonNull(this.getCommand("ignore")).setExecutor(new Ignore());
         }
         if (getConfig().getBoolean("messaging")) {
-            Objects.requireNonNull(this.getCommand("message")).setExecutor(new Message(this));
-            Objects.requireNonNull(this.getCommand("reply")).setExecutor(new Reply(this));
+            Objects.requireNonNull(this.getCommand("message")).setExecutor(new Message());
+            Objects.requireNonNull(this.getCommand("reply")).setExecutor(new Reply());
         }
         if (getConfig().getBoolean("info")) {
-            Objects.requireNonNull(this.getCommand("info")).setExecutor(new Info(this));
+            Objects.requireNonNull(this.getCommand("info")).setExecutor(new Info());
         }
         if (getConfig().getBoolean("suicide")) {
-            Objects.requireNonNull(this.getCommand("suicide")).setExecutor(new Suicide(this));
+            Objects.requireNonNull(this.getCommand("suicide")).setExecutor(new Suicide());
         }
         if (getConfig().getBoolean("playertime")) {
-            Objects.requireNonNull(this.getCommand("playertime")).setExecutor(new PlayerTime(this));
+            Objects.requireNonNull(this.getCommand("playertime")).setExecutor(new PlayerTime());
         }
         if (getConfig().getBoolean("playerweather")) {
-            Objects.requireNonNull(this.getCommand("playerweather")).setExecutor(new PlayerWeather(this));
+            Objects.requireNonNull(this.getCommand("playerweather")).setExecutor(new PlayerWeather());
         }
         if (getConfig().getBoolean("hat")) {
-            Objects.requireNonNull(this.getCommand("hat")).setExecutor(new Hat(this));
+            Objects.requireNonNull(this.getCommand("hat")).setExecutor(new Hat());
         }
         if (getConfig().getBoolean("dupe")) {
-            Objects.requireNonNull(this.getCommand("dupe")).setExecutor(new Dupe(this));
+            Objects.requireNonNull(this.getCommand("dupe")).setExecutor(new Dupe());
         }
         if (getConfig().getBoolean("currency")) {
             currency = true;
-            Objects.requireNonNull(this.getCommand("balance")).setExecutor(new Balance(this));
-            Objects.requireNonNull(this.getCommand("pay")).setExecutor(new Pay(this));
+            Objects.requireNonNull(this.getCommand("balance")).setExecutor(new Balance());
+            Objects.requireNonNull(this.getCommand("pay")).setExecutor(new Pay());
         }
         if (getConfig().getBoolean("tpa")) {
-            Objects.requireNonNull(this.getCommand("tpask")).setExecutor(new TeleportAsk(this));
-            Objects.requireNonNull(this.getCommand("tpcancel")).setExecutor(new TeleportCancel(this));
-            Objects.requireNonNull(this.getCommand("tpdeny")).setExecutor(new TeleportNo(this));
-            Objects.requireNonNull(this.getCommand("tpaccept")).setExecutor(new TeleportYes(this));
+            Objects.requireNonNull(this.getCommand("tpask")).setExecutor(new TeleportAsk());
+            Objects.requireNonNull(this.getCommand("tpcancel")).setExecutor(new TeleportCancel());
+            Objects.requireNonNull(this.getCommand("tpdeny")).setExecutor(new TeleportNo());
+            Objects.requireNonNull(this.getCommand("tpaccept")).setExecutor(new TeleportYes());
         }
         if (getConfig().getBoolean("nick")) {
-            Objects.requireNonNull(this.getCommand("nick")).setExecutor(new Nick(this));
-            Objects.requireNonNull(this.getCommand("realname")).setExecutor(new RealName(this));
+            Objects.requireNonNull(this.getCommand("nick")).setExecutor(new Nick());
+            Objects.requireNonNull(this.getCommand("realname")).setExecutor(new RealName());
         }
         getServer().getPluginManager().registerEvents(this, this);
         PlayerDataUtilities.loadAllPlayerData();
@@ -208,12 +203,12 @@ public final class NukeStack extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        UTILITIES.performLogin(event.getPlayer());
+        GeneralUtilities.performLogin(event.getPlayer());
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
-        UTILITIES.performLogout(event.getPlayer());
+        GeneralUtilities.performLogout(event.getPlayer());
     }
 
     @EventHandler

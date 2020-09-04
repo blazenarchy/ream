@@ -87,7 +87,7 @@ public class GeneralUtilities {
         }
         checkForIllegals(player.getInventory(), NukeStack.deleteItems, NukeStack.unstackItems, false, null, null);
         hidePlayer(player);
-        Location logSpot = PlayerDataUtilities.loadPlayerData(player).getLogoutLocation(NukeStack.PLUGIN.getServer());
+        Location logSpot = PlayerDataUtilities.loadPlayerData(player).loadPermissions().getLogoutLocation(NukeStack.PLUGIN.getServer());
         if (logSpot != null) {
             player.teleport(logSpot);
         }

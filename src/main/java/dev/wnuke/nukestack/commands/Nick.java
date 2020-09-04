@@ -16,12 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Nick implements CommandExecutor {
-    NukeStack plugin;
-
-    public Nick(NukeStack plugin) {
-        this.plugin = plugin;
-    }
-
     public static String unFormatNick(String nick) {
         if (nick != null) {
             if (!nick.equals("")) {
@@ -46,7 +40,7 @@ public class Nick implements CommandExecutor {
                 }
             }
         }
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
+        for (Player player : NukeStack.PLUGIN.getServer().getOnlinePlayers()) {
             List<String> names = Arrays.asList(player.getCustomName(), player.getDisplayName(), player.getName(), player.getPlayerListName());
             for (String name : names) {
                 String noFormatName = unFormatNick(name);
@@ -57,7 +51,7 @@ public class Nick implements CommandExecutor {
                 }
             }
         }
-        for (OfflinePlayer player : plugin.getServer().getOfflinePlayers()) {
+        for (OfflinePlayer player : NukeStack.PLUGIN.getServer().getOfflinePlayers()) {
             String playerName = player.getName();
             if (playerName != null) {
                 String noFormatName = unFormatNick(playerName);

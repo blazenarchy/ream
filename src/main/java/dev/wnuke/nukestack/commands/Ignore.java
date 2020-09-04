@@ -11,18 +11,12 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class Ignore implements CommandExecutor {
-    NukeStack plugin;
-
-    public Ignore(NukeStack plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 0) {
             Player player = ((Player) sender).getPlayer();
             if (player == null) return false;
-            UUID uuidToIgnore = plugin.getServer().getPlayerUniqueId(args[0]);
+            UUID uuidToIgnore = NukeStack.PLUGIN.getServer().getPlayerUniqueId(args[0]);
             if (uuidToIgnore == null) {
                 sender.sendMessage(ChatColor.RED + "No player with name " + args[0] + ".");
             } else {

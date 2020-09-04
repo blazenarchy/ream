@@ -11,12 +11,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class Pay implements CommandExecutor {
-    NukeStack plugin;
-
-    public Pay(NukeStack plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length >= 2) {
@@ -26,7 +20,7 @@ public class Pay implements CommandExecutor {
                     sender.sendMessage("You cant send negative money.");
                     return true;
                 }
-                for (Player player : plugin.getServer().getOnlinePlayers()) {
+                for (Player player : NukeStack.PLUGIN.getServer().getOnlinePlayers()) {
                     if (player.getName().toLowerCase().equals(args[0].toLowerCase())) {
                         if (sender instanceof ConsoleCommandSender) {
                             PlayerData receiving = PlayerDataUtilities.loadPlayerData(player);
