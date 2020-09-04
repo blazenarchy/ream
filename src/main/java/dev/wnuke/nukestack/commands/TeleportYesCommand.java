@@ -2,6 +2,7 @@ package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerData;
+import dev.wnuke.nukestack.PlayerDataUtilities;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,10 +24,10 @@ public class TeleportYesCommand implements CommandExecutor {
             if (args.length > 0) {
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
                     if (player.getPlayerListName().equals(args[0])) {
-                        if (plugin.teleportRequests.get(player.getUniqueId()) == ((Player) sender).getUniqueId()) {
+                        if (NukeStack.teleportRequests.get(player.getUniqueId()) == ((Player) sender).getUniqueId()) {
                             UUID playerID = player.getUniqueId();
-                            plugin.teleportRequests.remove(playerID);
-                            PlayerData playerData = plugin.loadPlayerData(playerID);
+                            NukeStack.teleportRequests.remove(playerID);
+                            PlayerData playerData = PlayerDataUtilities.loadPlayerData(playerID);
                             long tokens = playerData.getTokens();
                             if (tokens < NukeStack.tpaCost) {
                                 player.sendMessage("Teleport cancelled, you no longer have enough tokens.");
@@ -35,12 +36,10 @@ public class TeleportYesCommand implements CommandExecutor {
                             }
                             player.sendMessage("Teleport request accepted, teleporting...");
                             sender.sendMessage("Teleporting...");
-                            for (Player other : plugin.getServer().getOnlinePlayers()) {
-                                other.hidePlayer(plugin, player);
-                            }
-                            plugin.playerPosTracking.remove(playerID);
+                            NukeStack.UTILITIES.hidePlayer(player);
+                            NukeStack.playerPosTracking.remove(playerID);
                             player.teleport((Player) sender);
-                            plugin.playerPosTracking.remove(playerID);
+                            NukeStack.playerPosTracking.remove(playerID);
                             for (Player other : plugin.getServer().getOnlinePlayers()) {
                                 other.showPlayer(plugin, player);
                             }

@@ -2,6 +2,7 @@ package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerData;
+import dev.wnuke.nukestack.PlayerDataUtilities;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -36,7 +37,7 @@ public class NickCommand implements CommandExecutor {
                 return true;
             }
         }
-        for (PlayerData playerData : plugin.loadAllPlayerData()) {
+        for (PlayerData playerData : PlayerDataUtilities.loadAllPlayerData()) {
             String noFormatName = unFormatNick(playerData.getNickName());
             if (noFormatName != null) {
                 if (noFormatName.equals(noFormatNick)) {
@@ -78,7 +79,7 @@ public class NickCommand implements CommandExecutor {
         if (!(sender instanceof ConsoleCommandSender)) {
             Player player = (Player) sender;
             UUID playerID = player.getUniqueId();
-            PlayerData playerData = plugin.loadPlayerData(playerID);
+            PlayerData playerData = PlayerDataUtilities.loadPlayerData(playerID);
             if (playerData.getTokens() < NukeStack.tpaCost) {
                 player.sendMessage("You do not have enough tokens, you need at least " + NukeStack.tpaCost + ".");
                 return true;
@@ -90,14 +91,14 @@ public class NickCommand implements CommandExecutor {
                     playerData.setNickName(nick);
                     player.sendMessage("Your new nickname is \"" + nick + "\".");
                     playerData.removeTokens(NukeStack.tpaCost);
-                    plugin.savePlayerData(playerID, playerData);
+                    PlayerDataUtilities.savePlayerData(playerID, playerData);
                 } else {
                     player.sendMessage("That name is already in use or is not allowed.");
                 }
             } else {
                 player.setDisplayName(player.getName());
                 playerData.setNickName("");
-                plugin.savePlayerData(playerID, playerData);
+                PlayerDataUtilities.savePlayerData(playerID, playerData);
                 sender.sendMessage("Your nick name has been removed.");
             }
         } else {

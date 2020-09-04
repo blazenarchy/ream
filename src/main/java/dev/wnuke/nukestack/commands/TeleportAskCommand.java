@@ -1,6 +1,7 @@
 package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
+import dev.wnuke.nukestack.PlayerDataUtilities;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,7 +21,7 @@ public class TeleportAskCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
             UUID playerID = ((Player) sender).getUniqueId();
-            if (plugin.loadPlayerData(playerID).getTokens() < NukeStack.tpaCost) {
+            if (PlayerDataUtilities.loadPlayerData(playerID).getTokens() < NukeStack.tpaCost) {
                 sender.sendMessage("You need at least " + NukeStack.dupeCost + " token(s) to teleport to someone.");
                 return true;
             }

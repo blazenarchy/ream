@@ -2,6 +2,7 @@ package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerData;
+import dev.wnuke.nukestack.PlayerDataUtilities;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,24 +31,24 @@ public class PayCommand implements CommandExecutor {
                     if (player.getName().toLowerCase().equals(args[0].toLowerCase())) {
                         if (sender instanceof ConsoleCommandSender) {
                             UUID playerID = player.getUniqueId();
-                            PlayerData receiving = plugin.loadPlayerData(player.getUniqueId());
+                            PlayerData receiving = PlayerDataUtilities.loadPlayerData(player.getUniqueId());
                             receiving.addTokens(amount);
-                            plugin.savePlayerData(playerID, receiving);
+                            PlayerDataUtilities.savePlayerData(playerID, receiving);
                             player.sendMessage("You have received " + amount + " token(s) from Console.");
                             sender.sendMessage(player.getName() + " received " + amount + " token(s).");
                         } else {
                             UUID senderID = ((Player) sender).getUniqueId();
-                            PlayerData sending = plugin.loadPlayerData(senderID);
+                            PlayerData sending = PlayerDataUtilities.loadPlayerData(senderID);
                             long sendingBal = sending.getTokens();
                             if (sendingBal >= amount) {
                                 sending.removeTokens(amount);
-                                plugin.savePlayerData(senderID, sending);
+                                PlayerDataUtilities.savePlayerData(senderID, sending);
                                 sender.sendMessage("You have sent " + amount + " token(s) to " + player.getName() + ".");
                                 if (sending.getTokens() == sendingBal - amount) {
                                     UUID receiverID = player.getUniqueId();
-                                    PlayerData receiving = plugin.loadPlayerData(receiverID);
+                                    PlayerData receiving = PlayerDataUtilities.loadPlayerData(receiverID);
                                     receiving.addTokens(amount);
-                                    plugin.savePlayerData(receiverID, receiving);
+                                    PlayerDataUtilities.savePlayerData(receiverID, receiving);
                                     player.sendMessage("You have received " + amount + " token(s) from " + sender.getName() + ".");
                                 }
                                 return true;

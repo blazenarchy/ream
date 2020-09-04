@@ -2,6 +2,7 @@ package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerData;
+import dev.wnuke.nukestack.PlayerDataUtilities;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,7 +25,7 @@ public class HatCommand implements CommandExecutor {
             Player player = ((Player) sender).getPlayer();
             if (player == null) return false;
             UUID playerID = player.getUniqueId();
-            PlayerData playerData = plugin.loadPlayerData(playerID);
+            PlayerData playerData = PlayerDataUtilities.loadPlayerData(playerID);
             if (playerData.getTokens() < NukeStack.hatCost) {
                 player.sendMessage("You do not have enough tokens, you need at least " + NukeStack.hatCost + ".");
                 return true;
@@ -37,7 +38,7 @@ public class HatCommand implements CommandExecutor {
             player.getInventory().setItem(player.getInventory().getHeldItemSlot(), null);
             player.getInventory().setHelmet(heldItem);
             playerData.removeTokens(NukeStack.hatCost);
-            plugin.savePlayerData(playerID, playerData);
+            PlayerDataUtilities.savePlayerData(playerID, playerData);
         } else {
             sender.sendMessage("You are console, you don't have a head.");
         }

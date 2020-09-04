@@ -2,6 +2,7 @@ package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerData;
+import dev.wnuke.nukestack.PlayerDataUtilities;
 import org.bukkit.WeatherType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -34,14 +35,14 @@ public class PlayerWeatherCommand implements CommandExecutor {
                     return true;
                 }
                 UUID playerID = player.getUniqueId();
-                PlayerData playerData = plugin.loadPlayerData(playerID);
+                PlayerData playerData = PlayerDataUtilities.loadPlayerData(playerID);
                 if (playerData.getTokens() < NukeStack.playerWeatherCost) {
                     player.sendMessage("You do not have enough tokens, you need at least " + NukeStack.playerWeatherCost + ".");
                     return true;
                 }
                 player.setPlayerWeather(weatherType);
                 playerData.removeTokens(NukeStack.playerWeatherCost);
-                plugin.savePlayerData(playerID, playerData);
+                PlayerDataUtilities.savePlayerData(playerID, playerData);
             } else {
                 sender.sendMessage("Needs a time argument.");
             }

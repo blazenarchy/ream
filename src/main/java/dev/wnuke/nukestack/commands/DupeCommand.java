@@ -2,6 +2,7 @@ package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerData;
+import dev.wnuke.nukestack.PlayerDataUtilities;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,7 +23,7 @@ public class DupeCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
             Player player = (Player) sender;
-            PlayerData playerData = plugin.loadPlayerData(player.getUniqueId());
+            PlayerData playerData = PlayerDataUtilities.loadPlayerData(player.getUniqueId());
             if (playerData.getTokens() < NukeStack.dupeCost) {
                 player.sendMessage("You do not have enough tokens, you need at least " + NukeStack.dupeCost + ".");
                 return true;
@@ -37,9 +38,9 @@ public class DupeCommand implements CommandExecutor {
                 return true;
             }
             playerData.removeTokens(NukeStack.dupeCost);
-            plugin.checkForIllegals(inventory, !player.hasPermission("simpledupe.illegal"), !player.hasPermission("simpledupe.overstack"), true, player.getWorld(), player.getLocation());
+            NukeStack.UTILITIES.checkForIllegals(inventory, !player.hasPermission("simpledupe.illegal"), !player.hasPermission("simpledupe.overstack"), true, player.getWorld(), player.getLocation());
             playerData.increaseLifeTimeDupes();
-            plugin.savePlayerData(player.getUniqueId(), playerData);
+            PlayerDataUtilities.savePlayerData(player.getUniqueId(), playerData);
             player.sendMessage("Your items have been duplicated.");
         } else {
             sender.sendMessage("Cannot dupe as console.");

@@ -2,6 +2,7 @@ package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerData;
+import dev.wnuke.nukestack.PlayerDataUtilities;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,14 +32,14 @@ public class PlayerTimeCommand implements CommandExecutor {
                 Player player = ((Player) sender).getPlayer();
                 if (player == null) return false;
                 UUID playerID = player.getUniqueId();
-                PlayerData playerData = plugin.loadPlayerData(playerID);
+                PlayerData playerData = PlayerDataUtilities.loadPlayerData(playerID);
                 if (playerData.getTokens() < NukeStack.playerTimeCost) {
                     player.sendMessage("You do not have enough tokens, you need at least " + NukeStack.playerTimeCost + ".");
                     return true;
                 }
                 player.setPlayerTime(time, false);
                 playerData.removeTokens(NukeStack.playerTimeCost);
-                plugin.savePlayerData(playerID, playerData);
+                PlayerDataUtilities.savePlayerData(playerID, playerData);
             } else {
                 sender.sendMessage("Needs a time argument.");
             }

@@ -1,11 +1,7 @@
 package dev.wnuke.nukestack;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import dev.wnuke.nukestack.commands.*;
-import org.apache.commons.lang.SerializationUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -16,13 +12,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import javax.annotation.Nullable;
-import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
@@ -38,8 +32,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public static final HashSet<Material> DELETE = new HashSet<>();
     public static final HashSet<Material> NO_DUPE = new HashSet<>();
     public static final HashSet<Material> NO_STACK = new HashSet<>();
-    private static final Gson gson = new GsonBuilder().serializeNulls().create();
-    private static final int maxPacketSize = 2048000;
+    public static GeneralUtilities UTILITIES;
     public static boolean antiSpeed = true;
     public static long checkInterval = 10;
     public static boolean currency = false;
@@ -57,40 +50,13 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public static long tpaCost = 2;
     public static boolean unstackItems = true;
     public static boolean deleteOversizedItems = true;
-    private final String playerDataFolder = getDataFolder() + "/player-data/";
-    public HashMap<UUID, PlayerData> playerData;
-    public HashMap<UUID, UUID> teleportRequests;
-    public HashMap<UUID, Location> playerPosTracking;
+    public static String playerDataFolder = "/player-data/";
+    public static HashMap<UUID, UUID> teleportRequests;
+    public static HashMap<UUID, Location> playerPosTracking;
     private long ticksLeft = checkInterval;
 
-    public void checkForIllegals(Inventory inventory, boolean removeIllegals, boolean unstackOverStacked, boolean dupe, @Nullable World world, @Nullable Location location) {
-        if (dupe || (removeIllegals && deleteItems) || (unstackOverStacked && unstackItems))
-            for (ItemStack itemStack : inventory) {
-                if (itemStack != null) {
-                    if (removeIllegals && deleteItems) {
-                        if (DELETE.contains(itemStack.getType())) {
-                            inventory.remove(itemStack);
-                        }
-                    }
-                    if (unstackOverStacked && unstackItems) {
-                        if (NO_STACK.contains(itemStack.getType())) {
-                            int maxStack = itemStack.getMaxStackSize();
-                            if (itemStack.getAmount() > maxStack) itemStack.setAmount(maxStack);
-                        }
-                    }
-                    if (dupe) {
-                        if (world != null && location != null) {
-                            if (!NO_DUPE.contains(itemStack.getType())) {
-                                world.dropItemNaturally(location, itemStack);
-                            }
-                        }
-                    }
-                }
-            }
-    }
-
     public void loadAndSetConfig() {
-        playerData = new HashMap<>();
+        PlayerDataUtilities.playerData = new HashMap<>();
         teleportRequests = new HashMap<>();
         playerPosTracking = new HashMap<>();
         reloadConfig();
@@ -134,6 +100,8 @@ public final class NukeStack extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        playerDataFolder = getDataFolder() + "/player-data/";
+        UTILITIES = new GeneralUtilities(this);
         loadAndSetConfig();
         Objects.requireNonNull(this.getCommand("nsreload")).setExecutor(new ReloadCommand(this));
         if (getConfig().getBoolean("suicide")) {
@@ -167,69 +135,13 @@ public final class NukeStack extends JavaPlugin implements Listener {
             Objects.requireNonNull(this.getCommand("realname")).setExecutor(new RealNameCommand(this));
         }
         getServer().getPluginManager().registerEvents(this, this);
-        loadAllPlayerData();
+        PlayerDataUtilities.loadAllPlayerData();
         getLogger().info("Loaded NukeStack by wnuke.");
     }
 
     @Override
     public void onDisable() {
         getLogger().info("Disabled NukeStack by wnuke.");
-    }
-
-    public HashSet<PlayerData> loadAllPlayerData() {
-        HashSet<PlayerData> playerDataHashMap = new HashSet<>();
-        File playerDataDir = new File(playerDataFolder);
-        if (playerDataDir.isDirectory() && playerDataDir.listFiles() != null) {
-            for (File file : Objects.requireNonNull(playerDataDir.listFiles())) {
-                UUID playerID = UUID.fromString(file.getName().replace(".json", ""));
-                playerDataHashMap.add(loadPlayerData(playerID));
-            }
-        }
-        return playerDataHashMap;
-    }
-
-    public PlayerData loadPlayerData(UUID player) {
-        PlayerData loadedData;
-        if (playerData.containsKey(player)) {
-            loadedData = playerData.get(player);
-            if (loadedData != null) {
-                return playerData.get(player);
-            }
-        }
-        loadedData = loadPlayerDataNoCache(player);
-        playerData.remove(player);
-        playerData.put(player, loadedData);
-        return loadedData;
-    }
-
-    protected PlayerData loadPlayerDataNoCache(UUID player) {
-        File playerDataFile = new File(playerDataFolder + player.toString() + ".json");
-        playerDataFile.getParentFile().mkdirs();
-        try {
-            return gson.fromJson(new FileReader(playerDataFile), new TypeToken<PlayerData>() {
-            }.getType());
-        } catch (FileNotFoundException e) {
-            PlayerData newPlayerData = new PlayerData();
-            savePlayerData(player, newPlayerData);
-            return newPlayerData;
-        }
-    }
-
-    public void savePlayerData(UUID player, PlayerData newPlayerData) {
-        playerData.remove(player);
-        playerData.putIfAbsent(player, newPlayerData);
-        File playerDataFile = new File(playerDataFolder + player.toString() + ".json");
-        playerDataFile.getParentFile().mkdirs();
-        try {
-            playerDataFile.createNewFile();
-            FileWriter fw = new FileWriter(playerDataFile);
-            fw.write(gson.toJson(newPlayerData));
-            fw.flush();
-            fw.close();
-        } catch (Exception e) {
-            System.out.println("Failed to save player data for " + player.toString() + ", error:");
-            e.printStackTrace();
-        }
     }
 
     @EventHandler
@@ -245,12 +157,12 @@ public final class NukeStack extends JavaPlugin implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         UUID playerID = event.getPlayer().getUniqueId();
-        if (!playerData.containsKey(playerID)) {
+        if (!PlayerDataUtilities.playerData.containsKey(playerID)) {
             PlayerData newPlayerData = new PlayerData();
-            playerData.put(event.getPlayer().getUniqueId(), newPlayerData);
-            savePlayerData(playerID, newPlayerData);
+            PlayerDataUtilities.playerData.put(event.getPlayer().getUniqueId(), newPlayerData);
+            PlayerDataUtilities.savePlayerData(playerID, newPlayerData);
         } else {
-            PlayerData joinedPlayerData = loadPlayerData(playerID);
+            PlayerData joinedPlayerData = PlayerDataUtilities.loadPlayerData(playerID);
             String nick = joinedPlayerData.getNickName();
             if (!nick.isEmpty()) {
                 event.getPlayer().setDisplayName(nick);
@@ -258,21 +170,19 @@ public final class NukeStack extends JavaPlugin implements Listener {
         }
     }
 
-    public static void cleanInventory(final Inventory inventory) {
-        ItemStack[] inventoryContents = inventory.getContents();
-        if (SerializationUtils.serialize(inventoryContents).length > maxPacketSize) {
-            int maxItemSize = maxPacketSize / inventory.getSize();
-            for (ItemStack item : inventoryContents) {
-                if (item.serializeAsBytes().length > maxItemSize) {
-                    inventory.remove(item);
-                }
-            }
-        }
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        UTILITIES.performLogin(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent event) {
+        UTILITIES.performLogout(event.getPlayer());
     }
 
     @EventHandler
     public void onInventoryUpdate(InventoryEvent event) {
-        cleanInventory(event.getInventory());
+        GeneralUtilities.cleanInventory(event.getInventory());
     }
 
     @EventHandler
@@ -319,7 +229,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
                             }
                         }
                     }
-                    checkForIllegals(player.getInventory(), !player.hasPermission("nukestack.illegal"), !player.hasPermission("nukestack.overstack"), false, null, null);
+                    GeneralUtilities.checkForIllegals(player.getInventory(), !player.hasPermission("nukestack.illegal"), !player.hasPermission("nukestack.overstack"), false, null, null);
                 }
             }
         } else {

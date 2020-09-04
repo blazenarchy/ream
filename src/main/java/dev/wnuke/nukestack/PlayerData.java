@@ -1,8 +1,14 @@
 package dev.wnuke.nukestack;
 
 import com.google.gson.annotations.SerializedName;
+import org.bukkit.Location;
+import org.bukkit.Server;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.UUID;
 
 public class PlayerData {
     @SerializedName("ts")
@@ -13,6 +19,16 @@ public class PlayerData {
     private long lifeTimeDupes = 0;
     @SerializedName("nn")
     private String nickName = "";
+    @SerializedName("kills")
+    private long kills = 0;
+    @SerializedName("deaths")
+    private long deaths = 0;
+    @SerializedName("ks")
+    private long killStreak = 0;
+    @SerializedName("ig")
+    private ArrayList<UUID> ignored = new ArrayList<>();
+    @SerializedName("ll")
+    private LogoutLocation logoutLocation = new LogoutLocation();
 
     @Override
     public boolean equals(Object o) {
@@ -23,21 +39,6 @@ public class PlayerData {
                 this.getLifeTimeTPs() == that.getLifeTimeTPs() &&
                 this.getLifeTimeDupes() == that.getLifeTimeDupes() &&
                 this.getNickName().equals(that.getNickName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getTokens(), getLifeTimeTPs(), getLifeTimeDupes(), getNickName());
-    }
-
-    @Override
-    public String toString() {
-        return "PlayerData{" +
-                "tokens=" + this.tokens +
-                ", lifeTimeTPs=" + this.lifeTimeTPs +
-                ", lifeTimeDupes=" + this.lifeTimeDupes +
-                ", nickName='" + this.nickName + '\'' +
-                '}';
     }
 
     public String getNickName() {
@@ -72,6 +73,14 @@ public class PlayerData {
             }
             this.tokens -= amount;
         }
+    }
+
+    public void setLogoutLocation(LogoutLocation logoutLocation) {
+        this.logoutLocation = logoutLocation;
+    }
+
+    public Location getLogoutLocation(Server server) {
+        return logoutLocation.asLocation(server);
     }
 
     public long getLifeTimeTPs() {

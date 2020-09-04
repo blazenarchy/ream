@@ -1,6 +1,7 @@
 package dev.wnuke.nukestack.commands;
 
 import dev.wnuke.nukestack.NukeStack;
+import dev.wnuke.nukestack.PlayerDataUtilities;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,7 +18,7 @@ public class BalanceCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
-            sender.sendMessage("You have " + plugin.loadPlayerData(((Player) sender).getUniqueId()).getTokens() + " token(s).");
+            sender.sendMessage("You have " + PlayerDataUtilities.loadPlayerData(((Player) sender).getUniqueId()).getTokens() + " token(s).");
         } else {
             sender.sendMessage("You have infinite tokens.");
         }
