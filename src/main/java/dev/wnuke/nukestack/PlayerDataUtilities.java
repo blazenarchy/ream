@@ -81,8 +81,11 @@ public class PlayerDataUtilities {
         File playerDataDir = new File(NukeStack.playerDataFolder);
         if (playerDataDir.isDirectory() && playerDataDir.listFiles() != null) {
             for (File file : Objects.requireNonNull(playerDataDir.listFiles())) {
-                UUID playerID = UUID.fromString(file.getName().replace(".json", ""));
-                playerDataHashMap.add(loadExistingPlayerData(playerID));
+                try {
+                    UUID playerID = UUID.fromString(file.getName().replace(".json", ""));
+                    playerDataHashMap.add(loadExistingPlayerData(playerID));
+                } catch (Exception ignored) {
+                }
             }
         }
         return playerDataHashMap;
