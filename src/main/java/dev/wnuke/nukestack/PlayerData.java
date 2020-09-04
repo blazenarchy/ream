@@ -106,6 +106,7 @@ public class PlayerData {
     }
 
     public boolean hasIgnored(UUID player) {
+        if (ignored == null) ignored = new ArrayList<>();
         return ignored.contains(player);
     }
 
