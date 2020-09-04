@@ -18,6 +18,26 @@ public class GeneralUtilities {
         this.plugin = plugin;
     }
 
+    public static void sendPrivateMessage(Player sender, Player receiver, String... words) {
+        if (!PlayerDataUtilities.loadPlayerData(receiver).hasIgnored(sender.getUniqueId())) {
+            StringBuilder message = new StringBuilder();
+            for (String word : words) {
+                message.append(word).append(" ");
+            }
+            if (message.length() == 0) sender.sendMessage(ChatColor.RED + "You cannot send an empty message.");
+            else {
+                NukeStack.messageReply.remove(sender.getUniqueId());
+                NukeStack.messageReply.put(sender.getUniqueId(), receiver.getUniqueId());
+                NukeStack.messageReply.remove(receiver.getUniqueId());
+                NukeStack.messageReply.put(receiver.getUniqueId(), sender.getUniqueId());
+                receiver.sendMessage(sender.getDisplayName() + ChatColor.GRAY + " -> " + "you: " + ChatColor.RESET + message);
+                sender.sendMessage(ChatColor.GRAY + "you -> " + ChatColor.RESET + sender.getDisplayName() + ChatColor.GRAY + ": " + ChatColor.RESET + message);
+            }
+            return;
+        }
+        sender.sendMessage(ChatColor.RED + receiver.getDisplayName() + " is ignoring you.");
+    }
+
     public static void cleanInventory(Inventory inventory) {
         ItemStack[] inventoryContents = inventory.getContents();
         int maxItemSize = maxPacketSize / inventoryContents.length;

@@ -48,6 +48,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public static long tpaCost = 2;
     public static boolean unstackItems = true;
     public static boolean deleteOversizedItems = true;
+    public static HashMap<UUID, UUID> messageReply;
     public static HashMap<UUID, UUID> teleportRequests;
     public static HashMap<UUID, Location> playerPosTracking;
     private long ticksLeft = checkInterval;
@@ -56,6 +57,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
         PlayerDataUtilities.playerData = new HashMap<>();
         teleportRequests = new HashMap<>();
         playerPosTracking = new HashMap<>();
+        messageReply = new HashMap<>();
         reloadConfig();
         saveDefaultConfig();
         ignore = getConfig().getBoolean("ignore");
@@ -104,6 +106,10 @@ public final class NukeStack extends JavaPlugin implements Listener {
         Objects.requireNonNull(this.getCommand("nsreload")).setExecutor(new ReloadCommand(this));
         if (ignore) {
             Objects.requireNonNull(this.getCommand("ignore")).setExecutor(new IgnoreCommand(this));
+        }
+        if (getConfig().getBoolean("messaging")) {
+            Objects.requireNonNull(this.getCommand("message")).setExecutor(new MessageCommand(this));
+            Objects.requireNonNull(this.getCommand("reply")).setExecutor(new ReplyCommand(this));
         }
         if (getConfig().getBoolean("suicide")) {
             Objects.requireNonNull(this.getCommand("suicide")).setExecutor(new SuicideCommand(this));

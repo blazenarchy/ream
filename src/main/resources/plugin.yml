@@ -15,6 +15,16 @@ commands:
     description: Put an item in your helmet slot.
     permission: nukestack.hat
     usage: Hold an item and run the command.
+  message:
+    description: Send a message to another player
+    permission: nukestack.message
+    usage: message <player> <message>
+    aliases: [m, w, msg]
+  reply:
+    description: Send a message the last person you sent/received a message to/from.
+    permission: nukestack.reply
+    usage: reply <message>
+    aliases: [r]
   playertime:
     description: Set your personal time.
     permission: nukestack.playertime
@@ -78,6 +88,12 @@ permissions:
     default: true
   nukestack.hat:
     description: Allows the player to put an item in it's helmet armour slot.
+    default: true
+  nukestack.message:
+    description: Allows the player send messages to another player.
+    default: true
+  nukestack.reply:
+    description: Allows the player to send a message to the last person they received a message from or sent a message to.
     default: true
   nukestack.playertime:
     description: Allows the player to choose what the time is for itself.

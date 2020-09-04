@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 public class NickCommand implements CommandExecutor {
     NukeStack plugin;
@@ -82,11 +81,11 @@ public class NickCommand implements CommandExecutor {
             Player player = ((Player) sender).getPlayer();
             if (player == null) return false;
             PlayerData playerData = PlayerDataUtilities.loadPlayerData(player);
-            if (playerData.getTokens() < NukeStack.nickCost) {
-                GeneralUtilities.notEnoughTokens(player, NukeStack.nickCost);
-                return true;
-            }
             if (args.length >= 1) {
+                if (playerData.getTokens() < NukeStack.nickCost) {
+                    GeneralUtilities.notEnoughTokens(player, NukeStack.nickCost);
+                    return true;
+                }
                 String nick = formatNick(args[0]);
                 if (!nickUsed(nick)) {
                     player.setDisplayName(nick);

@@ -30,6 +30,8 @@ playerweather: true
 hat: true
 # Enable ignore command (requires server reload)
 ignore: true
+# Enable the messaging system (requires server reload)
+messaging: true
 # Enable nicknames (requires server reload)
 nick: true
 # Enable the tpa (requires server reload)
