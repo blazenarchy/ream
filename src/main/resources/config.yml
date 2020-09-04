@@ -32,6 +32,8 @@ hat: true
 ignore: true
 # Enable the messaging system (requires server reload)
 messaging: true
+# Enable seen command (requires server reload)
+seen: true
 # Enable nicknames (requires server reload)
 nick: true
 # Enable the tpa (requires server reload)

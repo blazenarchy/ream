@@ -7,6 +7,11 @@ authors: [wnuke]
 description: A simple plugin for Minecraft Anarchy servers.
 website: https://wnuke.dev
 commands:
+  seen:
+    description: Gets the last seen time and the first join time of a player.
+    permission: nukestack.seen
+    usage: seen <player>
+    aliases: [jd, joindate]
   ignore:
     description: Ignore or unignore a player.
     permission: nukestack.ignore
@@ -83,6 +88,9 @@ commands:
     usage: Run the command while riding a donkey or a llama.
     permission: nukestack.dupe
 permissions:
+  nukestack.seen:
+    description: Allows the player to check the first join time and last seen time of another player.s
+    default: true
   nukestack.ignore:
     description: Allows the player to ignore or unignore another player.
     default: true
