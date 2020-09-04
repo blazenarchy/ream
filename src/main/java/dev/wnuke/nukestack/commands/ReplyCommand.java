@@ -29,7 +29,7 @@ public class ReplyCommand implements CommandExecutor {
                 return true;
             }
         }
-        sender.sendMessage(ChatColor.RED + "You are not in a messaging session right now.");
+        sender.sendMessage(ChatColor.RED + "You are not in a messaging session with an online player.");
         return true;
     }
 }

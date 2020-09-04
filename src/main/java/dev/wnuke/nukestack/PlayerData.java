@@ -2,6 +2,7 @@ package dev.wnuke.nukestack;
 
 import com.google.gson.annotations.SerializedName;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
@@ -27,9 +28,12 @@ public class PlayerData {
     @SerializedName("ll")
     private LastLocation lastLocation;
 
-    public PlayerData(Player player) {
+    public PlayerData(OfflinePlayer player) {
         this.uuid = player.getUniqueId();
-        this.lastLocation = LastLocation.fromLocation(player.getLocation());
+        Player onlinePlayer = player.getPlayer();
+        if (onlinePlayer != null) {
+            this.lastLocation = LastLocation.fromLocation(onlinePlayer.getLocation());
+        }
     }
 
     public UUID getUuid() {
@@ -55,17 +59,37 @@ public class PlayerData {
         return Objects.hash(uuid, getTokens(), getLifeTimeTPs(), getLifeTimeDupes(), getNickName(), killStreak, ignored, lastLocation);
     }
 
-    public PlayerData setUuidIfNull(UUID uuid) {
-        this.uuid = uuid;
-        return this;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof PlayerData)) return false;
         PlayerData that = (PlayerData) o;
         return this.uuid == that.uuid;
+    }
+
+    public long getTokens() {
+        if (NukeStack.currency) {
+            return this.tokens;
+        } else {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    public boolean hasIgnored(UUID player) {
+        if (ignored == null) ignored = new ArrayList<>();
+        return ignored.contains(player);
+    }
+
+    public long getStreak() {
+        return this.killStreak;
+    }
+
+    public long getLifeTimeTPs() {
+        return this.lifeTimeTPs;
+    }
+
+    public long getLifeTimeDupes() {
+        return this.lifeTimeDupes;
     }
 
     public String getNickName() {
@@ -77,12 +101,11 @@ public class PlayerData {
         return this;
     }
 
-    public long getTokens() {
-        if (NukeStack.currency) {
-            return this.tokens;
-        } else {
-            return Long.MAX_VALUE;
+    public PlayerData setUuidIfNull(UUID uuid) {
+        if (uuid == null) {
+            this.uuid = uuid;
         }
+        return this;
     }
 
     public PlayerData addTokens(long amount) {
@@ -103,11 +126,6 @@ public class PlayerData {
             this.tokens -= amount;
         }
         return this;
-    }
-
-    public boolean hasIgnored(UUID player) {
-        if (ignored == null) ignored = new ArrayList<>();
-        return ignored.contains(player);
     }
 
     public PlayerData toggleIgnore(UUID player) {
@@ -142,17 +160,9 @@ public class PlayerData {
         return this;
     }
 
-    public long getLifeTimeTPs() {
-        return this.lifeTimeTPs;
-    }
-
     public PlayerData increaseLifeTimeTPs() {
         this.lifeTimeTPs++;
         return this;
-    }
-
-    public long getLifeTimeDupes() {
-        return this.lifeTimeDupes;
     }
 
     public PlayerData increaseLifeTimeDupes() {

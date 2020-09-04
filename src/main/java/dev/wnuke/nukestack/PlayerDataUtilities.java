@@ -3,6 +3,7 @@ package dev.wnuke.nukestack;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -28,7 +29,7 @@ public class PlayerDataUtilities {
         }
     }
 
-    public static PlayerData loadPlayerData(Player player) {
+    public static PlayerData loadPlayerData(OfflinePlayer player) {
         PlayerData loadedData = loadExistingPlayerData(player.getUniqueId());
         if (loadedData == null) {
             loadedData = loadPlayerDataNoCache(player);
@@ -50,7 +51,7 @@ public class PlayerDataUtilities {
         }
     }
 
-    public static PlayerData loadPlayerDataNoCache(Player player) {
+    public static PlayerData loadPlayerDataNoCache(OfflinePlayer player) {
         File playerDataFile = new File(playerDataFolder + player.getUniqueId().toString() + ".json");
         playerDataFile.getParentFile().mkdirs();
         try {
