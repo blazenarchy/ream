@@ -24,8 +24,10 @@ public class GeneralUtilities {
     }
 
     public void performLogin(Player player) {
-        cleanInventory(player.getInventory());
-        checkForIllegals(player.getInventory(), true, true, false, null, null);
+        if (NukeStack.deleteOversizedItems) {
+            cleanInventory(player.getInventory());
+        }
+        checkForIllegals(player.getInventory(), NukeStack.deleteItems, NukeStack.unstackItems, false, null, null);
         this.hidePlayer(player);
         player.teleport(PlayerDataUtilities.loadPlayerData(player).getLogoutLocation(plugin.getServer()));
         this.unhidePlayer(player);

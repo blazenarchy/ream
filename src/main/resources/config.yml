@@ -1,5 +1,7 @@
 # Prefix players with nick names should have
 nickPrefix: "."
+# Whether or not to send a message when a new player joins
+newPlayerMessage: true
 # How much money each player should start with
 startingMoney: 0
 # Interval between player inventory scans for illegal items (in ticks)

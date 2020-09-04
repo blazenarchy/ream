@@ -31,6 +31,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public static GeneralUtilities UTILITIES;
     public static boolean antiSpeed = true;
     public static long checkInterval = 10;
+    public static boolean newPlayerMessage = true;
     public static boolean currency = false;
     public static boolean deleteDroppedItems = true;
     public static boolean deleteItems = true;
@@ -64,6 +65,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
         dupeCost = getConfig().getLong("dupeCost");
         hatCost = getConfig().getLong("hatCost");
         maxSpeed = getConfig().getLong("maxSpeed");
+        newPlayerMessage = getConfig().getBoolean("newPlayerMessage");
         nickCost = getConfig().getLong("nickCost");
         nickPrefix = getConfig().getString("nickPrefix");
         playerTimeCost = getConfig().getLong("playerTimeCost");
@@ -165,7 +167,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        if (!event.getPlayer().hasPlayedBefore()) {
+        if (!event.getPlayer().hasPlayedBefore() && newPlayerMessage) {
             getServer().broadcastMessage(ChatColor.AQUA + event.getPlayer().getDisplayName() + " joined for the first time!");
         }
         PlayerData joinedPlayerData = PlayerDataUtilities.loadPlayerData(event.getPlayer());
