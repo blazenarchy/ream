@@ -15,8 +15,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class PlayerDataUtilities {
-    private static final Gson gson = new GsonBuilder().serializeNulls().create();
     public static final String playerDataFolder = "plugins/nukestack/player-data/";
+    private static final Gson gson = new GsonBuilder().serializeNulls().create();
     public static HashMap<UUID, PlayerData> playerData;
 
     public static PlayerData loadExistingPlayerData(UUID player) {

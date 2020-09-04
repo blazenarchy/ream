@@ -4,8 +4,6 @@ import dev.wnuke.nukestack.NukeStack;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 
 public class Reload implements CommandExecutor {
     NukeStack plugin;

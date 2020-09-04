@@ -32,8 +32,8 @@ public class GeneralUtilities {
                 NukeStack.messageReply.put(sender.getUniqueId(), receiver.getUniqueId());
                 NukeStack.messageReply.remove(receiver.getUniqueId());
                 NukeStack.messageReply.put(receiver.getUniqueId(), sender.getUniqueId());
-                sender.sendMessage(ChatColor.GRAY + "you -> " + ChatColor.RESET + sender.getDisplayName() + ChatColor.GRAY + ": " + ChatColor.RESET + message);
-                receiver.sendMessage(receiver.getDisplayName() + ChatColor.GRAY + " -> " + "you: " + ChatColor.RESET + message);
+                sender.sendMessage(ChatColor.GRAY + "you -> " + ChatColor.RESET + receiver.getDisplayName() + ChatColor.GRAY + ": " + ChatColor.RESET + message);
+                receiver.sendMessage(sender.getDisplayName() + ChatColor.GRAY + " -> " + "you: " + ChatColor.RESET + message);
             }
             return;
         }

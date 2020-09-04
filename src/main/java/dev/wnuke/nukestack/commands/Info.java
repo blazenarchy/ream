@@ -32,7 +32,7 @@ public class Info implements CommandExecutor {
                 int kills = player.getStatistic(Statistic.PLAYER_KILLS);
                 int deaths = player.getStatistic(Statistic.DEATHS);
                 float killDeathRatio = 0;
-                if (deaths != 0) killDeathRatio = kills/deaths;
+                if (deaths != 0) killDeathRatio = kills / deaths;
                 Date joinDate = new Date(player.getFirstPlayed());
                 Date seenDate = new Date(player.getLastSeen());
                 PlayerData playerData = PlayerDataUtilities.loadPlayerData(player);
