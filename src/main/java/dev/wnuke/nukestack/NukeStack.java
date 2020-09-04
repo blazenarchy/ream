@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dev.wnuke.nukestack.commands.*;
+import org.apache.commons.lang.SerializationUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
@@ -20,10 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.annotation.Nullable;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
@@ -40,22 +39,24 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public static final HashSet<Material> NO_DUPE = new HashSet<>();
     public static final HashSet<Material> NO_STACK = new HashSet<>();
     private static final Gson gson = new GsonBuilder().serializeNulls().create();
+    private static final int maxPacketSize = 2048000;
     public static boolean antiSpeed = true;
     public static long checkInterval = 10;
     public static boolean currency = false;
     public static boolean deleteDroppedItems = true;
     public static boolean deleteItems = true;
     public static long dupeCost = 2;
-    public static long hatCost = 2;
+    public static long hatCost = 0;
     public static long maxSpeed = 140;
     public static long nickCost = 0;
     public static String nickPrefix = ".";
     public static long playerTimeCost = 0;
-    public static long playerWeatherCost = 2;
+    public static long playerWeatherCost = 0;
     public static long startingMoney = 0;
-    public static long suicideCost = 2;
+    public static long suicideCost = 0;
     public static long tpaCost = 2;
     public static boolean unstackItems = true;
+    public static boolean deleteOversizedItems = true;
     private final String playerDataFolder = getDataFolder() + "/player-data/";
     public HashMap<UUID, PlayerData> playerData;
     public HashMap<UUID, UUID> teleportRequests;
@@ -108,6 +109,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
         startingMoney = getConfig().getLong("startingMoney");
         suicideCost = getConfig().getLong("suicideCost");
         tpaCost = getConfig().getLong("tpaCost");
+        deleteOversizedItems = getConfig().getBoolean("deleteOversized");
         unstackItems = getConfig().getBoolean("unstackOverstacked");
         BLOCKED_NICK.addAll(getConfig().getStringList("bannedNicks"));
         for (String item : getConfig().getStringList("illegals")) {
@@ -254,6 +256,23 @@ public final class NukeStack extends JavaPlugin implements Listener {
                 event.getPlayer().setDisplayName(nick);
             }
         }
+    }
+
+    public static void cleanInventory(final Inventory inventory) {
+        ItemStack[] inventoryContents = inventory.getContents();
+        if (SerializationUtils.serialize(inventoryContents).length > maxPacketSize) {
+            int maxItemSize = maxPacketSize / inventory.getSize();
+            for (ItemStack item : inventoryContents) {
+                if (item.serializeAsBytes().length > maxItemSize) {
+                    inventory.remove(item);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onInventoryUpdate(InventoryEvent event) {
+        cleanInventory(event.getInventory());
     }
 
     @EventHandler

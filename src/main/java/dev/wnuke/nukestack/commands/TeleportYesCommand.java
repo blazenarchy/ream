@@ -25,6 +25,7 @@ public class TeleportYesCommand implements CommandExecutor {
                     if (player.getPlayerListName().equals(args[0])) {
                         if (plugin.teleportRequests.get(player.getUniqueId()) == ((Player) sender).getUniqueId()) {
                             UUID playerID = player.getUniqueId();
+                            plugin.teleportRequests.remove(playerID);
                             PlayerData playerData = plugin.loadPlayerData(playerID);
                             long tokens = playerData.getTokens();
                             if (tokens < NukeStack.tpaCost) {

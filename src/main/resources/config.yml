@@ -38,6 +38,8 @@ currency: true
 suicide: true
 # Enable the anti speed
 antiSpeed: true
+# Delete items in inventoryies if they are too big
+deleteOversized: true
 # Delete illegals, does not affect scanDropped
 deleteIllegals: true
 # Unstack overstacked items
