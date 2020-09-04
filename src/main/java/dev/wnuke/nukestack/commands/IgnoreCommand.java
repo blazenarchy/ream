@@ -28,10 +28,10 @@ public class IgnoreCommand implements CommandExecutor {
             } else {
                 boolean ignored = PlayerDataUtilities.loadPlayerData(player).toggleIgnore(uuidToIgnore).save().hasIgnored(uuidToIgnore);
                 if (ignored) {
-                    sender.sendMessage(ChatColor.GREEN + " you are now ignoring " + args[0] + ".");
+                    sender.sendMessage(ChatColor.GREEN + "You are now ignoring " + args[0] + ".");
                     return true;
                 }
-                sender.sendMessage(ChatColor.GREEN + " you no longer ignoring " + args[0] + ".");
+                sender.sendMessage(ChatColor.GREEN + "You no longer ignoring " + args[0] + ".");
             }
         } else {
             sender.sendMessage(ChatColor.RED + "You must specify who you want to ignore.");
