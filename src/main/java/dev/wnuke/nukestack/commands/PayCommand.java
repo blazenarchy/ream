@@ -3,6 +3,7 @@ package dev.wnuke.nukestack.commands;
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerData;
 import dev.wnuke.nukestack.PlayerDataUtilities;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,26 +31,22 @@ public class PayCommand implements CommandExecutor {
                 for (Player player : plugin.getServer().getOnlinePlayers()) {
                     if (player.getName().toLowerCase().equals(args[0].toLowerCase())) {
                         if (sender instanceof ConsoleCommandSender) {
-                            UUID playerID = player.getUniqueId();
-                            PlayerData receiving = PlayerDataUtilities.loadPlayerData(player.getUniqueId());
-                            receiving.addTokens(amount);
-                            PlayerDataUtilities.savePlayerData(playerID, receiving);
+                            PlayerData receiving = PlayerDataUtilities.loadPlayerData(player);
+                            receiving.addTokens(amount).save();
                             player.sendMessage("You have received " + amount + " token(s) from Console.");
                             sender.sendMessage(player.getName() + " received " + amount + " token(s).");
                         } else {
-                            UUID senderID = ((Player) sender).getUniqueId();
-                            PlayerData sending = PlayerDataUtilities.loadPlayerData(senderID);
+                            Player sendingPlayer = ((Player) sender).getPlayer();
+                            if (sendingPlayer == null) return false;
+                            PlayerData sending = PlayerDataUtilities.loadPlayerData(sendingPlayer);
                             long sendingBal = sending.getTokens();
                             if (sendingBal >= amount) {
-                                sending.removeTokens(amount);
-                                PlayerDataUtilities.savePlayerData(senderID, sending);
-                                sender.sendMessage("You have sent " + amount + " token(s) to " + player.getName() + ".");
+                                sending.removeTokens(amount).save();
+                                sender.sendMessage(ChatColor.YELLOW + "You have sent " + amount + " token(s) to " + player.getName() + ".");
                                 if (sending.getTokens() == sendingBal - amount) {
-                                    UUID receiverID = player.getUniqueId();
-                                    PlayerData receiving = PlayerDataUtilities.loadPlayerData(receiverID);
-                                    receiving.addTokens(amount);
-                                    PlayerDataUtilities.savePlayerData(receiverID, receiving);
-                                    player.sendMessage("You have received " + amount + " token(s) from " + sender.getName() + ".");
+                                    PlayerData receiving = PlayerDataUtilities.loadPlayerData(player);
+                                    receiving.addTokens(amount).save();
+                                    player.sendMessage(ChatColor.GREEN + "You have received " + amount + " token(s) from " + ((Player) sender).getDisplayName() + ".");
                                 }
                                 return true;
                             }

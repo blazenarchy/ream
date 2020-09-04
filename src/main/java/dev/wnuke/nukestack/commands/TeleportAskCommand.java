@@ -1,7 +1,9 @@
 package dev.wnuke.nukestack.commands;
 
+import dev.wnuke.nukestack.GeneralUtilities;
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerDataUtilities;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,21 +22,23 @@ public class TeleportAskCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
-            UUID playerID = ((Player) sender).getUniqueId();
-            if (PlayerDataUtilities.loadPlayerData(playerID).getTokens() < NukeStack.tpaCost) {
-                sender.sendMessage("You need at least " + NukeStack.dupeCost + " token(s) to teleport to someone.");
+            Player player = ((Player) sender).getPlayer();
+            if (player == null) return false;
+            UUID playerID = player.getUniqueId();
+            if (PlayerDataUtilities.loadPlayerData(player).getTokens() < NukeStack.tpaCost) {
+                GeneralUtilities.notEnoughTokens(player, NukeStack.tpaCost);
                 return true;
             }
-            if (plugin.teleportRequests.containsKey(playerID)) {
+            if (NukeStack.teleportRequests.containsKey(playerID)) {
                 sender.sendMessage("Please wait for your current teleport request to get accepted or cancel it by running /tpc.");
                 return true;
             }
             if (args.length > 0) {
-                for (Player player : plugin.getServer().getOnlinePlayers()) {
-                    if (player.getPlayerListName().equals(args[0])) {
-                        plugin.teleportRequests.put(playerID, player.getUniqueId());
-                        sender.sendMessage("Teleport request sent, to cancel type /tpc");
-                        player.sendMessage(sender.getName() + " has requested to teleport to you.");
+                for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+                    if (onlinePlayer.getPlayerListName().equals(args[0])) {
+                        NukeStack.teleportRequests.put(playerID, onlinePlayer.getUniqueId());
+                        sender.sendMessage(ChatColor.DARK_GREEN + "Teleport request sent, to cancel type /tpc");
+                        onlinePlayer.sendMessage(((Player) sender).getDisplayName() + ChatColor.GREEN + " has requested to teleport to you.");
                         return true;
                     }
                 }

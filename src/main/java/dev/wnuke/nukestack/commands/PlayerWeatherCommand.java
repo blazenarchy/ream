@@ -1,8 +1,10 @@
 package dev.wnuke.nukestack.commands;
 
+import dev.wnuke.nukestack.GeneralUtilities;
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerData;
 import dev.wnuke.nukestack.PlayerDataUtilities;
+import org.bukkit.ChatColor;
 import org.bukkit.WeatherType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -31,23 +33,21 @@ public class PlayerWeatherCommand implements CommandExecutor {
                 } else if (args[0].toLowerCase().equals("rain") || args[0].toLowerCase().equals("snow")) {
                     weatherType = WeatherType.DOWNFALL;
                 } else {
-                    player.sendMessage("Weather argument must be \"clear\", \"rain\" or \"snow\".");
+                    player.sendMessage(ChatColor.RED + "Valid weather arguments are \"clear\", \"rain\" or \"snow\".");
                     return true;
                 }
-                UUID playerID = player.getUniqueId();
-                PlayerData playerData = PlayerDataUtilities.loadPlayerData(playerID);
+                PlayerData playerData = PlayerDataUtilities.loadPlayerData(player);
                 if (playerData.getTokens() < NukeStack.playerWeatherCost) {
-                    player.sendMessage("You do not have enough tokens, you need at least " + NukeStack.playerWeatherCost + ".");
+                    GeneralUtilities.notEnoughTokens(player, NukeStack.playerWeatherCost);
                     return true;
                 }
                 player.setPlayerWeather(weatherType);
-                playerData.removeTokens(NukeStack.playerWeatherCost);
-                PlayerDataUtilities.savePlayerData(playerID, playerData);
+                playerData.removeTokens(NukeStack.playerWeatherCost).save();
             } else {
-                sender.sendMessage("Needs a time argument.");
+                sender.sendMessage(ChatColor.RED + "Needs a weather argument.");
             }
         } else {
-            sender.sendMessage("You are console, you must use standard time.");
+            sender.sendMessage(ChatColor.RED + "You are console, you must use standard time.");
         }
         return true;
     }

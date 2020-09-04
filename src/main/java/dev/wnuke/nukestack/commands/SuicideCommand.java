@@ -1,8 +1,10 @@
 package dev.wnuke.nukestack.commands;
 
+import dev.wnuke.nukestack.GeneralUtilities;
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerData;
 import dev.wnuke.nukestack.PlayerDataUtilities;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,18 +26,16 @@ public class SuicideCommand implements CommandExecutor {
         if (!(sender instanceof ConsoleCommandSender)) {
             Player player = ((Player) sender).getPlayer();
             if (player == null) return false;
-            UUID playerID = player.getUniqueId();
-            PlayerData playerData = PlayerDataUtilities.loadPlayerData(playerID);
+            PlayerData playerData = PlayerDataUtilities.loadPlayerData(player);
             if (playerData.getTokens() < NukeStack.suicideCost) {
-                player.sendMessage("You do not have enough tokens, you need at least " + NukeStack.suicideCost + ".");
+                GeneralUtilities.notEnoughTokens(player, NukeStack.suicideCost);
                 return true;
             }
             EntityDamageEvent damageEvent = new EntityDamageEvent(player, EntityDamageEvent.DamageCause.SUICIDE, Float.MAX_VALUE);
             plugin.getServer().getPluginManager().callEvent(damageEvent);
             damageEvent.getEntity().setLastDamageCause(damageEvent);
             player.setHealth(0);
-            playerData.removeTokens(NukeStack.suicideCost);
-            PlayerDataUtilities.savePlayerData(playerID, playerData);
+            playerData.removeTokens(NukeStack.suicideCost).save();
         } else {
             sender.sendMessage("You are console, you can't kill yourself.");
         }

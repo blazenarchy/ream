@@ -1,8 +1,10 @@
 package dev.wnuke.nukestack.commands;
 
+import dev.wnuke.nukestack.GeneralUtilities;
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerData;
 import dev.wnuke.nukestack.PlayerDataUtilities;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,24 +24,22 @@ public class PlayerTimeCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
             if (args.length > 0) {
-                long time = 0;
+                long time;
                 try {
                     time = Long.parseLong(args[0]);
                 } catch (NumberFormatException e) {
-                    sender.sendMessage("Invalid time argument, must be a number.");
+                    sender.sendMessage(ChatColor.RED + "Invalid time argument, must be a number.");
                     return true;
                 }
                 Player player = ((Player) sender).getPlayer();
                 if (player == null) return false;
-                UUID playerID = player.getUniqueId();
-                PlayerData playerData = PlayerDataUtilities.loadPlayerData(playerID);
+                PlayerData playerData = PlayerDataUtilities.loadPlayerData(player);
                 if (playerData.getTokens() < NukeStack.playerTimeCost) {
-                    player.sendMessage("You do not have enough tokens, you need at least " + NukeStack.playerTimeCost + ".");
+                    GeneralUtilities.notEnoughTokens(player, NukeStack.playerTimeCost);
                     return true;
                 }
                 player.setPlayerTime(time, false);
-                playerData.removeTokens(NukeStack.playerTimeCost);
-                PlayerDataUtilities.savePlayerData(playerID, playerData);
+                playerData.removeTokens(NukeStack.playerTimeCost).save();
             } else {
                 sender.sendMessage("Needs a time argument.");
             }

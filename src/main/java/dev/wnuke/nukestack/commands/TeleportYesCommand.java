@@ -3,6 +3,7 @@ package dev.wnuke.nukestack.commands;
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerData;
 import dev.wnuke.nukestack.PlayerDataUtilities;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,31 +28,30 @@ public class TeleportYesCommand implements CommandExecutor {
                         if (NukeStack.teleportRequests.get(player.getUniqueId()) == ((Player) sender).getUniqueId()) {
                             UUID playerID = player.getUniqueId();
                             NukeStack.teleportRequests.remove(playerID);
-                            PlayerData playerData = PlayerDataUtilities.loadPlayerData(playerID);
+                            PlayerData playerData = PlayerDataUtilities.loadPlayerData(player);
                             long tokens = playerData.getTokens();
                             if (tokens < NukeStack.tpaCost) {
-                                player.sendMessage("Teleport cancelled, you no longer have enough tokens.");
-                                sender.sendMessage(player.getPlayerListName() + " no longer has enough tokens, teleport cancelled.");
+                                player.sendMessage(ChatColor.RED + "Teleport cancelled, you no longer have enough tokens.");
+                                sender.sendMessage(ChatColor.RED + player.getPlayerListName() + " no longer has enough tokens, teleport cancelled.");
                                 return true;
                             }
-                            player.sendMessage("Teleport request accepted, teleporting...");
-                            sender.sendMessage("Teleporting...");
+                            player.sendMessage(ChatColor.GREEN + "Teleport request accepted, teleporting...");
+                            sender.sendMessage(ChatColor.GREEN + "Teleporting...");
                             NukeStack.UTILITIES.hidePlayer(player);
                             NukeStack.playerPosTracking.remove(playerID);
-                            player.teleport((Player) sender);
+                            Player sendingPlayer = ((Player) sender).getPlayer();
+                            if (sendingPlayer == null) return false;
+                            player.teleport(sendingPlayer);
                             NukeStack.playerPosTracking.remove(playerID);
-                            for (Player other : plugin.getServer().getOnlinePlayers()) {
-                                other.showPlayer(plugin, player);
-                            }
-                            playerData.increaseLifeTimeTPs();
-                            playerData.removeTokens(NukeStack.tpaCost);
+                            NukeStack.UTILITIES.unhidePlayer(player);
+                            playerData.increaseLifeTimeTPs().removeTokens(NukeStack.tpaCost).save();
                             return true;
                         }
                     }
                 }
-                sender.sendMessage("No player with name " + args[0] + " has requested to teleport to you.");
+                sender.sendMessage(ChatColor.RED + "No player with name " + args[0] + " has requested to teleport to you.");
             } else {
-                sender.sendMessage("You need to specify who you want to accept.");
+                sender.sendMessage(ChatColor.RED + "You need to specify who you want to accept.");
             }
         }
         return true;

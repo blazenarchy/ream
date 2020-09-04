@@ -1,6 +1,7 @@
 package dev.wnuke.nukestack;
 
 import org.apache.commons.lang.SerializationUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -19,18 +20,15 @@ public class GeneralUtilities {
     }
 
     public void performLogout(Player player) {
-        PlayerData playerData = PlayerDataUtilities.loadPlayerData(player.getUniqueId());
-        playerData.setLogoutLocation(LogoutLocation.fromLocation(player.getLocation()));
-        PlayerDataUtilities.savePlayerData(player.getUniqueId(), playerData);
+        PlayerDataUtilities.loadPlayerData(player).setLogoutLocation(LastLocation.fromLocation(player.getLocation())).save();
     }
 
     public void performLogin(Player player) {
         cleanInventory(player.getInventory());
         checkForIllegals(player.getInventory(), true, true, false, null, null);
         this.hidePlayer(player);
-        PlayerData playerData = PlayerDataUtilities.loadPlayerData(player.getUniqueId());
-        player.teleport(playerData.getLogoutLocation(plugin.getServer()));
-        this.showPlayer(player);
+        player.teleport(PlayerDataUtilities.loadPlayerData(player).getLogoutLocation(plugin.getServer()));
+        this.unhidePlayer(player);
     }
 
     public static void cleanInventory(final Inventory inventory) {
@@ -51,10 +49,14 @@ public class GeneralUtilities {
         }
     }
 
-    public void showPlayer(Player player) {
+    public void unhidePlayer(Player player) {
         for (Player other : plugin.getServer().getOnlinePlayers()) {
             other.showPlayer(plugin, player);
         }
+    }
+
+    public static void notEnoughTokens(Player player, long needed) {
+        player.sendMessage(ChatColor.RED + "You do not have enough tokens, you need at least " + needed + ".");
     }
 
     public static void checkForIllegals(Inventory inventory, boolean removeIllegals, boolean unstackOverStacked, boolean dupe, @Nullable World world, @Nullable Location location) {

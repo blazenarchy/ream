@@ -22,7 +22,7 @@ public class RealNameCommand implements CommandExecutor {
         HashMap<String, String> nickNames = new HashMap<>();
         String playerNick;
         for (Player player : plugin.getServer().getOnlinePlayers()) {
-            playerNick = PlayerDataUtilities.loadPlayerData(player.getUniqueId()).getNickName();
+            playerNick = PlayerDataUtilities.loadPlayerData(player).getNickName();
             if (!playerNick.isEmpty()) {
                 nickNames.put(playerNick, player.getName());
             }
@@ -42,7 +42,7 @@ public class RealNameCommand implements CommandExecutor {
                 }
             }
             if (realName == null) {
-                sender.sendMessage("No online players with name \"" + args[0] + "\".");
+                sender.sendMessage(ChatColor.RED + "No online players with name \"" + args[0] + "\".");
             } else {
                 sender.sendMessage(args[0] + " is " + realName + ".");
             }

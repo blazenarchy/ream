@@ -2,18 +2,14 @@ package dev.wnuke.nukestack;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import dev.wnuke.nukestack.commands.*;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -145,28 +141,37 @@ public final class NukeStack extends JavaPlugin implements Listener {
     }
 
     @EventHandler
+    public void onChatMessage(AsyncPlayerChatEvent event) {
+        event.getRecipients().removeIf(player -> PlayerDataUtilities.loadPlayerData(player).hasIgnored(event.getPlayer().getUniqueId()));
+    }
+
+    @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
         playerPosTracking.remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
-        playerPosTracking.remove(event.getEntity().getUniqueId());
+        Player killed = event.getEntity();
+        playerPosTracking.remove(killed.getUniqueId());
+        PlayerDataUtilities.loadPlayerData(killed).endStreak().save();
+        Player killer = killed.getKiller();
+        if (killer != null) {
+            if (killer.getAddress() == null || killed.getAddress() == null) return;
+            if (killer.getAddress().getAddress().equals(killed.getAddress().getAddress())) return;
+            PlayerDataUtilities.loadPlayerData(killer).incrementStreak().save();
+        }
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        UUID playerID = event.getPlayer().getUniqueId();
-        if (!PlayerDataUtilities.playerData.containsKey(playerID)) {
-            PlayerData newPlayerData = new PlayerData();
-            PlayerDataUtilities.playerData.put(event.getPlayer().getUniqueId(), newPlayerData);
-            PlayerDataUtilities.savePlayerData(playerID, newPlayerData);
-        } else {
-            PlayerData joinedPlayerData = PlayerDataUtilities.loadPlayerData(playerID);
-            String nick = joinedPlayerData.getNickName();
-            if (!nick.isEmpty()) {
-                event.getPlayer().setDisplayName(nick);
-            }
+        if (!event.getPlayer().hasPlayedBefore()) {
+            getServer().broadcastMessage(ChatColor.AQUA + event.getPlayer().getDisplayName() + " joined for the first time!");
+        }
+        PlayerData joinedPlayerData = PlayerDataUtilities.loadPlayerData(event.getPlayer());
+        String nick = joinedPlayerData.getNickName();
+        if (!nick.isEmpty()) {
+            event.getPlayer().setDisplayName(nick);
         }
     }
 

@@ -1,8 +1,10 @@
 package dev.wnuke.nukestack.commands;
 
+import dev.wnuke.nukestack.GeneralUtilities;
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.PlayerData;
 import dev.wnuke.nukestack.PlayerDataUtilities;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -77,32 +79,29 @@ public class NickCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
-            Player player = (Player) sender;
-            UUID playerID = player.getUniqueId();
-            PlayerData playerData = PlayerDataUtilities.loadPlayerData(playerID);
-            if (playerData.getTokens() < NukeStack.tpaCost) {
-                player.sendMessage("You do not have enough tokens, you need at least " + NukeStack.tpaCost + ".");
+            Player player = ((Player) sender).getPlayer();
+            if (player == null) return false;
+            PlayerData playerData = PlayerDataUtilities.loadPlayerData(player);
+            if (playerData.getTokens() < NukeStack.nickCost) {
+                GeneralUtilities.notEnoughTokens(player, NukeStack.nickCost);
                 return true;
             }
             if (args.length >= 1) {
                 String nick = formatNick(args[0]);
                 if (!nickUsed(nick)) {
                     player.setDisplayName(nick);
-                    playerData.setNickName(nick);
-                    player.sendMessage("Your new nickname is \"" + nick + "\".");
-                    playerData.removeTokens(NukeStack.tpaCost);
-                    PlayerDataUtilities.savePlayerData(playerID, playerData);
+                    playerData.setNickName(nick).removeTokens(NukeStack.tpaCost).save();
+                    player.sendMessage(ChatColor.GREEN + "Your new nickname is \"" + nick + "\".");
                 } else {
-                    player.sendMessage("That name is already in use or is not allowed.");
+                    player.sendMessage(ChatColor.RED + "That name is already in use or is not allowed.");
                 }
             } else {
                 player.setDisplayName(player.getName());
-                playerData.setNickName("");
-                PlayerDataUtilities.savePlayerData(playerID, playerData);
-                sender.sendMessage("Your nick name has been removed.");
+                playerData.setNickName("").save();
+                sender.sendMessage(ChatColor.GREEN + "Your nick name has been removed.");
             }
         } else {
-            sender.sendMessage("Consoles cannot nick themselves.");
+            sender.sendMessage(ChatColor.RED + "Consoles cannot nick themselves.");
         }
         return true;
     }

@@ -18,7 +18,9 @@ public class BalanceCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
-            sender.sendMessage("You have " + PlayerDataUtilities.loadPlayerData(((Player) sender).getUniqueId()).getTokens() + " token(s).");
+            Player player = ((Player) sender).getPlayer();
+            if (player == null) return false;
+            sender.sendMessage("You have " + PlayerDataUtilities.loadPlayerData(player).getTokens() + " token(s).");
         } else {
             sender.sendMessage("You have infinite tokens.");
         }
