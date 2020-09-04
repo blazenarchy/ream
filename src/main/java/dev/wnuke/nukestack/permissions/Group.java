@@ -1,11 +1,14 @@
 package dev.wnuke.nukestack.permissions;
 
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import dev.wnuke.nukestack.NukeStack;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,8 +17,7 @@ import static dev.wnuke.nukestack.permissions.PermissionsUtility.groupFolder;
 
 public class Group {
     @SerializedName("Name")
-    private String name;
-
+    private final String name;
     @SerializedName("Chat Prefix")
     private String prefix = "";
     @SerializedName("Permissions")
@@ -68,5 +70,16 @@ public class Group {
             e.printStackTrace();
         }
         return this;
+    }
+
+    public Group load() {
+        File groupFile = new File(groupFolder + name + ".json");
+        groupFile.getParentFile().mkdirs();
+        try {
+            return NukeStack.gson.fromJson(new FileReader(groupFile), new TypeToken<Group>() {
+            }.getType());
+        } catch (FileNotFoundException e) {
+            return this.save();
+        }
     }
 }

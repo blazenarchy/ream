@@ -28,7 +28,7 @@ public class PlayerDataUtilities {
     public static PlayerData loadPlayerData(OfflinePlayer player) {
         PlayerData loadedData = loadExistingPlayerData(player.getUniqueId());
         if (loadedData == null) {
-            loadedData = loadPlayerDataNoCache(player);
+            loadedData = new PlayerData(player).load();
         }
         loadedData.setUuidIfNull(player.getUniqueId());
         playerData.remove(player.getUniqueId());
@@ -44,17 +44,6 @@ public class PlayerDataUtilities {
             }.getType())).setUuidIfNull(player);
         } catch (FileNotFoundException e) {
             return null;
-        }
-    }
-
-    public static PlayerData loadPlayerDataNoCache(OfflinePlayer player) {
-        File playerDataFile = new File(playerDataFolder + player.getUniqueId().toString() + ".json");
-        playerDataFile.getParentFile().mkdirs();
-        try {
-            return NukeStack.gson.fromJson(new FileReader(playerDataFile), new TypeToken<PlayerData>() {
-            }.getType());
-        } catch (FileNotFoundException e) {
-            return new PlayerData(player).save();
         }
     }
 

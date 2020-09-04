@@ -1,6 +1,7 @@
 package dev.wnuke.nukestack.player;
 
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.permissions.Group;
 import dev.wnuke.nukestack.permissions.PermissionsUtility;
@@ -10,6 +11,8 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -105,8 +108,17 @@ public class PlayerData {
         return this.nickName;
     }
 
+    public Location getLogoutLocation(Server server) {
+        if (lastLocation == null) return null;
+        return lastLocation.asLocation(server);
+    }
+
     public Group getGroup() {
         return PermissionsUtility.getGroup(group);
+    }
+
+    public Player getPlayer() {
+        return NukeStack.PLUGIN.getServer().getPlayer(uuid);
     }
 
     public PlayerData loadPermissions() {
@@ -115,10 +127,6 @@ public class PlayerData {
             if (player != null) getGroup().attachToPlayer(player);
         }
         return this;
-    }
-
-    public Player getPlayer() {
-        return NukeStack.PLUGIN.getServer().getPlayer(uuid);
     }
 
     public PlayerData setNickName(String nickName) {
@@ -130,6 +138,16 @@ public class PlayerData {
         if (uuid == null) {
             this.uuid = uuid;
         }
+        return this;
+    }
+
+    public PlayerData increaseLifeTimeTPs() {
+        this.lifeTimeTPs++;
+        return this;
+    }
+
+    public PlayerData increaseLifeTimeDupes() {
+        this.lifeTimeDupes++;
         return this;
     }
 
@@ -175,11 +193,6 @@ public class PlayerData {
         return this;
     }
 
-    public Location getLogoutLocation(Server server) {
-        if (lastLocation == null) return null;
-        return lastLocation.asLocation(server);
-    }
-
     public PlayerData save() {
         PlayerDataUtilities.playerData.remove(uuid);
         PlayerDataUtilities.playerData.putIfAbsent(uuid, this);
@@ -198,13 +211,14 @@ public class PlayerData {
         return this;
     }
 
-    public PlayerData increaseLifeTimeTPs() {
-        this.lifeTimeTPs++;
-        return this;
-    }
-
-    public PlayerData increaseLifeTimeDupes() {
-        this.lifeTimeDupes++;
-        return this;
+    public PlayerData load() {
+        File playerDataFile = new File(playerDataFolder + uuid + ".json");
+        playerDataFile.getParentFile().mkdirs();
+        try {
+            return NukeStack.gson.fromJson(new FileReader(playerDataFile), new TypeToken<PlayerData>() {
+            }.getType());
+        } catch (FileNotFoundException e) {
+            return this.save();
+        }
     }
 }
