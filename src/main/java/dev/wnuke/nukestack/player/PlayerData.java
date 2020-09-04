@@ -2,14 +2,20 @@ package dev.wnuke.nukestack.player;
 
 import com.google.gson.annotations.SerializedName;
 import dev.wnuke.nukestack.NukeStack;
+import dev.wnuke.nukestack.permissions.Group;
+import dev.wnuke.nukestack.permissions.PermissionsUtility;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
+
+import static dev.wnuke.nukestack.player.PlayerDataUtilities.playerDataFolder;
 
 public class PlayerData {
     @SerializedName("u")
@@ -99,6 +105,22 @@ public class PlayerData {
         return this.nickName;
     }
 
+    public Group getGroup() {
+        return PermissionsUtility.getGroup(group);
+    }
+
+    public PlayerData loadPermissions() {
+        if (NukeStack.PLUGIN != null) {
+            Player player = this.getPlayer();
+            if (player != null) getGroup().attachToPlayer(player);
+        }
+        return this;
+    }
+
+    public Player getPlayer() {
+        return NukeStack.PLUGIN.getServer().getPlayer(uuid);
+    }
+
     public PlayerData setNickName(String nickName) {
         this.nickName = nickName;
         return this;
@@ -159,7 +181,20 @@ public class PlayerData {
     }
 
     public PlayerData save() {
-        PlayerDataUtilities.savePlayerData(this);
+        PlayerDataUtilities.playerData.remove(uuid);
+        PlayerDataUtilities.playerData.putIfAbsent(uuid, this);
+        File playerDataFile = new File(playerDataFolder + uuid.toString() + ".json");
+        playerDataFile.getParentFile().mkdirs();
+        try {
+            playerDataFile.createNewFile();
+            FileWriter fw = new FileWriter(playerDataFile);
+            fw.write(NukeStack.gson.toJson(this));
+            fw.flush();
+            fw.close();
+        } catch (Exception e) {
+            System.out.println("Failed to save player data for " + uuid.toString() + ", error:");
+            e.printStackTrace();
+        }
         return this;
     }
 

@@ -32,11 +32,11 @@ public class Info implements CommandExecutor {
                 int kills = player.getStatistic(Statistic.PLAYER_KILLS);
                 int deaths = player.getStatistic(Statistic.DEATHS);
                 float killDeathRatio = 0;
-                if (deaths != 0) killDeathRatio = kills / deaths;
+                if (deaths != 0) killDeathRatio = (float) kills / (float) deaths;
                 Date joinDate = new Date(player.getFirstPlayed());
                 Date seenDate = new Date(player.getLastSeen());
                 PlayerData playerData = PlayerDataUtilities.loadPlayerData(player);
-                DateFormat formatter = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
+                DateFormat formatter = new SimpleDateFormat("HH:mm dd-MM-yyyy");
                 formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
                 sender.sendMessage(player.getName() + ChatColor.GREEN + " info:\n"
                         + ChatColor.DARK_GREEN + "Joined" + ChatColor.WHITE + ": " + formatter.format(joinDate) + "\n"
@@ -49,7 +49,7 @@ public class Info implements CommandExecutor {
                         + ChatColor.DARK_GREEN + "Nick Name" + ChatColor.WHITE + ": " + playerData.getNickName() + "\n");
             }
         } else {
-            sender.sendMessage(ChatColor.RED + "You must specify who's join date you want to see.");
+            sender.sendMessage(ChatColor.RED + "You must specify who's stats you want to see.");
         }
         return true;
     }

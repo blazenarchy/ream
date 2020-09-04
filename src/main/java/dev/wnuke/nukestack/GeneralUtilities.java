@@ -8,17 +8,11 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.annotation.Nullable;
 
 public class GeneralUtilities {
     private static final int maxPacketSize = 2048000;
-    private final JavaPlugin plugin;
-
-    public GeneralUtilities(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
 
     public static void sendPrivateMessage(Player sender, Player receiver, String... words) {
         if (!PlayerDataUtilities.loadPlayerData(receiver).hasIgnored(sender.getUniqueId())) {
@@ -82,32 +76,35 @@ public class GeneralUtilities {
         }
     }
 
-    public void performLogout(Player player) {
+    public static void performLogout(Player player) {
         PlayerDataUtilities.loadPlayerData(player).setLogoutLocation(LastLocation.fromLocation(player.getLocation())).save();
     }
 
-    public void performLogin(Player player) {
+    public static void performLogin(Player player) {
+        if (NukeStack.PLUGIN == null) return;
         if (NukeStack.deleteOversizedItems) {
             cleanInventory(player.getInventory());
         }
         checkForIllegals(player.getInventory(), NukeStack.deleteItems, NukeStack.unstackItems, false, null, null);
-        this.hidePlayer(player);
-        Location logSpot = PlayerDataUtilities.loadPlayerData(player).getLogoutLocation(plugin.getServer());
+        hidePlayer(player);
+        Location logSpot = PlayerDataUtilities.loadPlayerData(player).getLogoutLocation(NukeStack.PLUGIN.getServer());
         if (logSpot != null) {
             player.teleport(logSpot);
         }
-        this.unhidePlayer(player);
+        unhidePlayer(player);
     }
 
-    public void hidePlayer(Player player) {
-        for (Player other : plugin.getServer().getOnlinePlayers()) {
-            other.hidePlayer(plugin, player);
+    public static void hidePlayer(Player player) {
+        if (NukeStack.PLUGIN == null) return;
+        for (Player other : NukeStack.PLUGIN.getServer().getOnlinePlayers()) {
+            other.hidePlayer(NukeStack.PLUGIN, player);
         }
     }
 
-    public void unhidePlayer(Player player) {
-        for (Player other : plugin.getServer().getOnlinePlayers()) {
-            other.showPlayer(plugin, player);
+    public static void unhidePlayer(Player player) {
+        if (NukeStack.PLUGIN == null) return;
+        for (Player other : NukeStack.PLUGIN.getServer().getOnlinePlayers()) {
+            other.showPlayer(NukeStack.PLUGIN, player);
         }
     }
 }

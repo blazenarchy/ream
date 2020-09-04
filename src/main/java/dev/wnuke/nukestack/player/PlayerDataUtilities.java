@@ -1,14 +1,12 @@
 package dev.wnuke.nukestack.player;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import dev.wnuke.nukestack.NukeStack;
 import org.bukkit.OfflinePlayer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
@@ -16,7 +14,6 @@ import java.util.UUID;
 
 public class PlayerDataUtilities {
     public static final String playerDataFolder = "plugins/nukestack/player-data/";
-    private static final Gson gson = new GsonBuilder().serializeNulls().create();
     public static HashMap<UUID, PlayerData> playerData;
 
     public static PlayerData loadExistingPlayerData(UUID player) {
@@ -43,7 +40,7 @@ public class PlayerDataUtilities {
         File playerDataFile = new File(playerDataFolder + player.toString() + ".json");
         playerDataFile.getParentFile().mkdirs();
         try {
-            return ((PlayerData) gson.fromJson(new FileReader(playerDataFile), new TypeToken<PlayerData>() {
+            return ((PlayerData) NukeStack.gson.fromJson(new FileReader(playerDataFile), new TypeToken<PlayerData>() {
             }.getType())).setUuidIfNull(player);
         } catch (FileNotFoundException e) {
             return null;
@@ -54,27 +51,10 @@ public class PlayerDataUtilities {
         File playerDataFile = new File(playerDataFolder + player.getUniqueId().toString() + ".json");
         playerDataFile.getParentFile().mkdirs();
         try {
-            return gson.fromJson(new FileReader(playerDataFile), new TypeToken<PlayerData>() {
+            return NukeStack.gson.fromJson(new FileReader(playerDataFile), new TypeToken<PlayerData>() {
             }.getType());
         } catch (FileNotFoundException e) {
             return new PlayerData(player).save();
-        }
-    }
-
-    public static void savePlayerData(PlayerData newPlayerData) {
-        playerData.remove(newPlayerData.getUuid());
-        playerData.putIfAbsent(newPlayerData.getUuid(), newPlayerData);
-        File playerDataFile = new File(playerDataFolder + newPlayerData.getUuid().toString() + ".json");
-        playerDataFile.getParentFile().mkdirs();
-        try {
-            playerDataFile.createNewFile();
-            FileWriter fw = new FileWriter(playerDataFile);
-            fw.write(gson.toJson(newPlayerData));
-            fw.flush();
-            fw.close();
-        } catch (Exception e) {
-            System.out.println("Failed to save player data for " + newPlayerData.getUuid().toString() + ", error:");
-            e.printStackTrace();
         }
     }
 

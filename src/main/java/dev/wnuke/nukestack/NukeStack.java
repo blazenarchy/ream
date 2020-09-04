@@ -1,7 +1,10 @@
 package dev.wnuke.nukestack;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dev.wnuke.nukestack.commands.*;
+import dev.wnuke.nukestack.permissions.PermissionsUtility;
 import dev.wnuke.nukestack.player.PlayerData;
 import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.ChatColor;
@@ -32,10 +35,13 @@ import java.util.UUID;
  * @author wnuke
  */
 public final class NukeStack extends JavaPlugin implements Listener {
+    public static JavaPlugin PLUGIN;
     public static final HashSet<String> BLOCKED_NICK = new HashSet<>();
     public static final HashSet<Material> DELETE = new HashSet<>();
     public static final HashSet<Material> NO_DUPE = new HashSet<>();
     public static final HashSet<Material> NO_STACK = new HashSet<>();
+    public static final Gson gson = new GsonBuilder().serializeNulls().create();
+    public static PermissionsUtility PERMISSIONS;
     public static GeneralUtilities UTILITIES;
     public static boolean antiSpeed = true;
     public static long checkInterval = 10;
@@ -109,7 +115,9 @@ public final class NukeStack extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        PLUGIN = this;
         UTILITIES = new GeneralUtilities(this);
+        PERMISSIONS = new PermissionsUtility(this);
         loadAndSetConfig();
         Objects.requireNonNull(this.getCommand("nsreload")).setExecutor(new Reload(this));
         if (ignore) {
@@ -189,6 +197,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         if (!event.getPlayer().hasPlayedBefore() && newPlayerMessage) {
             getServer().broadcastMessage(ChatColor.AQUA + event.getPlayer().getDisplayName() + " joined for the first time!");
+            event.setJoinMessage(null);
         }
         PlayerData joinedPlayerData = PlayerDataUtilities.loadPlayerData(event.getPlayer());
         String nick = joinedPlayerData.getNickName();
