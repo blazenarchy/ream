@@ -121,6 +121,10 @@ public class PlayerData {
         return NukeStack.PLUGIN.getServer().getPlayer(uuid);
     }
 
+    public PlayerData setGroup(String group) {
+        this.group = group;
+    }
+
     public PlayerData loadPermissions() {
         if (NukeStack.PLUGIN != null) {
             Player player = this.getPlayer();
