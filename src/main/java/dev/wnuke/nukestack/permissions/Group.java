@@ -18,10 +18,10 @@ import static dev.wnuke.nukestack.permissions.PermissionsUtility.groupFolder;
 public class Group {
     @SerializedName("Name")
     private final String name;
+    @SerializedName("Permissions")
+    private final HashMap<String, Boolean> permissions = new HashMap<>();
     @SerializedName("Chat Prefix")
     private String prefix = "";
-    @SerializedName("Permissions")
-    private HashMap<String, Boolean> permissions;
 
     public Group(String name) {
         this.name = name;
@@ -35,12 +35,20 @@ public class Group {
         return prefix;
     }
 
-    public void setPrefix(String prefix) {
+    public Group setPrefix(String prefix) {
         this.prefix = prefix;
+        return this;
     }
 
-    private void attachToPlayer(Player player, PermissionAttachment permissionAttachment) {
-        if (NukeStack.PLUGIN == null) return;
+    public Group setPermission(String permission, Boolean value) {
+        if (!permission.isEmpty()) {
+            permissions.remove(permission);
+            if (value != null) permissions.put(permission, value);
+        }
+        return this;
+    }
+
+    private Group attachToPlayer(Player player, PermissionAttachment permissionAttachment) {
         for (Map.Entry<String, Boolean> permission : permissions.entrySet()) {
             if (permission.getKey().startsWith("ns.group.") && !permission.getKey().equals("ns.group.")) {
                 PermissionsUtility.getGroup(permission.getKey().replaceFirst("ns.group.", "")).attachToPlayer(player, permissionAttachment);
@@ -48,10 +56,11 @@ public class Group {
                 permissionAttachment.setPermission(permission.getKey(), permission.getValue());
             }
         }
+        return this;
     }
 
-    public void attachToPlayer(Player player) {
-        attachToPlayer(player, PermissionsUtility.getPermissionsAttachement(player));
+    public Group attachToPlayer(Player player) {
+        return attachToPlayer(player, PermissionsUtility.getPermissionsAttachement(player));
     }
 
     public Group save() {

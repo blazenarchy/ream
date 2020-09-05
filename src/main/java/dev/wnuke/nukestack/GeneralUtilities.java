@@ -81,7 +81,6 @@ public class GeneralUtilities {
     }
 
     public static void performLogin(Player player) {
-        if (NukeStack.PLUGIN == null) return;
         if (NukeStack.deleteOversizedItems) {
             cleanInventory(player.getInventory());
         }
@@ -95,14 +94,12 @@ public class GeneralUtilities {
     }
 
     public static void hidePlayer(Player player) {
-        if (NukeStack.PLUGIN == null) return;
         for (Player other : NukeStack.PLUGIN.getServer().getOnlinePlayers()) {
             other.hidePlayer(NukeStack.PLUGIN, player);
         }
     }
 
     public static void unhidePlayer(Player player) {
-        if (NukeStack.PLUGIN == null) return;
         for (Player other : NukeStack.PLUGIN.getServer().getOnlinePlayers()) {
             other.showPlayer(NukeStack.PLUGIN, player);
         }
