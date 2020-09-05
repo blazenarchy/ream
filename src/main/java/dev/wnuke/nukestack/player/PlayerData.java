@@ -123,6 +123,7 @@ public class PlayerData {
 
     public PlayerData setGroup(String group) {
         this.group = group;
+        return this;
     }
 
     public PlayerData loadPermissions() {
