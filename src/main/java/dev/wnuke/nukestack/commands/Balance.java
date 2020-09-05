@@ -1,6 +1,5 @@
 package dev.wnuke.nukestack.commands;
 
-import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

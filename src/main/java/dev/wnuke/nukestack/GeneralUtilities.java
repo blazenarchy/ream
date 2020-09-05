@@ -83,7 +83,8 @@ public class GeneralUtilities {
         NukeStack.teleportRequests.remove(player.getUniqueId());
         NukeStack.playerPosTracking.remove(player.getUniqueId());
         PlayerDataUtilities.loadPlayerData(player).setLogoutLocation(LastLocation.fromLocation(player.getLocation())).save();
-        player.removeAttachment(PermissionsUtility.permissionsMap.get(player.getUniqueId()));
+        PermissionAttachment attachment = PermissionsUtility.permissionsMap.get(player.getUniqueId());
+        if (attachment != null) attachment.remove();
         PermissionsUtility.permissionsMap.remove(player.getUniqueId());
     }
 

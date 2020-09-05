@@ -1,7 +1,5 @@
 package dev.wnuke.nukestack.permissions;
 
-import dev.wnuke.nukestack.NukeStack;
-import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
 import java.util.HashMap;
@@ -11,7 +9,7 @@ public class PermissionsUtility {
     public static final String groupFolder = "plugins/nukestack/groups/";
     public static final HashMap<String, Group> groups = new HashMap<>();
     public static final HashMap<UUID, PermissionAttachment> permissionsMap = new HashMap<>();
-    public static final Group defaultGroup = new Group("default").load();
+    public static Group defaultGroup = new Group("default").load();
 
     public static Group getGroup(String groupName) {
         if (groupName != null) {

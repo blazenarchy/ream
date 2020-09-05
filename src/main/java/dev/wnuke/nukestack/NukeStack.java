@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.wnuke.nukestack.commands.*;
+import dev.wnuke.nukestack.permissions.Group;
 import dev.wnuke.nukestack.permissions.PermissionsUtility;
 import dev.wnuke.nukestack.player.PlayerData;
 import dev.wnuke.nukestack.player.PlayerDataUtilities;
@@ -106,6 +107,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
         PermissionsUtility.groups.clear();
         PlayerDataUtilities.playerData.clear();
         PermissionsUtility.permissionsMap.clear();
+        PermissionsUtility.defaultGroup = new Group("default").load();
         for (Player player : getServer().getOnlinePlayers()) {
             GeneralUtilities.performLogout(player);
             GeneralUtilities.performLogin(player);
