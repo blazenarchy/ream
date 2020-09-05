@@ -48,19 +48,23 @@ public class Group {
         return this;
     }
 
-    private Group attachToPlayer(Player player, PermissionAttachment permissionAttachment) {
+    public void attachToPlayer(PermissionAttachment permissionAttachment) {
         for (Map.Entry<String, Boolean> permission : permissions.entrySet()) {
             if (permission.getKey().startsWith("ns.group.") && !permission.getKey().equals("ns.group.")) {
-                PermissionsUtility.getGroup(permission.getKey().replaceFirst("ns.group.", "")).attachToPlayer(player, permissionAttachment);
+                PermissionsUtility.getGroup(permission.getKey().replaceFirst("ns.group.", "")).attachToPlayer(permissionAttachment);
             } else {
                 permissionAttachment.setPermission(permission.getKey(), permission.getValue());
             }
         }
-        return this;
     }
 
-    public Group attachToPlayer(Player player) {
-        return attachToPlayer(player, PermissionsUtility.getPermissionsAttachement(player));
+    public void attachToPlayer(Player player) {
+        PermissionAttachment permissionAttachment = PermissionsUtility.permissionsMap.get(player.getUniqueId());
+        if (permissionAttachment == null) {
+            permissionAttachment = player.addAttachment(NukeStack.PLUGIN);
+            PermissionsUtility.permissionsMap.put(player.getUniqueId(), permissionAttachment);
+        }
+        attachToPlayer(permissionAttachment);
     }
 
     public Group save() {

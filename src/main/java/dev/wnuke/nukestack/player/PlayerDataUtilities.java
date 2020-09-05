@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class PlayerDataUtilities {
     public static final String playerDataFolder = "plugins/nukestack/player-data/";
-    public static HashMap<UUID, PlayerData> playerData;
+    public static HashMap<UUID, PlayerData> playerData = new HashMap<>();
 
     public static PlayerData loadExistingPlayerData(UUID player) {
         PlayerData loadedData = playerData.getOrDefault(player, null);

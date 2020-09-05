@@ -108,6 +108,11 @@ public class PlayerData {
         return this.nickName;
     }
 
+    public PlayerData setNickName(String nickName) {
+        this.nickName = nickName;
+        return this;
+    }
+
     public Location getLogoutLocation(Server server) {
         if (lastLocation == null) return null;
         return lastLocation.asLocation(server);
@@ -117,25 +122,18 @@ public class PlayerData {
         return PermissionsUtility.getGroup(group);
     }
 
-    public Player getPlayer() {
-        return NukeStack.PLUGIN.getServer().getPlayer(uuid);
-    }
-
     public PlayerData setGroup(String group) {
         this.group = group;
         return this;
     }
 
-    public PlayerData loadPermissions() {
-        if (NukeStack.PLUGIN != null) {
-            Player player = this.getPlayer();
-            if (player != null) getGroup().attachToPlayer(player);
-        }
-        return this;
+    public Player getPlayer() {
+        return NukeStack.PLUGIN.getServer().getPlayer(uuid);
     }
 
-    public PlayerData setNickName(String nickName) {
-        this.nickName = nickName;
+    public PlayerData loadPermissions() {
+        Player player = this.getPlayer();
+        if (player != null) getGroup().attachToPlayer(player);
         return this;
     }
 

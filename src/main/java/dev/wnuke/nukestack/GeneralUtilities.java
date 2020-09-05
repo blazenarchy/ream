@@ -1,5 +1,6 @@
 package dev.wnuke.nukestack;
 
+import dev.wnuke.nukestack.permissions.PermissionsUtility;
 import dev.wnuke.nukestack.player.LastLocation;
 import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.ChatColor;
@@ -8,6 +9,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.PermissionAttachment;
 
 import javax.annotation.Nullable;
 
@@ -77,7 +79,12 @@ public class GeneralUtilities {
     }
 
     public static void performLogout(Player player) {
+        NukeStack.messageReply.remove(player.getUniqueId());
+        NukeStack.teleportRequests.remove(player.getUniqueId());
+        NukeStack.playerPosTracking.remove(player.getUniqueId());
         PlayerDataUtilities.loadPlayerData(player).setLogoutLocation(LastLocation.fromLocation(player.getLocation())).save();
+        player.removeAttachment(PermissionsUtility.permissionsMap.get(player.getUniqueId()));
+        PermissionsUtility.permissionsMap.remove(player.getUniqueId());
     }
 
     public static void performLogin(Player player) {

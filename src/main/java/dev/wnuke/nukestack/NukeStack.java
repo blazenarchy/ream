@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.wnuke.nukestack.commands.*;
+import dev.wnuke.nukestack.permissions.PermissionsUtility;
 import dev.wnuke.nukestack.player.PlayerData;
 import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.ChatColor;
@@ -21,12 +22,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * A plugin for Blazenarchy to prevent illegal items, add a simple dupe, add some basic commands and stop players from going to fast.
@@ -34,12 +33,12 @@ import java.util.UUID;
  * @author wnuke
  */
 public final class NukeStack extends JavaPlugin implements Listener {
-    public static NukeStack PLUGIN;
     public static final HashSet<String> BLOCKED_NICK = new HashSet<>();
     public static final HashSet<Material> DELETE = new HashSet<>();
     public static final HashSet<Material> NO_DUPE = new HashSet<>();
     public static final HashSet<Material> NO_STACK = new HashSet<>();
     public static final Gson gson = new GsonBuilder().serializeNulls().create();
+    public static NukeStack PLUGIN;
     public static boolean antiSpeed = true;
     public static long checkInterval = 10;
     public static boolean newPlayerMessage = true;
@@ -59,16 +58,12 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public static long tpaCost = 2;
     public static boolean unstackItems = true;
     public static boolean deleteOversizedItems = true;
-    public static HashMap<UUID, UUID> messageReply;
-    public static HashMap<UUID, UUID> teleportRequests;
-    public static HashMap<UUID, Location> playerPosTracking;
+    public static HashMap<UUID, UUID> messageReply = new HashMap<>();
+    public static HashMap<UUID, UUID> teleportRequests = new HashMap<>();
+    public static HashMap<UUID, Location> playerPosTracking = new HashMap<>();
     private long ticksLeft = checkInterval;
 
     public void loadAndSetConfig() {
-        PlayerDataUtilities.playerData = new HashMap<>();
-        teleportRequests = new HashMap<>();
-        playerPosTracking = new HashMap<>();
-        messageReply = new HashMap<>();
         reloadConfig();
         saveDefaultConfig();
         ignore = getConfig().getBoolean("ignore");
@@ -92,21 +87,28 @@ public final class NukeStack extends JavaPlugin implements Listener {
         BLOCKED_NICK.addAll(getConfig().getStringList("bannedNicks"));
         for (String item : getConfig().getStringList("illegals")) {
             Material material = Material.getMaterial(item);
-            if (material != null) {
-                DELETE.add(material);
-            }
+            if (material != null) DELETE.add(material);
         }
         for (String item : getConfig().getStringList("noDupe")) {
             Material material = Material.getMaterial(item);
-            if (material != null) {
-                NO_DUPE.add(material);
-            }
+            if (material != null) NO_DUPE.add(material);
         }
         for (String item : getConfig().getStringList("noStack")) {
             Material material = Material.getMaterial(item);
-            if (material != null) {
-                NO_STACK.add(material);
-            }
+            if (material != null) NO_STACK.add(material);
+        }
+        for (Map.Entry<UUID, PermissionAttachment> attachment : PermissionsUtility.permissionsMap.entrySet()) {
+            attachment.getValue().remove();
+        }
+        messageReply.clear();
+        teleportRequests.clear();
+        playerPosTracking.clear();
+        PermissionsUtility.groups.clear();
+        PlayerDataUtilities.playerData.clear();
+        PermissionsUtility.permissionsMap.clear();
+        for (Player player : getServer().getOnlinePlayers()) {
+            GeneralUtilities.performLogout(player);
+            GeneralUtilities.performLogin(player);
         }
     }
 
@@ -156,12 +158,20 @@ public final class NukeStack extends JavaPlugin implements Listener {
             Objects.requireNonNull(this.getCommand("realname")).setExecutor(new RealName());
         }
         getServer().getPluginManager().registerEvents(this, this);
-        PlayerDataUtilities.loadAllPlayerData();
         getLogger().info("Loaded NukeStack by wnuke.");
     }
 
     @Override
     public void onDisable() {
+        for (PermissionAttachment permissionAttachment : PermissionsUtility.permissionsMap.values()) {
+            permissionAttachment.remove();
+        }
+        PermissionsUtility.groups.clear();
+        PlayerDataUtilities.playerData.clear();
+        PermissionsUtility.permissionsMap.clear();
+        teleportRequests.clear();
+        playerPosTracking.clear();
+        messageReply.clear();
         getLogger().info("Disabled NukeStack by wnuke.");
     }
 

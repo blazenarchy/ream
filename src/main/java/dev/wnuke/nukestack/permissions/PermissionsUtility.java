@@ -10,26 +10,19 @@ import java.util.UUID;
 public class PermissionsUtility {
     public static final String groupFolder = "plugins/nukestack/groups/";
     public static final HashMap<String, Group> groups = new HashMap<>();
-    private static final HashMap<UUID, PermissionAttachment> permissionsMap = new HashMap<>();
-    private static final Group defaultGroup = new Group("default").load();
+    public static final HashMap<UUID, PermissionAttachment> permissionsMap = new HashMap<>();
+    public static final Group defaultGroup = new Group("default").load();
 
     public static Group getGroup(String groupName) {
-        if (groupName.equals("default")) {
-            return defaultGroup;
+        if (groupName != null) {
+            if (!groupName.equals("default")) {
+                Group group = groups.get(groupName);
+                if (group == null) {
+                    group = new Group(groupName).load();
+                }
+                return group;
+            }
         }
-        Group group = groups.get(groupName);
-        if (group == null) {
-            group = new Group(groupName).load();
-        }
-        return group;
-    }
-
-    public static PermissionAttachment getPermissionsAttachement(Player player) {
-        PermissionAttachment permissionAttachment = permissionsMap.get(player.getUniqueId());
-        if (permissionAttachment == null) {
-            permissionAttachment = player.addAttachment(NukeStack.PLUGIN);
-            permissionsMap.put(player.getUniqueId(), permissionAttachment);
-        }
-        return permissionAttachment;
+        return defaultGroup;
     }
 }
