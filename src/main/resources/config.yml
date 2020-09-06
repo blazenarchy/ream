@@ -1,3 +1,7 @@
+# Whether or not to enable the permissions system, set to false if you already have a permissions plugin
+permissions: true
+# Whether or not to teleport the player to the location in their data file when they login (is set to their logout spot on logout)
+loginTeleport: true
 # Prefix players with nick names should have
 nickPrefix: "."
 # Whether or not to send a message when a new player joins

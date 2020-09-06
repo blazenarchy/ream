@@ -2,6 +2,7 @@ package dev.wnuke.nukestack;
 
 import dev.wnuke.nukestack.permissions.PermissionsUtility;
 import dev.wnuke.nukestack.player.LastLocation;
+import dev.wnuke.nukestack.player.PlayerData;
 import dev.wnuke.nukestack.player.PlayerDataUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -51,6 +52,10 @@ public class GeneralUtilities {
         player.sendMessage(ChatColor.RED + "You do not have enough tokens, you need at least " + needed + ".");
     }
 
+    public static void checkForIllegals(Player player) {
+        checkForIllegals(player.getInventory(), !player.hasPermission("nukestack.illegal"), !player.hasPermission("nukestack.overstack"), false, player.getWorld(), player.getLocation());
+    }
+
     public static void checkForIllegals(Inventory inventory, boolean removeIllegals, boolean unstackOverStacked, boolean dupe, @Nullable World world, @Nullable Location location) {
         if (dupe || (removeIllegals && NukeStack.deleteItems) || (unstackOverStacked && NukeStack.unstackItems)) {
             for (ItemStack itemStack : inventory) {
@@ -82,23 +87,30 @@ public class GeneralUtilities {
         NukeStack.messageReply.remove(player.getUniqueId());
         NukeStack.teleportRequests.remove(player.getUniqueId());
         NukeStack.playerPosTracking.remove(player.getUniqueId());
+        checkForIllegals(player);
         PlayerDataUtilities.loadPlayerData(player).setLogoutLocation(LastLocation.fromLocation(player.getLocation())).save();
-        PermissionAttachment attachment = PermissionsUtility.permissionsMap.get(player.getUniqueId());
-        if (attachment != null) attachment.remove();
-        PermissionsUtility.permissionsMap.remove(player.getUniqueId());
+        if (NukeStack.permissions) {
+            PermissionAttachment attachment = PermissionsUtility.permissionsMap.get(player.getUniqueId());
+            if (attachment != null) attachment.remove();
+            PermissionsUtility.permissionsMap.remove(player.getUniqueId());
+        }
     }
 
     public static void performLogin(Player player) {
         if (NukeStack.deleteOversizedItems) {
             cleanInventory(player.getInventory());
         }
-        checkForIllegals(player.getInventory(), NukeStack.deleteItems, NukeStack.unstackItems, false, null, null);
-        hidePlayer(player);
-        Location logSpot = PlayerDataUtilities.loadPlayerData(player).loadPermissions().getLogoutLocation(NukeStack.PLUGIN.getServer());
-        if (logSpot != null) {
-            player.teleport(logSpot);
+        checkForIllegals(player);
+        PlayerData playerData = PlayerDataUtilities.loadPlayerData(player);
+        if (NukeStack.permissions) playerData.loadPermissions();
+        if (NukeStack.loginTeleport) {
+            hidePlayer(player);
+            Location logSpot = playerData.getLogoutLocation(NukeStack.PLUGIN.getServer());
+            if (logSpot != null) {
+                player.teleport(logSpot);
+            }
+            unhidePlayer(player);
         }
-        unhidePlayer(player);
     }
 
     public static void hidePlayer(Player player) {

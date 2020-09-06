@@ -22,6 +22,10 @@ public class Group {
     private final HashMap<String, Boolean> permissions = new HashMap<>();
     @SerializedName("Chat Prefix")
     private String prefix = "";
+    @SerializedName("Parent")
+    private String parent = "default";
+    @SerializedName("Child")
+    private String child = "default";
 
     public Group(String name) {
         this.name = name;
@@ -65,6 +69,25 @@ public class Group {
             PermissionsUtility.permissionsMap.put(player.getUniqueId(), permissionAttachment);
         }
         attachToPlayer(permissionAttachment);
+        new Group(parent).attachToPlayer(player);
+    }
+
+    public String getParent() {
+        return parent;
+    }
+
+    public String getChild() {
+        return child;
+    }
+
+    public Group setParent(String parent) {
+        this.parent = parent;
+        return this;
+    }
+
+    public Group setChild(String child) {
+        this.child = child;
+        return this;
     }
 
     public Group save() {

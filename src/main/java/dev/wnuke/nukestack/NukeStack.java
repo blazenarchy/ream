@@ -44,9 +44,11 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public static long checkInterval = 10;
     public static boolean newPlayerMessage = true;
     public static boolean ignore = true;
+    public static boolean permissions = true;
     public static boolean currency = false;
     public static boolean deleteDroppedItems = true;
     public static boolean deleteItems = true;
+    public static boolean loginTeleport = true;
     public static long dupeCost = 2;
     public static long hatCost = 0;
     public static long maxSpeed = 140;
@@ -68,6 +70,8 @@ public final class NukeStack extends JavaPlugin implements Listener {
         reloadConfig();
         saveDefaultConfig();
         ignore = getConfig().getBoolean("ignore");
+        permissions = getConfig().getBoolean("permissions");
+        loginTeleport = getConfig().getBoolean("loginTeleport");
         antiSpeed = getConfig().getBoolean("antiSpeed");
         checkInterval = getConfig().getLong("checkInterval");
         deleteDroppedItems = getConfig().getBoolean("deleteDroppedIllegals");
@@ -121,6 +125,9 @@ public final class NukeStack extends JavaPlugin implements Listener {
         Objects.requireNonNull(this.getCommand("nsreload")).setExecutor(new Reload());
         if (ignore) {
             Objects.requireNonNull(this.getCommand("ignore")).setExecutor(new Ignore());
+        }
+        if (permissions) {
+            Objects.requireNonNull(this.getCommand("group")).setExecutor(new Groups());
         }
         if (getConfig().getBoolean("messaging")) {
             Objects.requireNonNull(this.getCommand("message")).setExecutor(new Message());
@@ -272,7 +279,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
                             }
                         }
                     }
-                    GeneralUtilities.checkForIllegals(player.getInventory(), !player.hasPermission("nukestack.illegal"), !player.hasPermission("nukestack.overstack"), false, null, null);
+                    GeneralUtilities.checkForIllegals(player);
                 }
             }
         } else {
