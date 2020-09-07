@@ -30,6 +30,8 @@ maxSpeed: 140
 playertime: true
 # Enable personal wheather (requires server reload)
 playerweather: true
+# Enable toggling of death messages (requires server reload)
+toggledeathmessages: true
 # Enable hats (requires server reload)
 hat: true
 # Enable ignore command (requires server reload)
@@ -43,7 +45,7 @@ nick: true
 # Enable the tpa (requires server reload)
 tpa: true
 # Enable the dupe (requires server reload)
-dupe: true
+dupe: false
 # Enable currency commands (requires server reload)
 currency: true
 # Enable the suicide command (requires server reload)

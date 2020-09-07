@@ -105,6 +105,12 @@ commands:
     permission: nukestack.dupe
     aliases: [nukestack.dupe]
 permissions:
+  nukestack.colourchat:
+    description: Allows the player to send coloured chat messages.
+    default: true
+  nukestack.formatchat:
+    description: Allows the player to send formatted chat messages.
+    default: false
   nukestack.toggledeathmessages:
     description: Allows the player to toggle death messages.
     default: true
