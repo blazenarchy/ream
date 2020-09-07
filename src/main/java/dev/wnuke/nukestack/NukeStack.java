@@ -209,7 +209,6 @@ public final class NukeStack extends JavaPlugin implements Listener {
                     .replace("%prefix%", prefix)
                     .replace("%name%", player.getDisplayName().replace("%", "%%"))
                     .replace("%message%", message);
-            System.out.println(format);
             event.setFormat(format);
 
         }
