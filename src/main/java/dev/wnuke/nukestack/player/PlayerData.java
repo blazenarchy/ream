@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import dev.wnuke.nukestack.NukeStack;
 import dev.wnuke.nukestack.permissions.Group;
 import dev.wnuke.nukestack.permissions.PermissionsUtility;
+import dev.wnuke.nukestack.permissions.Track;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -108,9 +109,8 @@ public class PlayerData {
         return this.nickName;
     }
 
-    public PlayerData setNickName(String nickName) {
-        this.nickName = nickName;
-        return this;
+    public Player getPlayer() {
+        return NukeStack.PLUGIN.getServer().getPlayer(uuid);
     }
 
     public Location getLogoutLocation(Server server) {
@@ -122,13 +122,30 @@ public class PlayerData {
         return PermissionsUtility.getGroup(group);
     }
 
+    public PlayerData setNickName(String nickName) {
+        this.nickName = nickName;
+        return this;
+    }
+
     public PlayerData setGroup(String group) {
         this.group = group;
         return this;
     }
 
-    public Player getPlayer() {
-        return NukeStack.PLUGIN.getServer().getPlayer(uuid);
+    public PlayerData demote(String trackName) {
+        Track track = PermissionsUtility.getTrack(trackName);
+        if (track != null) {
+            group = track.getPrevious(group);
+        }
+        return this;
+    }
+
+    public PlayerData promote(String trackName) {
+        Track track = PermissionsUtility.getTrack(trackName);
+        if (track != null) {
+            group = track.getNext(group);
+        }
+        return this;
     }
 
     public PlayerData loadPermissions() {

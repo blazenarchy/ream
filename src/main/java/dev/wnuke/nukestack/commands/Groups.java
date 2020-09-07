@@ -11,14 +11,21 @@ import org.bukkit.entity.Player;
 public class Groups implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length > 1) {
-            Player player = NukeStack.PLUGIN.getServer().getPlayer(args[1]);
+        if (args.length > 2) {
+            Player player = NukeStack.PLUGIN.getServer().getPlayer(args[0]);
             if (player == null) return false;
             PlayerData playerData = PlayerDataUtilities.loadPlayerData(player);
-            if (args[0].equals("set") && args.length > 2) {
-                playerData.setGroup(args[2]);
+            switch (args[1]) {
+                case "set":
+                    playerData.setGroup(args[2]).save();
+                    return true;
+                case "promote":
+                    playerData.promote(args[2]).save();
+                    return true;
+                case "demote":
+                    playerData.demote(args[2]).save();
+                    return true;
             }
-            playerData.save();
         }
         return false;
     }
