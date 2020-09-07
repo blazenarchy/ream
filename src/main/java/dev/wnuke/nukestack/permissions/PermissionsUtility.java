@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class PermissionsUtility {
-    public static final String groupFolder = "plugins/nukestack/groups/";
-    public static final String trackFolder = "plugins/nukestack/tracks/";
+    public static final String groupFolder = "plugins/NukeStack/groups/";
+    public static final String trackFolder = "plugins/NukeStack/tracks/";
     public static final HashMap<String, Group> groups = new HashMap<>();
     public static final HashMap<String, Track> tracks = new HashMap<>();
     public static final HashMap<UUID, PermissionAttachment> permissionsMap = new HashMap<>();

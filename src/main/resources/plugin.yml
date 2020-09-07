@@ -1,4 +1,4 @@
-name: nukestack
+name: NukeStack
 version: @version@
 main: dev.wnuke.nukestack.NukeStack
 prefix: Nuke Stack

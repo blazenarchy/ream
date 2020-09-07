@@ -196,19 +196,22 @@ public final class NukeStack extends JavaPlugin implements Listener {
     @EventHandler
     public void onChatMessage(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        if (ignore) event.getRecipients().removeIf(p -> PlayerDataUtilities.loadPlayerData(p).hasIgnored(player.getUniqueId()));
+        if (ignore)
+            event.getRecipients().removeIf(p -> PlayerDataUtilities.loadPlayerData(p).hasIgnored(player.getUniqueId()));
         if (chat) {
-            String message = event.getMessage();
-            String prefix = PlayerDataUtilities.loadPlayerData(player).getGroup().getPrefix().replaceAll("&(?=[0-9]|[a-f]|[k-o]|r)", "§");
+            String message = event.getMessage().replace("%", "%%");
+            String prefix = PlayerDataUtilities.loadPlayerData(player).getGroup().getPrefix().replaceAll("&(?=[0-9]|[a-f]|[k-o]|r)", "§").replace("%", "%%");
             if (player.hasPermission("nukestack.colourchat")) message.replaceAll("&(?=[0-9]|[a-f]|r)", "§");
             if (player.hasPermission("nukestack.formatchat")) message.replaceAll("&(?=[k-o]|r)", "§");
             if (message.startsWith(">")) message = ChatColor.GREEN + message;
-            String format = chatFormat;
-            format.replaceAll("&(?=[0-9]|[a-f]|[k-o]|r)", "§");
-            format.replaceAll("%prefix%", prefix);
-            format.replaceAll("%name%", player.getDisplayName());
-            format.replaceAll("%message%", message);
+            String format = chatFormat
+                    .replaceAll("&(?=[0-9]|[a-f]|[k-o]|r)", "§")
+                    .replace("%prefix%", prefix)
+                    .replace("%name%", player.getDisplayName().replace("%", "%%"))
+                    .replace("%message%", message);
+            System.out.println(format);
             event.setFormat(format);
+
         }
     }
 

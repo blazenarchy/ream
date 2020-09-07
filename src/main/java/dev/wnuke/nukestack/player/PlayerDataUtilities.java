@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class PlayerDataUtilities {
-    public static final String playerDataFolder = "plugins/nukestack/player-data/";
+    public static final String playerDataFolder = "plugins/NukeStack/player-data/";
     public static HashMap<UUID, PlayerData> playerData = new HashMap<>();
 
     public static PlayerData loadExistingPlayerData(UUID player) {
