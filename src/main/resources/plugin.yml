@@ -7,87 +7,105 @@ authors: [wnuke]
 description: A simple plugin for Minecraft Anarchy servers.
 website: https://wnuke.dev
 commands:
+  group:
+    description: Change a player's permission group.
+    permission: nukestack.group
+    usage: group <player> <set|(promote|demote)> <group|track>
+    aliases: [nukestack:group]
   info:
     description: Gets the stats of a player.
     permission: nukestack.info
     usage: info <player>
-    aliases: [jd, joindate, seen, i, pstats]
+    aliases: [jd, joindate, seen, i, pstats, nukestack:info]
   ignore:
     description: Ignore or unignore a player.
     permission: nukestack.ignore
     usage: ignore <player>
+    aliases: [nukestack:ignore]
   hat:
     description: Put an item in your helmet slot.
     permission: nukestack.hat
     usage: Hold an item and run the command.
+    aliases: [nukestack:hat]
   message:
     description: Send a message to another player
     permission: nukestack.message
     usage: message <player> <message>
-    aliases: [m, w, msg]
+    aliases: [m, w, msg, nukestack:message]
   reply:
     description: Send a message the last person you sent/received a message to/from.
     permission: nukestack.reply
     usage: reply <message>
-    aliases: [r]
+    aliases: [r, nukestack:reply]
   playertime:
     description: Set your personal time.
     permission: nukestack.playertime
-    aliases: [ptime, stime, selftime]
+    aliases: [ptime, stime, selftime, nukestack:playertime]
     usage: ptime <time>
   playerweather:
     description: Set your personal weather.
     permission: nukestack.playerwheather
     usage: pweather <weather>
-    aliases: [pweather, sweather, selfweather]
+    aliases: [pweather, sweather, selfweather, nukestack:playerweather]
   suicide:
     description: Kill yourself.
     permission: nukestack.suicide
-    aliases: [kms]
+    aliases: [kms, nukestack:suicide]
   nsreload:
     description: Reload the plugin's configuration.
     permission: nukestack.reload
+    aliases: [nukestack:nsreload]
   realname:
     description: Get the name of a player with a nickname.
     usage: realname <nickname>
     permission: nukestack.realname
+    aliases: [nukestack:realname]
   nick:
     description: Change your nick name.
     usage: nick [nickname]
     permission: nukestack.nick
+    aliases: [nukestack:nick]
   tpcancel:
     description: Cancel a teleport request
     permission: nukestack.tpcancel
     usage: tpcancel <playername>
-    aliases: [tpc]
+    aliases: [tpc, nukestack:tpcancel]
   tpask:
     description: Request to teleport to someone
     permission: nukestack.tpask
     usage: tpask <playername>
-    aliases: [tpa, tpr, tprequest]
+    aliases: [tpa, tpr, tprequest, nukestack:tpask]
   tpaccept:
     description: Accept a teleport request
     permission: nukestack.tpaccept
     usage: tpaccept <playername>
-    aliases: [tpy, tpyes]
+    aliases: [tpy, tpyes, nukestack:tpaccept]
   tpdeny:
     description: Refuse a teleport request
     permission: nukestack.tpdeny
     usage: tpdeny <playername>
-    aliases: [tpn, tpno, tprefuse]
+    aliases: [tpn, tpno, tprefuse, nukestack:tpdeny]
   pay:
     description: Send someone tokens.
     usage: pay <playername> <amount>
     permission: nukestack.pay
+    aliases: [nukestack:pay]
   balance:
     description: Check how many tokens you have.
     permission: nukestack.balance
-    aliases: [bal]
+    aliases: [bal, nukestack:balance]
   dupe:
     description: Duplicate items.
     usage: Run the command while riding a donkey or a llama.
     permission: nukestack.dupe
+    aliases: [nukestack:dupe]
 permissions:
+  ns.group.*:
+    description: Gives a permissions group permissions of another group
+    default: false
+  nukestack.group:
+    description: Allows the player to change other players' permission groups.
+    default: op
   nukestack.info:
     description: Allows the player to check another player's stats.
     default: true
