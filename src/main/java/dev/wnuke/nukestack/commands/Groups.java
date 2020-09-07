@@ -17,10 +17,6 @@ public class Groups implements CommandExecutor {
             PlayerData playerData = PlayerDataUtilities.loadPlayerData(player);
             if (args[0].equals("set") && args.length > 2) {
                 playerData.setGroup(args[2]);
-            } else if (args[0].equals("promote")) {
-                playerData.setGroup(playerData.getGroup().getChild());
-            } else if (args[0].equals("demote")) {
-                playerData.setGroup(playerData.getGroup().getParent());
             }
             playerData.save();
         }

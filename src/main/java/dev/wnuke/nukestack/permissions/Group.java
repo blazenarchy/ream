@@ -22,10 +22,6 @@ public class Group {
     private final HashMap<String, Boolean> permissions = new HashMap<>();
     @SerializedName("Chat Prefix")
     private String prefix = "";
-    @SerializedName("Parent")
-    private String parent = "default";
-    @SerializedName("Child")
-    private String child = "default";
 
     public Group(String name) {
         this.name = name;
@@ -39,20 +35,7 @@ public class Group {
         return prefix;
     }
 
-    public Group setPrefix(String prefix) {
-        this.prefix = prefix;
-        return this;
-    }
-
-    public Group setPermission(String permission, Boolean value) {
-        if (!permission.isEmpty()) {
-            permissions.remove(permission);
-            if (value != null) permissions.put(permission, value);
-        }
-        return this;
-    }
-
-    public void attachToPlayer(PermissionAttachment permissionAttachment) {
+    public Group attachToPlayer(PermissionAttachment permissionAttachment) {
         for (Map.Entry<String, Boolean> permission : permissions.entrySet()) {
             if (permission.getKey().startsWith("ns.group.") && !permission.getKey().equals("ns.group.")) {
                 PermissionsUtility.getGroup(permission.getKey().replaceFirst("ns.group.", "")).attachToPlayer(permissionAttachment);
@@ -60,33 +43,16 @@ public class Group {
                 permissionAttachment.setPermission(permission.getKey(), permission.getValue());
             }
         }
+        return this;
     }
 
-    public void attachToPlayer(Player player) {
+    public Group attachToPlayer(Player player) {
         PermissionAttachment permissionAttachment = PermissionsUtility.permissionsMap.get(player.getUniqueId());
         if (permissionAttachment == null) {
             permissionAttachment = player.addAttachment(NukeStack.PLUGIN);
             PermissionsUtility.permissionsMap.put(player.getUniqueId(), permissionAttachment);
         }
         attachToPlayer(permissionAttachment);
-        new Group(parent).attachToPlayer(player);
-    }
-
-    public String getParent() {
-        return parent;
-    }
-
-    public String getChild() {
-        return child;
-    }
-
-    public Group setParent(String parent) {
-        this.parent = parent;
-        return this;
-    }
-
-    public Group setChild(String child) {
-        this.child = child;
         return this;
     }
 
