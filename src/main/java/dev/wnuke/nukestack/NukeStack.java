@@ -188,7 +188,11 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public void onChatMessage(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         event.getRecipients().removeIf(p -> PlayerDataUtilities.loadPlayerData(p).hasIgnored(player.getUniqueId()));
-        event.setFormat(PlayerDataUtilities.loadPlayerData(player).getGroup().getPrefix().replace("&", "§") + player.getDisplayName() + ChatColor.GRAY + " >> " + ChatColor.RESET + event.getMessage());
+        String message = event.getMessage();
+        if (message.startsWith(">")) {
+            message = ChatColor.GREEN + message;
+        }
+        event.setFormat(PlayerDataUtilities.loadPlayerData(player).getGroup().getPrefix().replace("&", "§") + player.getDisplayName() + ChatColor.GRAY + " >> " + ChatColor.RESET + message);
     }
 
     @EventHandler

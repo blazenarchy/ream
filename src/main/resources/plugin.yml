@@ -7,6 +7,11 @@ authors: [wnuke]
 description: A simple plugin for Minecraft Anarchy servers.
 website: https://wnuke.dev
 commands:
+  toggledeathmessages:
+    description: Toggle the reception of death messages.
+    permission: nukestack.toggledeathmessages
+    usage: toggledeathmessages
+    aliases: [tdm, toggledeaths, toggledeathmsg, nukestack.toggledeathmessages]
   group:
     description: Change a player's permission group.
     permission: nukestack.group
@@ -100,6 +105,9 @@ commands:
     permission: nukestack.dupe
     aliases: [nukestack.dupe]
 permissions:
+  nukestack.toggledeathmessages:
+    description: Allows the player to toggle death messages.
+    default: true
   nukestack.group:
     description: Allows the player to change other players' permission groups.
     default: op
