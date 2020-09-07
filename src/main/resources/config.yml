@@ -1,5 +1,9 @@
 # Whether or not to enable the permissions system, set to false if you already have a permissions plugin
 permissions: true
+# Use chat mods (custom chat format, coloured/formatted chat)
+chat: true
+# What chat messages should look like, %prefix% gets replaced with the player's group prefix, %name% with the player's displayname, %message% with the message, use & for colour codes.
+chatformat: "&r<%prefix%%name%&r> %message%"
 # Whether or not to teleport the player to the location in their data file when they login (is set to their logout spot on logout)
 loginTeleport: true
 # Prefix players with nick names should have

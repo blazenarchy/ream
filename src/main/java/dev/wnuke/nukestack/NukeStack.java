@@ -40,6 +40,8 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public static final HashSet<Material> NO_STACK = new HashSet<>();
     public static final Gson gson = new GsonBuilder().serializeNulls().create();
     public static NukeStack PLUGIN;
+    public static String chatFormat = "&r<%prefix%%name%&r> %message%";
+    public static boolean chat = true;
     public static boolean antiSpeed = true;
     public static long checkInterval = 10;
     public static boolean newPlayerMessage = true;
@@ -70,6 +72,8 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public void loadAndSetConfig() {
         reloadConfig();
         saveDefaultConfig();
+        chat = getConfig().getBoolean("chat");
+        chatFormat = getConfig().getString("chatformat");
         ignore = getConfig().getBoolean("ignore");
         permissions = getConfig().getBoolean("permissions");
         loginTeleport = getConfig().getBoolean("loginTeleport");
@@ -192,12 +196,20 @@ public final class NukeStack extends JavaPlugin implements Listener {
     @EventHandler
     public void onChatMessage(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        event.getRecipients().removeIf(p -> PlayerDataUtilities.loadPlayerData(p).hasIgnored(player.getUniqueId()));
-        String message = event.getMessage();
-        if (player.hasPermission("nukestack.colourchat")) message.replaceAll("&(?=[0-9]|[a-f]|r)", "§");
-        if (player.hasPermission("nukestack.formatchat")) message.replaceAll("&(?=[k-o]|r)", "§");
-        if (message.startsWith(">")) message = ChatColor.GREEN + message;
-        event.setFormat(PlayerDataUtilities.loadPlayerData(player).getGroup().getPrefix().replaceAll("&(?=[0-9]|[a-f]|[k-o]|r)", "§") + player.getDisplayName() + ChatColor.GRAY + " >> " + ChatColor.RESET + message);
+        if (ignore) event.getRecipients().removeIf(p -> PlayerDataUtilities.loadPlayerData(p).hasIgnored(player.getUniqueId()));
+        if (chat) {
+            String message = event.getMessage();
+            String prefix = PlayerDataUtilities.loadPlayerData(player).getGroup().getPrefix().replaceAll("&(?=[0-9]|[a-f]|[k-o]|r)", "§");
+            if (player.hasPermission("nukestack.colourchat")) message.replaceAll("&(?=[0-9]|[a-f]|r)", "§");
+            if (player.hasPermission("nukestack.formatchat")) message.replaceAll("&(?=[k-o]|r)", "§");
+            if (message.startsWith(">")) message = ChatColor.GREEN + message;
+            String format = chatFormat;
+            format.replaceAll("&(?=[0-9]|[a-f]|[k-o]|r)", "§");
+            format.replaceAll("%prefix%", prefix);
+            format.replaceAll("%name%", player.getDisplayName());
+            format.replaceAll("%message%", message);
+            event.setFormat(format);
+        }
     }
 
     @EventHandler
@@ -216,10 +228,10 @@ public final class NukeStack extends JavaPlugin implements Listener {
             if (killer.getAddress().getAddress().equals(killed.getAddress().getAddress())) return;
             PlayerDataUtilities.loadPlayerData(killer).incrementStreak().save();
         }
-        if (toggleDeathMessages) {
+        if (toggleDeathMessages && event.getDeathMessage() != null) {
             for (Player player : getServer().getOnlinePlayers()) {
                 if (PlayerDataUtilities.loadPlayerData(player).deathMessages()) {
-                    player.sendMessage(ChatColor.RED + event.getDeathMessage());
+                    player.sendMessage(event.getDeathMessage());
                 }
             }
             event.setCancelled(true);
