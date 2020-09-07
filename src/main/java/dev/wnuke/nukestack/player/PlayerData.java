@@ -34,6 +34,8 @@ public class PlayerData {
     private String nickName = "";
     @SerializedName("ks")
     private long killStreak = 0;
+    @SerializedName("d")
+    private boolean deathMessages = true;
     @SerializedName("ig")
     private ArrayList<UUID> ignored = new ArrayList<>();
     @SerializedName("ll")
@@ -122,6 +124,15 @@ public class PlayerData {
         return PermissionsUtility.getGroup(group);
     }
 
+    public boolean deathMessages() {
+        return deathMessages;
+    }
+
+    public PlayerData toggleDeathMessages() {
+        deathMessages = !deathMessages;
+        return this;
+    }
+
     public PlayerData setNickName(String nickName) {
         this.nickName = nickName;
         return this;
@@ -155,7 +166,7 @@ public class PlayerData {
     }
 
     public PlayerData setUuidIfNull(UUID uuid) {
-        if (uuid == null) {
+        if (this.uuid == null) {
             this.uuid = uuid;
         }
         return this;

@@ -100,9 +100,6 @@ commands:
     permission: nukestack.dupe
     aliases: [nukestack.dupe]
 permissions:
-  ns.group.*:
-    description: Gives a permissions group permissions of another group
-    default: false
   nukestack.group:
     description: Allows the player to change other players' permission groups.
     default: op

@@ -3,8 +3,6 @@ package dev.wnuke.nukestack.permissions;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import dev.wnuke.nukestack.NukeStack;
-import dev.wnuke.nukestack.player.PlayerData;
-import dev.wnuke.nukestack.player.PlayerDataUtilities;
 
 import java.io.File;
 import java.io.FileNotFoundException;
