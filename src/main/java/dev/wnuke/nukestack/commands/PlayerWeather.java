@@ -18,7 +18,7 @@ public class PlayerWeather implements CommandExecutor {
         if (!(sender instanceof ConsoleCommandSender)) {
             if (args.length > 0) {
                 Player player = ((Player) sender).getPlayer();
-                if (player == null) return false;
+                if (player == null) return true;
                 WeatherType weatherType;
                 if (args[0].toLowerCase().equals("clear")) {
                     weatherType = WeatherType.CLEAR;
@@ -39,7 +39,7 @@ public class PlayerWeather implements CommandExecutor {
                 sender.sendMessage(ChatColor.RED + "Needs a weather argument.");
             }
         } else {
-            sender.sendMessage(ChatColor.RED + "You are console, you must use standard time.");
+            sender.sendMessage(ChatColor.RED + "You are console, you must use standard weather.");
         }
         return true;
     }

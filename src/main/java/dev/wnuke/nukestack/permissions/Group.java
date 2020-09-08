@@ -10,7 +10,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import static dev.wnuke.nukestack.permissions.PermissionsUtility.groupFolder;
@@ -35,13 +37,20 @@ public class Group {
         return prefix;
     }
 
-    public Group attachToPlayer(PermissionAttachment permissionAttachment) {
+    public Group attachToPlayer(PermissionAttachment permissionAttachment, HashSet<String> permissionsGiven) {
+        HashSet<String> groups = new HashSet<>();
         for (Map.Entry<String, Boolean> permission : permissions.entrySet()) {
             if (permission.getKey().startsWith("ns.group.") && !permission.getKey().equals("ns.group.")) {
-                PermissionsUtility.getGroup(permission.getKey().replaceFirst("ns.group.", "")).attachToPlayer(permissionAttachment);
+                groups.add((permission.getKey()));
             } else {
-                permissionAttachment.setPermission(permission.getKey(), permission.getValue());
+                if (!permissionsGiven.contains(permission.getKey())) {
+                    permissionAttachment.setPermission(permission.getKey(), permission.getValue());
+                    permissionsGiven.add(permission.getKey());
+                }
             }
+        }
+        for (String group : groups) {
+            PermissionsUtility.getGroup(group.replaceFirst("ns.group.", "")).attachToPlayer(permissionAttachment, permissionsGiven);
         }
         return this;
     }
@@ -52,7 +61,7 @@ public class Group {
             permissionAttachment = player.addAttachment(NukeStack.PLUGIN);
             PermissionsUtility.permissionsMap.put(player.getUniqueId(), permissionAttachment);
         }
-        attachToPlayer(permissionAttachment);
+        attachToPlayer(permissionAttachment, null);
         return this;
     }
 
