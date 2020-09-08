@@ -110,7 +110,7 @@ permissions:
     default: true
   nukestack.formatchat:
     description: Allows the player to send formatted chat messages.
-    default: false
+    default: true
   nukestack.toggledeathmessages:
     description: Allows the player to toggle death messages.
     default: true

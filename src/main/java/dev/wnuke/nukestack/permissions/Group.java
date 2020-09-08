@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,6 +37,7 @@ public class Group {
     }
 
     public Group attachToPlayer(PermissionAttachment permissionAttachment, HashSet<String> permissionsGiven) {
+        if (permissionsGiven == null) permissionsGiven = new HashSet<>();
         HashSet<String> groups = new HashSet<>();
         for (Map.Entry<String, Boolean> permission : permissions.entrySet()) {
             if (permission.getKey().startsWith("ns.group.") && !permission.getKey().equals("ns.group.")) {
