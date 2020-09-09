@@ -210,7 +210,6 @@ public final class NukeStack extends JavaPlugin implements Listener {
                     .replace("%name%", player.getDisplayName().replace("%", "%%"))
                     .replace("%message%", message);
             event.setFormat(format);
-
         }
     }
 
@@ -236,7 +235,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
                     player.sendMessage(event.getDeathMessage());
                 }
             }
-            event.setCancelled(true);
+            event.setDeathMessage(null);
         }
     }
 
