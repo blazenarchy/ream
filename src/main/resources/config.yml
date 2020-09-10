@@ -1,5 +1,7 @@
 # Whether or not to enable the permissions system, set to false if you already have a permissions plugin
 permissions: true
+# Use custom player list (custom header/footer and name format)
+playerlist: true
 # Use chat mods (custom chat format, coloured/formatted chat)
 chat: true
 # Whether or not to teleport the player to the location in their data file when they login (is set to their logout spot on logout)

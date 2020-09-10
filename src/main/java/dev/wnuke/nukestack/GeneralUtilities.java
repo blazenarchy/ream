@@ -137,13 +137,16 @@ public class GeneralUtilities {
         }
     }
 
+    public static void setPlayerList(Player player) {
+        player.setPlayerListHeaderFooter(parsePlaceholders(player, NukeStack.playerListHeader), parsePlaceholders(player, NukeStack.playerListFooter));
+        player.setPlayerListName(parsePlaceholders(player, NukeStack.nameFormat));
+    }
+
     public static void performLogin(Player player) {
         if (NukeStack.deleteOversizedItems) {
             cleanInventory(player.getInventory());
         }
         checkForIllegals(player);
-        player.setPlayerListHeaderFooter(parsePlaceholders(player, NukeStack.playerListHeader), parsePlaceholders(player, NukeStack.playerListFooter));
-        player.setPlayerListName(parsePlaceholders(player, NukeStack.nameFormat));
         PlayerData playerData = PlayerDataUtilities.loadPlayerData(player);
         if (NukeStack.permissions) playerData.loadPermissions();
         if (NukeStack.loginTeleport) {

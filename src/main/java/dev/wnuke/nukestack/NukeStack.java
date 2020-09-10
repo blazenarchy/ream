@@ -45,6 +45,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public static String playerListHeader = "";
     public static String playerListFooter = "";
     public static boolean chat = true;
+    public static boolean playerList = true;
     public static boolean antiSpeed = true;
     public static long checkInterval = 10;
     public static boolean newPlayerMessage = true;
@@ -78,6 +79,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
         chat = getConfig().getBoolean("chat");
         chatFormat = getConfig().getString("chatformat");
         nameFormat = getConfig().getString("nameformat");
+        playerList = getConfig().getBoolean("playerlist");
         playerListHeader = getConfig().getString("header");
         playerListFooter = getConfig().getString("footer");
         ignore = getConfig().getBoolean("ignore");
@@ -244,7 +246,9 @@ public final class NukeStack extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        GeneralUtilities.performLogin(event.getPlayer());
+        if (playerList) GeneralUtilities.setPlayerList(event.getPlayer());
         if (!event.getPlayer().hasPlayedBefore() && newPlayerMessage) {
             getServer().broadcastMessage(ChatColor.AQUA + event.getPlayer().getDisplayName() + " joined for the first time!");
             event.setJoinMessage(null);
@@ -254,11 +258,6 @@ public final class NukeStack extends JavaPlugin implements Listener {
         if (!nick.isEmpty()) {
             event.getPlayer().setDisplayName(nick);
         }
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        GeneralUtilities.performLogin(event.getPlayer());
     }
 
     @EventHandler
@@ -295,6 +294,7 @@ public final class NukeStack extends JavaPlugin implements Listener {
             }
             if (deleteItems || unstackItems || antiSpeed) {
                 for (Player player : getServer().getOnlinePlayers()) {
+                    if (playerList) GeneralUtilities.setPlayerList(player);
                     if (antiSpeed) {
                         if (!player.isDead()) {
                             if (!player.hasPermission("nukestack.cheat")) {
