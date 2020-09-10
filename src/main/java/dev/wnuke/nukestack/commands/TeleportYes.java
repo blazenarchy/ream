@@ -35,27 +35,9 @@ public class TeleportYes implements CommandExecutor {
                             }
                             player.sendMessage(ChatColor.GREEN + "Teleport request accepted, teleporting...");
                             sender.sendMessage(ChatColor.GREEN + "Teleporting...");
-                            Player sendingPlayer = ((Player) sender).getPlayer();
-                            if (sendingPlayer == null) return false;
-                            GeneralUtilities.hidePlayer(player);
-                            NukeStack.playerPosTracking.remove(playerID);
-                            playerData.setLogoutLocation(LastLocation.fromLocation(sendingPlayer.getLocation()));
-                            double worldBorder = sendingPlayer.getWorld().getWorldBorder().getSize();
-                            Random random = new Random();
-                            while (true) {
-                                double[] location = {0, 0, 0};
-                                for (int i = 0; i < location.length; i++) {
-                                    location[i] = worldBorder * random.nextDouble() - worldBorder / 2;
-                                }
-                                Location farPlace = new Location(sendingPlayer.getWorld(), location[0], location[1], location[2]);
-                                if (farPlace.getNearbyPlayers(8000).isEmpty()) {
-                                    player.teleport(farPlace);
-                                    break;
-                                }
-                            }
-                            player.teleport(sendingPlayer);
-                            NukeStack.playerPosTracking.remove(playerID);
-                            GeneralUtilities.unhidePlayer(player);
+                            Player destinationPlayer = ((Player) sender).getPlayer();
+                            if (destinationPlayer == null) return false;
+                            GeneralUtilities.teleportPlayer(player, destinationPlayer.getLocation());
                             playerData.increaseLifeTimeTPs().removeTokens(NukeStack.tpaCost).save();
                             return true;
                         }

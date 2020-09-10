@@ -138,6 +138,9 @@ public final class NukeStack extends JavaPlugin implements Listener {
         if (toggleDeathMessages) {
             Objects.requireNonNull(this.getCommand("toggledeathmessages")).setExecutor(new ToggleDeathMessages());
         }
+        if (getConfig().getBoolean("teleport")) {
+            Objects.requireNonNull(this.getCommand("teleport")).setExecutor(new Teleport());
+        }
         if (getConfig().getBoolean("messaging")) {
             Objects.requireNonNull(this.getCommand("message")).setExecutor(new Message());
             Objects.requireNonNull(this.getCommand("reply")).setExecutor(new Reply());

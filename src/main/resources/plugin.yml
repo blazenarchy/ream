@@ -7,6 +7,11 @@ authors: [wnuke]
 description: A simple plugin for Minecraft Anarchy servers.
 website: https://wnuke.dev
 commands:
+  teleport:
+    description: Teleport players to other players or to a set of coordinates
+    permission: nukestack.teleport
+    usage: teleport <<player>|<x> <y> <z>> [<player>|<x> <y> <z>]
+    aliases: [tp, nukestack.teleport]
   toggledeathmessages:
     description: Toggle the reception of death messages.
     permission: nukestack.toggledeathmessages
@@ -105,6 +110,9 @@ commands:
     permission: nukestack.dupe
     aliases: [nukestack.dupe]
 permissions:
+  nukestack.teleport:
+    description: Allows the player to teleport themeselves or another player to other players/locations
+    default: op
   nukestack.colourchat:
     description: Allows the player to send coloured chat messages.
     default: true

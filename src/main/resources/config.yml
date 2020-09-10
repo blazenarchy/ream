@@ -6,6 +6,8 @@ chat: true
 chatformat: "&r<%prefix%%name%&r> %message%"
 # Whether or not to teleport the player to the location in their data file when they login (is set to their logout spot on logout)
 loginTeleport: true
+# Whether or not to enable custom teleport methods designed to prevent coordinate exploits (requires full server reload)
+teleport: true
 # Prefix players with nick names should have
 nickPrefix: "."
 # Whether or not to send a message when a new player joins
@@ -29,30 +31,30 @@ hatCost: 0
 # How much it costs for players to change their nick name
 nickCost: 0
 # Maximum speed players can travel (bps^2)/2
-maxSpeed: 140
-# Enable personal time (requires server reload)
+maxSpeed: 120
+# Enable personal time (requires full plugin reload)
 playertime: true
-# Enable personal wheather (requires server reload)
+# Enable personal wheather (requires full plugin reload)
 playerweather: true
-# Enable toggling of death messages (requires server reload)
+# Enable toggling of death messages (requires full plugin reload)
 toggledeathmessages: true
-# Enable hats (requires server reload)
+# Enable hats (requires full plugin reload)
 hat: true
-# Enable ignore command (requires server reload)
+# Enable ignore command (requires full plugin reload)
 ignore: true
-# Enable the messaging system (requires server reload)
+# Enable the messaging system (requires full plugin reload)
 messaging: true
-# Enable info command (requires server reload)
+# Enable info command (requires full plugin reload)
 info: true
-# Enable nicknames (requires server reload)
+# Enable nicknames (requires full plugin reload)
 nick: true
-# Enable the tpa (requires server reload)
+# Enable the tpa (requires full plugin reload)
 tpa: true
-# Enable the dupe (requires server reload)
+# Enable the dupe (requires full plugin reload)
 dupe: false
-# Enable currency commands (requires server reload)
+# Enable currency commands (requires full plugin reload)
 currency: true
-# Enable the suicide command (requires server reload)
+# Enable the suicide command (requires full plugin reload)
 suicide: true
 # Enable the anti speed
 antiSpeed: true

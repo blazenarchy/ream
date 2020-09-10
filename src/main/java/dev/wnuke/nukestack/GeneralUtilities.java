@@ -13,9 +13,32 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class GeneralUtilities {
     private static final int maxPacketSize = 2048000;
+
+    public static void teleportPlayer(Player player, Location destination) {
+        GeneralUtilities.hidePlayer(player);
+        NukeStack.playerPosTracking.remove(player.getUniqueId());
+        PlayerDataUtilities.loadPlayerData(player).setLogoutLocation(LastLocation.fromLocation(destination)).save();
+        double worldBorder = destination.getWorld().getWorldBorder().getSize();
+        Random random = new Random();
+        while (true) {
+            double[] location = {0, 0, 0};
+            for (int i = 0; i < location.length; i++) {
+                location[i] = worldBorder * random.nextDouble() - worldBorder / 2;
+            }
+            Location farPlace = new Location(destination.getWorld(), location[0], location[1], location[2]);
+            if (farPlace.getNearbyPlayers(8000).isEmpty()) {
+                player.teleport(farPlace);
+                break;
+            }
+        }
+        player.teleport(destination);
+        NukeStack.playerPosTracking.remove(player.getUniqueId());
+        GeneralUtilities.unhidePlayer(player);
+    }
 
     public static void sendPrivateMessage(Player sender, Player receiver, String... words) {
         if (!PlayerDataUtilities.loadPlayerData(receiver).hasIgnored(sender.getUniqueId())) {
@@ -104,12 +127,10 @@ public class GeneralUtilities {
         PlayerData playerData = PlayerDataUtilities.loadPlayerData(player);
         if (NukeStack.permissions) playerData.loadPermissions();
         if (NukeStack.loginTeleport) {
-            hidePlayer(player);
             Location logSpot = playerData.getLogoutLocation(NukeStack.PLUGIN.getServer());
             if (logSpot != null) {
-                player.teleport(logSpot);
+                teleportPlayer(player, logSpot);
             }
-            unhidePlayer(player);
         }
     }
 
