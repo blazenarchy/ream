@@ -18,6 +18,24 @@ import java.util.Random;
 public class GeneralUtilities {
     private static final int maxPacketSize = 2048000;
 
+    public static String parsePlaceholders(Player player, String string) {
+        String prefix = PlayerDataUtilities.loadPlayerData(player).getGroup().getPrefix().replaceAll("&(?=[0-9]|[a-f]|[k-o]|r)", "§").replace("%", "%%");
+        String displayName = player.getDisplayName().replace("%", "%%");
+        String name = player.getName().replace("%", "%%");
+        String ping = Integer.toString(player.spigot().getPing());
+        String onlinePlayers = Integer.toString(NukeStack.PLUGIN.getServer().getOnlinePlayers().size());
+        String tps = Double.toString(NukeStack.PLUGIN.getServer().getTPS()[0]).substring(0, 3);
+        String uniqueJoins = Integer.toString(NukeStack.PLUGIN.getServer().getOfflinePlayers().length);
+        return string.replaceAll("&(?=[0-9]|[a-f]|[k-o]|r)", "§")
+                .replace("%prefix%", prefix)
+                .replace("%name%", name)
+                .replace("%display_name%", displayName)
+                .replace("%ping%", ping)
+                .replace("%unique_joins", uniqueJoins)
+                .replace("%online_players", onlinePlayers)
+                .replace("%tps%", tps);
+    }
+
     public static void teleportPlayer(Player player, Location destination) {
         GeneralUtilities.hidePlayer(player);
         NukeStack.playerPosTracking.remove(player.getUniqueId());
@@ -124,6 +142,8 @@ public class GeneralUtilities {
             cleanInventory(player.getInventory());
         }
         checkForIllegals(player);
+        player.setPlayerListHeaderFooter(parsePlaceholders(player, NukeStack.playerListHeader), parsePlaceholders(player, NukeStack.playerListFooter));
+        player.setPlayerListName(parsePlaceholders(player, NukeStack.nameFormat));
         PlayerData playerData = PlayerDataUtilities.loadPlayerData(player);
         if (NukeStack.permissions) playerData.loadPermissions();
         if (NukeStack.loginTeleport) {

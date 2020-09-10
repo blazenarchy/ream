@@ -40,7 +40,10 @@ public final class NukeStack extends JavaPlugin implements Listener {
     public static final HashSet<Material> NO_STACK = new HashSet<>();
     public static final Gson gson = new GsonBuilder().serializeNulls().create();
     public static NukeStack PLUGIN;
-    public static String chatFormat = "&r<%prefix%%name%&r> %message%";
+    public static String chatFormat = "&r<%prefix%%display_name%&r> %message%";
+    public static String nameFormat = "&r%prefix%%name%&r";
+    public static String playerListHeader = "";
+    public static String playerListFooter = "";
     public static boolean chat = true;
     public static boolean antiSpeed = true;
     public static long checkInterval = 10;
@@ -74,6 +77,9 @@ public final class NukeStack extends JavaPlugin implements Listener {
         saveDefaultConfig();
         chat = getConfig().getBoolean("chat");
         chatFormat = getConfig().getString("chatformat");
+        nameFormat = getConfig().getString("nameformat");
+        playerListHeader = getConfig().getString("header");
+        playerListFooter = getConfig().getString("footer");
         ignore = getConfig().getBoolean("ignore");
         permissions = getConfig().getBoolean("permissions");
         loginTeleport = getConfig().getBoolean("loginTeleport");
@@ -203,15 +209,10 @@ public final class NukeStack extends JavaPlugin implements Listener {
             event.getRecipients().removeIf(p -> PlayerDataUtilities.loadPlayerData(p).hasIgnored(player.getUniqueId()));
         if (chat) {
             String message = event.getMessage().replace("%", "%%");
-            String prefix = PlayerDataUtilities.loadPlayerData(player).getGroup().getPrefix().replaceAll("&(?=[0-9]|[a-f]|[k-o]|r)", "§").replace("%", "%%");
             if (player.hasPermission("nukestack.colourchat")) message.replaceAll("&(?=[0-9]|[a-f]|r)", "§");
             if (player.hasPermission("nukestack.formatchat")) message.replaceAll("&(?=[k-o]|r)", "§");
             if (message.startsWith(">")) message = ChatColor.GREEN + message;
-            String format = chatFormat
-                    .replaceAll("&(?=[0-9]|[a-f]|[k-o]|r)", "§")
-                    .replace("%prefix%", prefix)
-                    .replace("%name%", player.getDisplayName().replace("%", "%%"))
-                    .replace("%message%", message);
+            String format = GeneralUtilities.parsePlaceholders(player, chatFormat).replace("%message%", message);
             event.setFormat(format);
         }
     }
