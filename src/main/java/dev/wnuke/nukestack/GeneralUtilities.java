@@ -24,15 +24,15 @@ public class GeneralUtilities {
         String name = player.getName().replace("%", "%%");
         String ping = Integer.toString(player.spigot().getPing());
         String onlinePlayers = Integer.toString(NukeStack.PLUGIN.getServer().getOnlinePlayers().size());
-        String tps = Double.toString(NukeStack.PLUGIN.getServer().getTPS()[0]).substring(0, 3);
+        String tps = Double.toString(NukeStack.PLUGIN.getServer().getTPS()[0]).substring(0, 4);
         String uniqueJoins = Integer.toString(NukeStack.PLUGIN.getServer().getOfflinePlayers().length);
         return string.replaceAll("&(?=[0-9]|[a-f]|[k-o]|r)", "§")
                 .replace("%prefix%", prefix)
                 .replace("%name%", name)
                 .replace("%display_name%", displayName)
                 .replace("%ping%", ping)
-                .replace("%unique_joins", uniqueJoins)
-                .replace("%online_players", onlinePlayers)
+                .replace("%unique_joins%", uniqueJoins)
+                .replace("%online_players%", onlinePlayers)
                 .replace("%tps%", tps);
     }
 
