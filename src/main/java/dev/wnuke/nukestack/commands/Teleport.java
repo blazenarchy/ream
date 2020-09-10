@@ -58,8 +58,9 @@ public class Teleport implements CommandExecutor {
                     GeneralUtilities.teleportPlayer(playerOne, destination);
                 }
             } else sender.sendMessage(ChatColor.RED + "No player online with name " + args[0]);
+        } else {
+            return false;
         }
-
-        return false;
+        return true;
     }
 }
