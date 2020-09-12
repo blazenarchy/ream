@@ -29,7 +29,7 @@ public class TeleportAsk implements CommandExecutor {
             }
             if (args.length > 0) {
                 for (Player onlinePlayer : NukeStack.PLUGIN.getServer().getOnlinePlayers()) {
-                    if (onlinePlayer.getPlayerListName().equals(args[0])) {
+                    if (onlinePlayer.getName().equals(args[0])) {
                         NukeStack.teleportRequests.put(playerID, onlinePlayer.getUniqueId());
                         sender.sendMessage(ChatColor.DARK_GREEN + "Teleport request sent, to cancel type /tpc");
                         onlinePlayer.sendMessage(((Player) sender).getDisplayName() + ChatColor.GREEN + " has requested to teleport to you.");
