@@ -7,14 +7,14 @@ pipeline {
       steps {
         withGradle {
             sh 'gradle build'
-            sh "mv build/libs/nukestack-2.0-SNAPSHOT.jar nuck-stack-${env.BUILD_NUMBER}.jar"
+            sh "mv build/libs/nukestack-2.0-SNAPSHOT.jar nuke-stack-${env.BUILD_NUMBER}.jar"
         }
       }
     }
   }
   post {
     always {
-      archiveArtifacts artifacts: "nuck-stack-${env.BUILD_NUMBER}.jar", fingerprint: true, followSymlinks: false, onlyIfSuccessful: true
+      archiveArtifacts artifacts: "nuke-stack-${env.BUILD_NUMBER}.jar", fingerprint: true, followSymlinks: false, onlyIfSuccessful: true
       script {
         def artifactUrl = env.BUILD_URL + "artifact/"
 	def msg = "**Branch:** " + env.BRANCH_NAME + "\n"
