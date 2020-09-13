@@ -18,10 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -258,6 +255,11 @@ public final class NukeStack extends JavaPlugin implements Listener {
         if (!nick.isEmpty()) {
             event.getPlayer().setDisplayName(nick);
         }
+    }
+
+    @EventHandler
+    public void onPlayerPortal(PlayerPortalEvent event) {
+        playerPosTracking.remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
