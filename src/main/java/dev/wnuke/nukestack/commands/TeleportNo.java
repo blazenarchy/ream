@@ -13,13 +13,12 @@ public class TeleportNo implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
             if (args.length > 0) {
-                for (Player player : NukeStack.PLUGIN.getServer().getOnlinePlayers()) {
-                    if (player.getPlayerListName().equals(args[0])) {
-                        if (NukeStack.teleportRequests.get(player.getUniqueId()) == ((Player) sender).getUniqueId()) {
-                            player.sendMessage(ChatColor.RED + "Teleport denied.");
-                            sender.sendMessage(ChatColor.GREEN + "Teleport denied.");
-                            return true;
-                        }
+                Player player = NukeStack.PLUGIN.getServer().getPlayer(args[0]);
+                if (player != null) {
+                    if (NukeStack.teleportRequests.get(player.getUniqueId()) == ((Player) sender).getUniqueId()) {
+                        player.sendMessage(ChatColor.RED + "Teleport denied.");
+                        sender.sendMessage(ChatColor.GREEN + "Teleport denied.");
+                        return true;
                     }
                 }
                 sender.sendMessage(ChatColor.RED + "No player with name " + args[0] + " has requested to teleport to you.");

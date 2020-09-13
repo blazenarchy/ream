@@ -16,25 +16,24 @@ public class TeleportAsk implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) {
-            Player player = ((Player) sender).getPlayer();
-            if (player == null) return false;
-            UUID playerID = player.getUniqueId();
-            if (PlayerDataUtilities.loadPlayerData(player).getTokens() < NukeStack.tpaCost) {
-                GeneralUtilities.notEnoughTokens(player, NukeStack.tpaCost);
-                return true;
-            }
-            if (NukeStack.teleportRequests.containsKey(playerID)) {
-                sender.sendMessage("Please wait for your current teleport request to get accepted or cancel it by running /tpc.");
-                return true;
-            }
             if (args.length > 0) {
-                for (Player onlinePlayer : NukeStack.PLUGIN.getServer().getOnlinePlayers()) {
-                    if (onlinePlayer.getName().equals(args[0])) {
-                        NukeStack.teleportRequests.put(playerID, onlinePlayer.getUniqueId());
-                        sender.sendMessage(ChatColor.DARK_GREEN + "Teleport request sent, to cancel type /tpc");
-                        onlinePlayer.sendMessage(((Player) sender).getDisplayName() + ChatColor.GREEN + " has requested to teleport to you.");
-                        return true;
-                    }
+                Player player = ((Player) sender).getPlayer();
+                if (player == null) return false;
+                UUID playerID = player.getUniqueId();
+                if (PlayerDataUtilities.loadPlayerData(player).getTokens() < NukeStack.tpaCost) {
+                    GeneralUtilities.notEnoughTokens(player, NukeStack.tpaCost);
+                    return true;
+                }
+                if (NukeStack.teleportRequests.containsKey(playerID)) {
+                    sender.sendMessage("Please wait for your current teleport request to get accepted or cancel it by running /tpc.");
+                    return true;
+                }
+                Player onlinePlayer = NukeStack.PLUGIN.getServer().getPlayer(args[0]);
+                if (onlinePlayer != null) {
+                    NukeStack.teleportRequests.put(playerID, onlinePlayer.getUniqueId());
+                    sender.sendMessage(ChatColor.DARK_GREEN + "Teleport request sent, to cancel type /tpc");
+                    onlinePlayer.sendMessage(((Player) sender).getDisplayName() + ChatColor.GREEN + " has requested to teleport to you.");
+                    return true;
                 }
                 sender.sendMessage("No player found with name " + args[0] + ".");
             } else {

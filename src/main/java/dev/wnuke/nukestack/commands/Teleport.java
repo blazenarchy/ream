@@ -21,7 +21,7 @@ public class Teleport implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof ConsoleCommandSender) {
+        if (sender instanceof ConsoleCommandSender && (args.length == 1 || args.length == 3)) {
             sender.sendMessage("Console cannot teleport.");
             return true;
         }
