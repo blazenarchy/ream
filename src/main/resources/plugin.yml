@@ -5,7 +5,9 @@ prefix: Nuke Stack
 api-version: "1.16"
 authors: [wnuke]
 description: A simple plugin for Minecraft Anarchy servers.
-website: https://wnuke.dev
+website: https://github.com/wnuke/nuke-stack
+softdepend:
+  - ProtocolLib
 commands:
   teleport:
     description: Teleport players to other players or to a set of coordinates

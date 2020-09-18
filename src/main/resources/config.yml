@@ -1,5 +1,7 @@
 # Whether or not to enable the permissions system, set to false if you already have a permissions plugin
 permissions: true
+# Cancels sending of packets too big for client to decompress (over 2097152 bytes), requires ProtocolLib
+packetfilter: true
 # Use custom player list (custom header/footer and name format)
 playerlist: true
 # Use chat mods (custom chat format, coloured/formatted chat)
@@ -98,10 +100,6 @@ bannedNicks:
 # - %prefix% the prefix of the player's current group
 # - %name% the player's name
 # - %display_name% the player's displayname/nickname
-# - %ping% the player's ping/latency to the server
-# - %unique_joins% nummber of players who have joined the server at least once
-# - %online_players% number of player's online in the server
-# - %tps% server tps average over the last minute
 
 # What chat messages should look like, can use all placeholders and colour/formatting codes + %message% which gets replaced with the player's chat message
 chatformat: "&r<%prefix%%display_name%&r> %message%"
@@ -115,9 +113,6 @@ header: "
 nameformat: "&r%prefix%%name%&r"
 # Player list footer lines, can use all placeholders and colour/formatting codes
 footer: "
-
-&3%tps% tps - %online_players% players - %ping% ping - %unique_joins% unique joins
-
 
 &7contact: admin@blazenarchy.net
 

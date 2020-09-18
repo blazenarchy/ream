@@ -1,5 +1,11 @@
 package dev.wnuke.nukestack;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -8,6 +14,7 @@ import dev.wnuke.nukestack.permissions.Group;
 import dev.wnuke.nukestack.permissions.PermissionsUtility;
 import dev.wnuke.nukestack.player.PlayerData;
 import dev.wnuke.nukestack.player.PlayerDataUtilities;
+import org.apache.commons.lang.SerializationUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -183,6 +190,26 @@ public final class NukeStack extends JavaPlugin implements Listener {
             Objects.requireNonNull(this.getCommand("nick")).setExecutor(new Nick());
             Objects.requireNonNull(this.getCommand("realname")).setExecutor(new RealName());
         }
+        if (getConfig().getBoolean("packetfilter")) {
+            try {
+                ProtocolManager manager = ProtocolLibrary.getProtocolManager();
+                ArrayList<PacketType> packetTypes = new ArrayList<>();
+                for (PacketType packetType : PacketType.Play.Server.getInstance()) {
+                    packetTypes.add(packetType);
+                }
+                manager.addPacketListener(new PacketAdapter(this, ListenerPriority.HIGHEST, packetTypes) {
+                    @Override
+                    public void onPacketSending(PacketEvent event) {
+                        int packetSize = SerializationUtils.serialize(event.getPacket()).length;
+                        if (packetSize >= 2097152) {
+                            event.setCancelled(true);
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                getLogger().warning("Could not load packet filter.");
+            }
+        }
         getServer().getPluginManager().registerEvents(this, this);
         getLogger().info("Loaded NukeStack by wnuke.");
     }
@@ -296,7 +323,6 @@ public final class NukeStack extends JavaPlugin implements Listener {
             }
             if (deleteItems || unstackItems || antiSpeed) {
                 for (Player player : getServer().getOnlinePlayers()) {
-                    if (playerList) GeneralUtilities.setPlayerList(player);
                     if (antiSpeed) {
                         if (!player.isDead()) {
                             if (!player.hasPermission("nukestack.cheat")) {
