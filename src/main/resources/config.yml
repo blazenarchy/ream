@@ -106,7 +106,7 @@ chatformat: "&r<%prefix%%display_name%&r> %message%"
 # Player list header lines, can use all placeholders and colour/formatting codes
 header: "
 
-&7&l&oBLAZENARCHY&r
+&7&l&oEXAMPLE&r
 
 "
 # Player list player name formatting, can use all placeholders and colour/formatting codes
@@ -114,10 +114,6 @@ nameformat: "&r%prefix%%name%&r"
 # Player list footer lines, can use all placeholders and colour/formatting codes
 footer: "
 
-&7contact: admin@blazenarchy.net
+&7contact: example@example.com
 
-&7wiki: https://wiki.blazenarchy.net
-
-&7donate: https://blazenarchy.buycraft.net
-
-&7discord: https://discord.blazenarchy.net&r"
+&7wiki: https://wiki.example.com"
