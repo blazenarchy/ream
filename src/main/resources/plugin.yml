@@ -1,11 +1,10 @@
-name: NukeStack
+name: PaperStack
 version: @version@
-main: dev.wnuke.nukestack.NukeStack
-prefix: Nuke Stack
+main: net.willemml.paperstack.PaperStack
+prefix: Paper Stack
 api-version: "1.16"
-authors: [wnuke]
-description: A simple plugin for Minecraft Anarchy servers.
-website: https://github.com/wnuke/nuke-stack
+authors: [willemml]
+description: A simple plugin for Minecraft servers.
 softdepend:
   - ProtocolLib
 commands:
