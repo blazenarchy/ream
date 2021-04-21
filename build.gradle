@@ -1,12 +1,12 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-apply plugin: "java"
+apply plugin: 'java'
 
-group = "net.willemml"
-version = "2.0"
+group = 'net.blazenarchy'
+version = 'v2.0.1'
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 repositories {
     mavenCentral()
@@ -14,16 +14,13 @@ repositories {
         url = "https://papermc.io/repo/repository/maven-public/"
     }
     maven {
-        url = "https://oss.sonatype.org/content/groups/public/"
-    }
-    maven {
         url = "https://repo.dmulloy2.net/nexus/repository/public/"
     }
 }
 
 dependencies {
-    compileOnly "com.destroystokyo.paper:paper-api:1.16.1-R0.1-SNAPSHOT"
-    compileOnly "com.comphenix.protocol:ProtocolLib:4.5.0"
+    compileOnly "com.comphenix.protocol:ProtocolLib:4.6.0"
+    compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
 }
 
 processResources {

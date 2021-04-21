@@ -1,191 +1,191 @@
-name: PaperStack
+name: Ream
 version: @version@
-main: net.willemml.paperstack.PaperStack
-prefix: Paper Stack
+main: net.blazenarchy.ream.Ream
+prefix: Ream
 api-version: "1.16"
 authors: [willemml]
-description: A simple plugin for Minecraft servers.
+description: A simple utility plugin.
 softdepend:
   - ProtocolLib
 commands:
   teleport:
     description: Teleport players to other players or to a set of coordinates
-    permission: nukestack.teleport
+    permission: ream.teleport
     usage: teleport <<player>|<x> <y> <z>> [<player>|<x> <y> <z>]
-    aliases: [tp, nukestack.teleport]
+    aliases: [tp, ream.teleport]
   toggledeathmessages:
     description: Toggle the reception of death messages.
-    permission: nukestack.toggledeathmessages
+    permission: ream.toggledeathmessages
     usage: toggledeathmessages
-    aliases: [tdm, toggledeaths, toggledeathmsg, nukestack.toggledeathmessages]
+    aliases: [tdm, toggledeaths, toggledeathmsg, ream.toggledeathmessages]
   group:
     description: Change a player's permission group.
-    permission: nukestack.group
+    permission: ream.group
     usage: group <player> <set|(promote|demote)> <group|track>
-    aliases: [nukestack.group]
+    aliases: [ream.group]
   info:
     description: Gets the stats of a player.
-    permission: nukestack.info
+    permission: ream.info
     usage: info <player>
-    aliases: [jd, joindate, seen, i, pstats, nukestack.info]
+    aliases: [jd, joindate, seen, i, pstats, ream.info]
   ignore:
     description: Ignore or unignore a player.
-    permission: nukestack.ignore
+    permission: ream.ignore
     usage: ignore <player>
-    aliases: [nukestack.ignore]
+    aliases: [ream.ignore]
   hat:
     description: Put an item in your helmet slot.
-    permission: nukestack.hat
+    permission: ream.hat
     usage: Hold an item and run the command.
-    aliases: [nukestack.hat]
+    aliases: [ream.hat]
   message:
     description: Send a message to another player
-    permission: nukestack.message
+    permission: ream.message
     usage: message <player> <message>
-    aliases: [m, w, msg, nukestack.message]
+    aliases: [m, w, msg, ream.message]
   reply:
     description: Send a message the last person you sent/received a message to/from.
-    permission: nukestack.reply
+    permission: ream.reply
     usage: reply <message>
-    aliases: [r, nukestack.reply]
+    aliases: [r, ream.reply]
   playertime:
     description: Set your personal time.
-    permission: nukestack.playertime
-    aliases: [ptime, stime, selftime, nukestack.playertime]
+    permission: ream.playertime
+    aliases: [ptime, stime, selftime, ream.playertime]
     usage: ptime <time>
   playerweather:
     description: Set your personal weather.
-    permission: nukestack.playerwheather
+    permission: ream.playerwheather
     usage: pweather <weather>
-    aliases: [pweather, sweather, selfweather, nukestack.playerweather]
+    aliases: [pweather, sweather, selfweather, ream.playerweather]
   suicide:
     description: Kill yourself.
-    permission: nukestack.suicide
-    aliases: [kms, nukestack.suicide]
+    permission: ream.suicide
+    aliases: [kms, ream.suicide]
   nsreload:
     description: Reload the plugin's configuration.
-    permission: nukestack.reload
-    aliases: [nukestack.nsreload]
+    permission: ream.reload
+    aliases: [ream.nsreload]
   realname:
     description: Get the name of a player with a nickname.
     usage: realname <nickname>
-    permission: nukestack.realname
-    aliases: [nukestack.realname]
+    permission: ream.realname
+    aliases: [ream.realname]
   nick:
     description: Change your nick name.
     usage: nick [nickname]
-    permission: nukestack.nick
-    aliases: [nukestack.nick]
+    permission: ream.nick
+    aliases: [ream.nick]
   tpcancel:
     description: Cancel a teleport request
-    permission: nukestack.tpcancel
+    permission: ream.tpcancel
     usage: tpcancel <playername>
-    aliases: [tpc, nukestack.tpcancel]
+    aliases: [tpc, ream.tpcancel]
   tpask:
     description: Request to teleport to someone
-    permission: nukestack.tpask
+    permission: ream.tpask
     usage: tpask <playername>
-    aliases: [tpa, tpr, tprequest, nukestack.tpask]
+    aliases: [tpa, tpr, tprequest, ream.tpask]
   tpaccept:
     description: Accept a teleport request
-    permission: nukestack.tpaccept
+    permission: ream.tpaccept
     usage: tpaccept <playername>
-    aliases: [tpy, tpyes, nukestack.tpaccept]
+    aliases: [tpy, tpyes, ream.tpaccept]
   tpdeny:
     description: Refuse a teleport request
-    permission: nukestack.tpdeny
+    permission: ream.tpdeny
     usage: tpdeny <playername>
-    aliases: [tpn, tpno, tprefuse, nukestack.tpdeny]
+    aliases: [tpn, tpno, tprefuse, ream.tpdeny]
   pay:
     description: Send someone tokens.
     usage: pay <playername> <amount>
-    permission: nukestack.pay
-    aliases: [nukestack.pay]
+    permission: ream.pay
+    aliases: [ream.pay]
   balance:
     description: Check how many tokens you have.
-    permission: nukestack.balance
-    aliases: [bal, nukestack.balance]
+    permission: ream.balance
+    aliases: [bal, ream.balance]
   dupe:
     description: Duplicate items.
     usage: Run the command while riding a donkey or a llama.
-    permission: nukestack.dupe
-    aliases: [nukestack.dupe]
+    permission: ream.dupe
+    aliases: [ream.dupe]
 permissions:
-  nukestack.teleport:
+  ream.teleport:
     description: Allows the player to teleport themeselves or another player to other players/locations
     default: op
-  nukestack.colourchat:
+  ream.colourchat:
     description: Allows the player to send coloured chat messages.
     default: true
-  nukestack.formatchat:
+  ream.formatchat:
     description: Allows the player to send formatted chat messages.
     default: true
-  nukestack.toggledeathmessages:
+  ream.toggledeathmessages:
     description: Allows the player to toggle death messages.
     default: true
-  nukestack.group:
+  ream.group:
     description: Allows the player to change other players' permission groups.
     default: op
-  nukestack.info:
+  ream.info:
     description: Allows the player to check another player's stats.
     default: true
-  nukestack.ignore:
+  ream.ignore:
     description: Allows the player to ignore or unignore another player.
     default: true
-  nukestack.hat:
+  ream.hat:
     description: Allows the player to put an item in it's helmet armour slot.
     default: true
-  nukestack.message:
+  ream.message:
     description: Allows the player send messages to another player.
     default: true
-  nukestack.reply:
+  ream.reply:
     description: Allows the player to send a message to the last person they received a message from or sent a message to.
     default: true
-  nukestack.playertime:
+  ream.playertime:
     description: Allows the player to choose what the time is for itself.
     default: true
-  nukestack.playerweather:
+  ream.playerweather:
     description: Allows the player to choose what the weather is for itself.
     default: true
-  nukestack.suicide:
+  ream.suicide:
     description: Allows the player to kill itself.
     default: true
-  nukestack.realname:
+  ream.realname:
     description: Allows the player check the realname of a nick named player.
     default: true
-  nukestack.nick:
+  ream.nick:
     description: Allows the player change their nick name.
     default: true
-  nukestack.tpcancel:
+  ream.tpcancel:
     description: Allows the player to cancel a teleport request.
     default: true
-  nukestack.tpask:
+  ream.tpask:
     description: Allows the player to request to teleport to someone.
     default: true
-  nukestack.tpaccept:
+  ream.tpaccept:
     description: Allows the player to accept a teleport request.
     default: true
-  nukestack.tpdeny:
+  ream.tpdeny:
     description: Allows the player to deny a teleport request.
     default: true
-  nukestack.pay:
+  ream.pay:
     description: Allows the player to send money to other players.
     default: true
-  nukestack.balance:
+  ream.balance:
     description: Allows the player to check how many tokens they have.
     default: true
-  nukestack.dupe:
+  ream.dupe:
     description: Allows the player to duplicate items.
     default: true
-  nukestack.cheat:
+  ream.cheat:
     description: Allows the player to cheat.
     default: op
-  nukestack.overstack:
+  ream.overstack:
     description: Allows the player to have overstacked items.
     default: op
-  nukestack.illegal:
+  ream.illegal:
     description: Allows the player to have illegal iems.
     default: op
-  nukestack.reload:
+  ream.reload:
     description: Allows the player to reload the plugin configuration.
     default: op
